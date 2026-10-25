@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "core.schema.json",
+  "title": "core.json: abilities, the proficiency bonus, character advancement, languages, sizes, and the core rules",
+  "description": "The rules every other file leans on: the six abilities, the Character Advancement table (XP and proficiency bonus by level), languages, sizes, and rule records for d20 Tests, Advantage, proficiency, resting, death saves, hit points, and the like. Formulas live in derivations.json.",
+  "type": "object",
+  "required": ["meta", "abilities", "advancement", "languages", "sizes", "rules"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": { "$ref": "common.schema.json#/$defs/meta" },
+    "abilities": {
+      "type": "array", "minItems": 6, "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "measures", "source", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/ability" },
+          "name": { "type": "string" },
+          "measures": { "type": "string" },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "abilityModifiers": {
+      "description": "The Ability Scores and Modifiers table as printed, kept beside the formula in derivations.json so a test can hold one to the other.",
+      "type": "array",
+      "items": {
+        "type": "object", "required": ["min", "max", "modifier"], "additionalProperties": false,
+        "properties": { "min": { "type": "integer" }, "max": { "type": "integer" }, "modifier": { "type": "integer" } }
+      }
+    },
+    "advancement": {
+      "description": "The Character Advancement table: XP needed and the proficiency bonus at each character level.",
+      "type": "array", "minItems": 20, "maxItems": 20,
+      "items": {
+        "type": "object", "required": ["level", "xp", "proficiencyBonus"], "additionalProperties": false,
+        "properties": {
+          "level": { "type": "integer", "minimum": 1, "maximum": 20 },
+          "xp": { "type": "integer", "minimum": 0 },
+          "proficiencyBonus": { "type": "integer", "minimum": 2, "maximum": 6 }
+        }
+      }
+    },
+    "advancementSource": { "$ref": "common.schema.json#/$defs/source" },
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "object", "required": ["id", "name", "kind", "source", "confidence"], "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string" },
+          "kind": { "enum": ["standard", "rare"] },
+          "origin": { "type": "string" },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "sizes": {
+      "type": "array",
+      "items": {
+        "type": "object", "required": ["id", "name", "space", "source", "confidence"], "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/size" },
+          "name": { "type": "string" },
+          "space": { "type": "string" },
+          "carryingMultiplier": { "type": "number", "description": "Carrying capacity per Strength point, in pounds, where the Rules Glossary prints one per size." },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "abilityScoreMethods": {
+      "description": "Added 2026-10-19 for the guided build: the three ways to generate ability scores, as printed (SRD p.21), so the build reads them rather than typing them in code. byClass is the Standard Array by Class table, the suggested assignment the build preassigns.",
+      "type": "object", "required": ["standardArray", "pointBuy", "random", "source", "confidence"], "additionalProperties": false,
+      "properties": {
+        "standardArray": {
+          "type": "object", "required": ["scores", "byClass"], "additionalProperties": false,
+          "properties": {
+            "scores": { "type": "array", "items": { "type": "integer" }, "minItems": 6, "maxItems": 6 },
+            "byClass": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object", "required": ["str", "dex", "con", "int", "wis", "cha"], "additionalProperties": false,
+                "properties": { "str": { "type": "integer" }, "dex": { "type": "integer" }, "con": { "type": "integer" }, "int": { "type": "integer" }, "wis": { "type": "integer" }, "cha": { "type": "integer" } }
+              }
+            }
+          }
+        },
+        "pointBuy": {
+          "type": "object", "required": ["budget", "costs"], "additionalProperties": false,
+          "properties": {
+            "budget": { "type": "integer" },
+            "costs": {
+              "type": "array",
+              "items": { "type": "object", "required": ["score", "cost"], "additionalProperties": false, "properties": { "score": { "type": "integer" }, "cost": { "type": "integer" } } }
+            }
+          }
+        },
+        "random": {
+          "type": "object", "required": ["dice", "keep", "times"], "additionalProperties": false,
+          "properties": { "dice": { "$ref": "common.schema.json#/$defs/dice" }, "keep": { "type": "integer" }, "times": { "type": "integer" } }
+        },
+        "source": { "$ref": "common.schema.json#/$defs/source" },
+        "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+        "note": { "type": "string" }
+      }
+    },
+    "startingLanguages": {
+      "description": "Added 2026-10-19 for the guided build: the languages every character knows, and how many more it chooses and from which kind (SRD p.20, Choose Languages).",
+      "type": "object", "required": ["known", "choose", "kind", "source", "confidence"], "additionalProperties": false,
+      "properties": {
+        "known": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" } },
+        "choose": { "type": "integer" },
+        "kind": { "enum": ["standard", "rare"] },
+        "source": { "$ref": "common.schema.json#/$defs/source" },
+        "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+        "note": { "type": "string" }
+      }
+    },
+    "playRules": {
+      "description": "Added 2026-10-19 for the play sheet: the numbers the rule records print in their text, as fields the app applies (Advantage's d20s, Resistance and Vulnerability, temporary hit points, death saves and massive damage, Short and Long Rests; Attunement's limit and coins' weight, added the same day for the inventory). Each names its rule record and page.",
+      "type": "object", "required": ["advantage", "damage", "deathSaves", "shortRest", "longRest", "concentration", "attunement", "carrying", "source", "confidence"], "additionalProperties": false,
+      "properties": {
+        "advantage": { "type": "object", "required": ["dice", "keep", "cancel"], "additionalProperties": false, "properties": { "dice": { "type": "integer" }, "keep": { "enum": ["higher"] }, "cancel": { "type": "boolean" }, "rule": { "type": "string" } } },
+        "damage": {
+          "type": "object", "required": ["resistanceDivisor", "vulnerabilityMultiplier", "roundDown", "tempFirst", "tempStack"], "additionalProperties": false,
+          "properties": { "resistanceDivisor": { "type": "integer" }, "vulnerabilityMultiplier": { "type": "integer" }, "roundDown": { "type": "boolean" }, "tempFirst": { "type": "boolean" }, "tempStack": { "type": "boolean" }, "massiveDamage": { "type": "boolean" }, "rule": { "type": "string" } }
+        },
+        "deathSaves": {
+          "type": "object", "required": ["dc", "toStabilize", "toDie", "naturalOneFailures", "naturalTwentyHp", "damageFailures", "criticalFailures"], "additionalProperties": false,
+          "properties": { "dc": { "type": "integer" }, "toStabilize": { "type": "integer" }, "toDie": { "type": "integer" }, "naturalOneFailures": { "type": "integer" }, "naturalTwentyHp": { "type": "integer" }, "damageFailures": { "type": "integer" }, "criticalFailures": { "type": "integer" }, "rule": { "type": "string" } }
+        },
+        "shortRest": { "type": "object", "required": ["hitDieMinimum"], "additionalProperties": false, "properties": { "hitDieMinimum": { "type": "integer" }, "rule": { "type": "string" } } },
+        "concentration": { "type": "object", "required": ["minimumDc", "damageDivisor", "roundDown", "maximumDc", "endsOnAnother"], "additionalProperties": false, "properties": { "minimumDc": { "type": "integer" }, "damageDivisor": { "type": "integer" }, "roundDown": { "type": "boolean" }, "maximumDc": { "type": "integer" }, "endsOnAnother": { "type": "boolean" }, "rule": { "type": "string" } } },
+        "attunement": { "type": "object", "required": ["maxItems", "oneCopy"], "additionalProperties": false, "properties": { "maxItems": { "type": "integer" }, "oneCopy": { "type": "boolean" }, "rule": { "type": "string" } } },
+        "carrying": { "type": "object", "required": ["coinsPerPound"], "additionalProperties": false, "properties": { "coinsPerPound": { "type": "integer" }, "rule": { "type": "string" } } },
+        "longRest": { "type": "object", "required": ["exhaustionReduction", "allHitDice", "tempHpLost"], "additionalProperties": false, "properties": { "exhaustionReduction": { "type": "integer" }, "allHitDice": { "type": "boolean" }, "tempHpLost": { "type": "boolean" }, "rule": { "type": "string" } } },
+        "source": { "$ref": "common.schema.json#/$defs/source" },
+        "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+        "note": { "type": "string" }
+      }
+    },
+    "rules": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/rule" } },
+    "ambiguities": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/ambiguity" } }
+  }
+}

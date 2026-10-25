@@ -1,0 +1,250 @@
+{
+  "id": "audit-b-save",
+  "schemaVersion": 1,
+  "gameDataVersion": "example",
+  "createdAt": "2026-10-19T10:27:00.000Z",
+  "updatedAt": "2026-10-19T10:27:00.000Z",
+  "name": "Pip Underbough",
+  "primaryEntityId": "audit-b",
+  "entities": [
+    {
+      "id": "audit-b",
+      "kind": "character",
+      "name": "Pip Underbough",
+      "classes": [
+        {
+          "classId": "rogue",
+          "subclassId": "thief",
+          "level": 7,
+          "hp": [
+            {
+              "level": 1,
+              "method": "max"
+            },
+            {
+              "level": 2,
+              "method": "fixed"
+            },
+            {
+              "level": 3,
+              "method": "fixed"
+            },
+            {
+              "level": 4,
+              "method": "fixed"
+            },
+            {
+              "level": 5,
+              "method": "fixed"
+            },
+            {
+              "level": 6,
+              "method": "fixed"
+            },
+            {
+              "level": 7,
+              "method": "fixed"
+            }
+          ]
+        }
+      ],
+      "species": {
+        "speciesId": "halfling",
+        "size": "small"
+      },
+      "background": {
+        "backgroundId": "criminal",
+        "abilityIncreases": {
+          "dex": 2,
+          "con": 1
+        }
+      },
+      "abilities": {
+        "base": {
+          "str": 8,
+          "dex": 15,
+          "con": 14,
+          "int": 12,
+          "wis": 13,
+          "cha": 10
+        },
+        "generation": {
+          "method": "standard-array",
+          "rolls": []
+        }
+      },
+      "choices": [
+        {
+          "source": "class:rogue:1",
+          "choice": "class-skills",
+          "values": [
+            "acrobatics",
+            "insight",
+            "investigation",
+            "perception"
+          ]
+        },
+        {
+          "source": "class:rogue:1",
+          "choice": "rogue-expertise",
+          "values": [
+            "stealth",
+            "perception"
+          ]
+        },
+        {
+          "source": "class:rogue:1",
+          "choice": "thieves-cant-language",
+          "values": [
+            "gnomish"
+          ]
+        },
+        {
+          "source": "class:rogue:1",
+          "choice": "rogue-weapon-mastery",
+          "values": [
+            "shortsword",
+            "shortbow"
+          ]
+        },
+        {
+          "source": "class:rogue:4",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:rogue:6",
+          "choice": "rogue-expertise",
+          "values": [
+            "sleight-of-hand",
+            "acrobatics"
+          ]
+        },
+        {
+          "source": "class:rogue:4>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "dex": 1,
+            "wis": 1
+          }
+        }
+      ],
+      "spells": [],
+      "hp": {
+        "current": 12,
+        "temp": 0
+      },
+      "deathSaves": {
+        "successes": 0,
+        "failures": 0
+      },
+      "hitDiceSpent": {},
+      "slotsExpended": {},
+      "pactSlotsExpended": 0,
+      "resourcesUsed": {},
+      "conditions": [],
+      "exhaustion": 0,
+      "concentration": null,
+      "toggles": {},
+      "inventory": [
+        {
+          "id": "audit-B-1",
+          "name": "Leather Armor",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:leather-armor",
+          "weight": 0,
+          "worn": true
+        },
+        {
+          "id": "audit-B-2",
+          "name": "Shortsword",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:shortsword",
+          "weight": 0
+        },
+        {
+          "id": "audit-B-3",
+          "name": "Dagger",
+          "description": "",
+          "quantity": 2,
+          "tags": [],
+          "itemId": "equipment:dagger",
+          "weight": 0
+        },
+        {
+          "id": "audit-B-4",
+          "name": "Shortbow",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:shortbow",
+          "weight": 0
+        },
+        {
+          "id": "audit-B-5",
+          "name": "Arrows",
+          "description": "",
+          "quantity": 20,
+          "tags": [],
+          "itemId": "equipment:arrows",
+          "weight": 0
+        },
+        {
+          "id": "audit-B-6",
+          "name": "Thieves’ Tools",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:thieves-tools",
+          "weight": 0
+        }
+      ],
+      "coins": {
+        "cp": 0,
+        "sp": 0,
+        "ep": 0,
+        "gp": 18,
+        "pp": 0
+      },
+      "heroicInspiration": true,
+      "levelling": {
+        "mode": "milestone",
+        "xp": 0
+      },
+      "quickBar": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "companions": [],
+      "details": {
+        "alignment": "Lawful Good",
+        "languages": [
+          "common",
+          "halfling",
+          "elvish",
+          "thieves-cant",
+          "gnomish"
+        ],
+        "appearance": ""
+      },
+      "creation": {
+        "route": "level-1",
+        "complete": true
+      },
+      "notes": ""
+    }
+  ]
+}

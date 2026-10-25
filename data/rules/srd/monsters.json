@@ -1,0 +1,1638 @@
+{
+  "meta": {
+    "dataVersion": "0.1.0",
+    "extractedOn": "2026-10-22",
+    "complete": false,
+    "tier": "srd",
+    "textPolicy": "srd-verbatim",
+    "attribution": "This work includes material from the System Reference Document 5.2.1 (\"SRD 5.2.1\") by Wizards of the Coast LLC, available at https://www.dndbeyond.com/srd. The SRD 5.2.1 is licensed under the Creative Commons Attribution 4.0 International License, available at https://creativecommons.org/licenses/by/4.0/legalcode.",
+    "notes": "The 90 Beasts of the SRD's Animals (pp.344-364), with what Wild Shape's Known Forms choose by (SRD p.42): type, Challenge Rating and Speed. Not here: the rest of each stat block (abilities, traits, actions), wanted for companions (M2); the Animals section's non-Beasts (Flying Snake, Giant Eagle, Giant Elk, Giant Owl, Giant Vulture); and Monsters A-Z (pp.254-343). Built by passes/2026-10-22-beasts.py from two engines; see the extraction note of 2026-10-22."
+  },
+  "monsters": [
+    {
+      "id": "allosaurus",
+      "name": "Allosaurus",
+      "size": "large",
+      "creatureType": "beast",
+      "subtype": "Dinosaur",
+      "alignment": "Unaligned",
+      "cr": 2,
+      "speed": {
+        "walk": 60
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Allosaurus",
+        "page": 344
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "ankylosaurus",
+      "name": "Ankylosaurus",
+      "size": "huge",
+      "creatureType": "beast",
+      "subtype": "Dinosaur",
+      "alignment": "Unaligned",
+      "cr": 3,
+      "speed": {
+        "walk": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Ankylosaurus",
+        "page": 344
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "ape",
+      "name": "Ape",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.5,
+      "speed": {
+        "walk": 30,
+        "climb": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Ape",
+        "page": 344
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "archelon",
+      "name": "Archelon",
+      "size": "huge",
+      "creatureType": "beast",
+      "subtype": "Dinosaur",
+      "alignment": "Unaligned",
+      "cr": 4,
+      "speed": {
+        "walk": 20,
+        "swim": 80
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Archelon",
+        "page": 344
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "baboon",
+      "name": "Baboon",
+      "size": "small",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 30,
+        "climb": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Baboon",
+        "page": 345
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "badger",
+      "name": "Badger",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 20,
+        "burrow": 5
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Badger",
+        "page": 345
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "bat",
+      "name": "Bat",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 5,
+        "fly": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Bat",
+        "page": 345
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "black-bear",
+      "name": "Black Bear",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.5,
+      "speed": {
+        "walk": 30,
+        "climb": 30,
+        "swim": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Black Bear",
+        "page": 345
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "blood-hawk",
+      "name": "Blood Hawk",
+      "size": "small",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.125,
+      "speed": {
+        "walk": 10,
+        "fly": 60
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Blood Hawk",
+        "page": 345
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "boar",
+      "name": "Boar",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Boar",
+        "page": 346
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "brown-bear",
+      "name": "Brown Bear",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 1,
+      "speed": {
+        "walk": 40,
+        "climb": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Brown Bear",
+        "page": 346
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "camel",
+      "name": "Camel",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.125,
+      "speed": {
+        "walk": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Camel",
+        "page": 346
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "cat",
+      "name": "Cat",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 40,
+        "climb": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Cat",
+        "page": 346
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "constrictor-snake",
+      "name": "Constrictor Snake",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 30,
+        "swim": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Constrictor Snake",
+        "page": 346
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "crab",
+      "name": "Crab",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 20,
+        "swim": 20
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Crab",
+        "page": 347
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "crocodile",
+      "name": "Crocodile",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.5,
+      "speed": {
+        "walk": 20,
+        "swim": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Crocodile",
+        "page": 347
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "deer",
+      "name": "Deer",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Deer",
+        "page": 347
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "dire-wolf",
+      "name": "Dire Wolf",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 1,
+      "speed": {
+        "walk": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Dire Wolf",
+        "page": 347
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "draft-horse",
+      "name": "Draft Horse",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Draft Horse",
+        "page": 347
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "eagle",
+      "name": "Eagle",
+      "size": "small",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 10,
+        "fly": 60
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Eagle",
+        "page": 348
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "elephant",
+      "name": "Elephant",
+      "size": "huge",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 4,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Elephant",
+        "page": 348
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "elk",
+      "name": "Elk",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Elk",
+        "page": 348
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "frog",
+      "name": "Frog",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 20,
+        "swim": 20
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Frog",
+        "page": 348
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-ape",
+      "name": "Giant Ape",
+      "size": "huge",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 7,
+      "speed": {
+        "walk": 40,
+        "climb": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Ape",
+        "page": 349
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-badger",
+      "name": "Giant Badger",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 30,
+        "burrow": 10
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Badger",
+        "page": 349
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-bat",
+      "name": "Giant Bat",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 10,
+        "fly": 60
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Bat",
+        "page": 349
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-boar",
+      "name": "Giant Boar",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 2,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Boar",
+        "page": 349
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-centipede",
+      "name": "Giant Centipede",
+      "size": "small",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 30,
+        "climb": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Centipede",
+        "page": 349
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-constrictor-snake",
+      "name": "Giant Constrictor Snake",
+      "size": "huge",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 2,
+      "speed": {
+        "walk": 30,
+        "swim": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Constrictor Snake",
+        "page": 350
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-crab",
+      "name": "Giant Crab",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.125,
+      "speed": {
+        "walk": 30,
+        "swim": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Crab",
+        "page": 350
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-crocodile",
+      "name": "Giant Crocodile",
+      "size": "huge",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 5,
+      "speed": {
+        "walk": 30,
+        "swim": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Crocodile",
+        "page": 350
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-fire-beetle",
+      "name": "Giant Fire Beetle",
+      "size": "small",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 30,
+        "climb": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Fire Beetle",
+        "page": 351
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-frog",
+      "name": "Giant Frog",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 30,
+        "swim": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Frog",
+        "page": 351
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-goat",
+      "name": "Giant Goat",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.5,
+      "speed": {
+        "walk": 40,
+        "climb": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Goat",
+        "page": 351
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-hyena",
+      "name": "Giant Hyena",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 1,
+      "speed": {
+        "walk": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Hyena",
+        "page": 352
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-lizard",
+      "name": "Giant Lizard",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 40,
+        "climb": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Lizard",
+        "page": 352
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-octopus",
+      "name": "Giant Octopus",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 1,
+      "speed": {
+        "walk": 10,
+        "swim": 60
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Octopus",
+        "page": 352
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-rat",
+      "name": "Giant Rat",
+      "size": "small",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.125,
+      "speed": {
+        "walk": 30,
+        "climb": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Rat",
+        "page": 353
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-scorpion",
+      "name": "Giant Scorpion",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 3,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Scorpion",
+        "page": 353
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-seahorse",
+      "name": "Giant Seahorse",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.5,
+      "speed": {
+        "walk": 5,
+        "swim": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Seahorse",
+        "page": 353
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-shark",
+      "name": "Giant Shark",
+      "size": "huge",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 5,
+      "speed": {
+        "walk": 5,
+        "swim": 60
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Shark",
+        "page": 353
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-spider",
+      "name": "Giant Spider",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 1,
+      "speed": {
+        "walk": 30,
+        "climb": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Spider",
+        "page": 353
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-toad",
+      "name": "Giant Toad",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 1,
+      "speed": {
+        "walk": 30,
+        "swim": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Toad",
+        "page": 354
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-venomous-snake",
+      "name": "Giant Venomous Snake",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 40,
+        "swim": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Venomous Snake",
+        "page": 354
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-wasp",
+      "name": "Giant Wasp",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.5,
+      "speed": {
+        "walk": 10,
+        "fly": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Wasp",
+        "page": 354
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-weasel",
+      "name": "Giant Weasel",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.125,
+      "speed": {
+        "walk": 40,
+        "climb": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Weasel",
+        "page": 355
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "giant-wolf-spider",
+      "name": "Giant Wolf Spider",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 40,
+        "climb": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Giant Wolf Spider",
+        "page": 355
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "goat",
+      "name": "Goat",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 40,
+        "climb": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Goat",
+        "page": 355
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "hawk",
+      "name": "Hawk",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 10,
+        "fly": 60
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Hawk",
+        "page": 355
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "hippopotamus",
+      "name": "Hippopotamus",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 4,
+      "speed": {
+        "walk": 30,
+        "swim": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Hippopotamus",
+        "page": 355
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "hunter-shark",
+      "name": "Hunter Shark",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 2,
+      "speed": {
+        "walk": 5,
+        "swim": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Hunter Shark",
+        "page": 356
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "hyena",
+      "name": "Hyena",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Hyena",
+        "page": 356
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "jackal",
+      "name": "Jackal",
+      "size": "small",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Jackal",
+        "page": 356
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "killer-whale",
+      "name": "Killer Whale",
+      "size": "huge",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 3,
+      "speed": {
+        "walk": 5,
+        "swim": 60
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Killer Whale",
+        "page": 356
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "lion",
+      "name": "Lion",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 1,
+      "speed": {
+        "walk": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Lion",
+        "page": 356
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "lizard",
+      "name": "Lizard",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 20,
+        "climb": 20
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Lizard",
+        "page": 357
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "mammoth",
+      "name": "Mammoth",
+      "size": "huge",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 6,
+      "speed": {
+        "walk": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Mammoth",
+        "page": 357
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "mastiff",
+      "name": "Mastiff",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.125,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Mastiff",
+        "page": 357
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "mule",
+      "name": "Mule",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.125,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Mule",
+        "page": 357
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "octopus",
+      "name": "Octopus",
+      "size": "small",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 5,
+        "swim": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Octopus",
+        "page": 357
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "owl",
+      "name": "Owl",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 5,
+        "fly": 60
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Owl",
+        "page": 358
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "panther",
+      "name": "Panther",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 50,
+        "climb": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Panther",
+        "page": 358
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "piranha",
+      "name": "Piranha",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 5,
+        "swim": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Piranha",
+        "page": 358
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "plesiosaurus",
+      "name": "Plesiosaurus",
+      "size": "large",
+      "creatureType": "beast",
+      "subtype": "Dinosaur",
+      "alignment": "Unaligned",
+      "cr": 2,
+      "speed": {
+        "walk": 20,
+        "swim": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Plesiosaurus",
+        "page": 358
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "polar-bear",
+      "name": "Polar Bear",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 2,
+      "speed": {
+        "walk": 40,
+        "swim": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Polar Bear",
+        "page": 359
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "pony",
+      "name": "Pony",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.125,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Pony",
+        "page": 359
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "pteranodon",
+      "name": "Pteranodon",
+      "size": "medium",
+      "creatureType": "beast",
+      "subtype": "Dinosaur",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 10,
+        "fly": 60
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Pteranodon",
+        "page": 359
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "rat",
+      "name": "Rat",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 20,
+        "climb": 20
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Rat",
+        "page": 359
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "raven",
+      "name": "Raven",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 10,
+        "fly": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Raven",
+        "page": 359
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "reef-shark",
+      "name": "Reef Shark",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.5,
+      "speed": {
+        "walk": 5,
+        "swim": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Reef Shark",
+        "page": 360
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "rhinoceros",
+      "name": "Rhinoceros",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 2,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Rhinoceros",
+        "page": 360
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "riding-horse",
+      "name": "Riding Horse",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 60
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Riding Horse",
+        "page": 360
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "saber-toothed-tiger",
+      "name": "Saber-Toothed Tiger",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 2,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Saber-Toothed Tiger",
+        "page": 360
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "scorpion",
+      "name": "Scorpion",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 10
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Scorpion",
+        "page": 360
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "seahorse",
+      "name": "Seahorse",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 5,
+        "swim": 20
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Seahorse",
+        "page": 361
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "spider",
+      "name": "Spider",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 20,
+        "climb": 20
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Spider",
+        "page": 361
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "swarm-of-bats",
+      "name": "Swarm of Bats",
+      "size": "large",
+      "creatureType": "beast",
+      "swarm": {
+        "of": "tiny"
+      },
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 5,
+        "fly": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Swarm of Bats",
+        "page": 361
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "swarm-of-insects",
+      "name": "Swarm of Insects",
+      "size": "medium",
+      "creatureType": "beast",
+      "swarm": {
+        "of": "tiny"
+      },
+      "alignment": "Unaligned",
+      "cr": 0.5,
+      "speed": {
+        "walk": 20,
+        "either": {
+          "modes": [
+            "climb",
+            "fly"
+          ],
+          "feet": 20,
+          "printed": "Climb or Fly 20 ft. (GM’s choice)"
+        }
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Swarm of Insects",
+        "page": 361
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "swarm-of-piranhas",
+      "name": "Swarm of Piranhas",
+      "size": "medium",
+      "creatureType": "beast",
+      "swarm": {
+        "of": "tiny"
+      },
+      "alignment": "Unaligned",
+      "cr": 1,
+      "speed": {
+        "walk": 5,
+        "swim": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Swarm of Piranhas",
+        "page": 362
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "swarm-of-rats",
+      "name": "Swarm of Rats",
+      "size": "medium",
+      "creatureType": "beast",
+      "swarm": {
+        "of": "tiny"
+      },
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 30,
+        "climb": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Swarm of Rats",
+        "page": 362
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "swarm-of-ravens",
+      "name": "Swarm of Ravens",
+      "size": "medium",
+      "creatureType": "beast",
+      "swarm": {
+        "of": "tiny"
+      },
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 10,
+        "fly": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Swarm of Ravens",
+        "page": 362
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "swarm-of-venomous-snakes",
+      "name": "Swarm of Venomous Snakes",
+      "size": "medium",
+      "creatureType": "beast",
+      "swarm": {
+        "of": "tiny"
+      },
+      "alignment": "Unaligned",
+      "cr": 2,
+      "speed": {
+        "walk": 30,
+        "swim": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Swarm of Venomous Snakes",
+        "page": 362
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "tiger",
+      "name": "Tiger",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 1,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Tiger",
+        "page": 363
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "triceratops",
+      "name": "Triceratops",
+      "size": "huge",
+      "creatureType": "beast",
+      "subtype": "Dinosaur",
+      "alignment": "Unaligned",
+      "cr": 5,
+      "speed": {
+        "walk": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Triceratops",
+        "page": 363
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "tyrannosaurus-rex",
+      "name": "Tyrannosaurus Rex",
+      "size": "huge",
+      "creatureType": "beast",
+      "subtype": "Dinosaur",
+      "alignment": "Unaligned",
+      "cr": 8,
+      "speed": {
+        "walk": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Tyrannosaurus Rex",
+        "page": 363
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "venomous-snake",
+      "name": "Venomous Snake",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.125,
+      "speed": {
+        "walk": 30,
+        "swim": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Venomous Snake",
+        "page": 363
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "vulture",
+      "name": "Vulture",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 10,
+        "fly": 50
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Vulture",
+        "page": 363
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "warhorse",
+      "name": "Warhorse",
+      "size": "large",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.5,
+      "speed": {
+        "walk": 60
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Warhorse",
+        "page": 364
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "weasel",
+      "name": "Weasel",
+      "size": "tiny",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0,
+      "speed": {
+        "walk": 30,
+        "climb": 30
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Weasel",
+        "page": 364
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "wolf",
+      "name": "Wolf",
+      "size": "medium",
+      "creatureType": "beast",
+      "alignment": "Unaligned",
+      "cr": 0.25,
+      "speed": {
+        "walk": 40
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Monsters > Animals > Wolf",
+        "page": 364
+      },
+      "confidence": "printed"
+    }
+  ]
+}

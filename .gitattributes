@@ -1,0 +1,7 @@
+# Text files are checked out with LF line endings on every machine, as
+# Cloudflare's Linux build checks them out, so a build here names its files
+# as Cloudflare's does. Git for Windows' default (core.autocrlf true) checks
+# them out with CRLF, and a fresh worktree of 25f07de then built 14 of its
+# 39 assets under other names. Binary files, the icons and fonts, are told
+# apart by their content and left alone.
+* text=auto eol=lf

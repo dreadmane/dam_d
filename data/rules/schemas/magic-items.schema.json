@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "magic-items.schema.json",
+  "title": "magic-items.json: magic items",
+  "description": "Each magic item's category, rarity, attunement, text, and what the sheet applies while it is worn or wielded (and attuned, where attunement is required). An item printed as a family (Armor, +1, +2, or +3; Potion of Healing's grades) is one record per variant, each naming its family, so a character holds one exact item.",
+  "type": "object",
+  "required": ["meta", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": { "$ref": "common.schema.json#/$defs/meta" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "category", "rarity", "attunement", "text", "effects", "source", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string" },
+          "family": { "$ref": "common.schema.json#/$defs/id" },
+          "category": { "enum": ["armor", "potion", "ring", "rod", "scroll", "staff", "wand", "weapon", "wondrous-item"] },
+          "baseItem": { "type": "string", "description": "The printed base: Any Simple or Martial Weapon, Plate Armor, a ref where it names one item." },
+          "rarity": { "enum": ["common", "uncommon", "rare", "very-rare", "legendary", "artifact", "varies"] },
+          "attunement": {
+            "type": "object", "required": ["required"], "additionalProperties": false,
+            "properties": { "required": { "type": "boolean" }, "by": { "type": "string", "description": "by a Wizard, by a Spellcaster, and the like." } }
+          },
+          "text": { "$ref": "common.schema.json#/$defs/text" },
+          "effects": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/effect" } },
+          "charges": {
+            "type": "object", "required": ["max", "text"], "additionalProperties": false,
+            "properties": { "max": { "anyOf": [ { "type": "integer" }, { "$ref": "common.schema.json#/$defs/dice" } ], "description": "Dice where printed so (Nine Lives Stealer: 1d8 + 1 charges, SRD p.233); added 2026-10-18." }, "regain": { "type": "string" }, "recharge": { "$ref": "common.schema.json#/$defs/recharge" }, "text": { "type": "string" } }
+          },
+          "consumable": { "type": "boolean" },
+          "cursed": { "type": "boolean" },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        },
+        "allOf": [ { "if": { "properties": { "confidence": { "not": { "const": "printed" } } } }, "then": { "required": ["note"] } } ]
+      }
+    },
+    "rules": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/rule" } },
+    "ambiguities": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/ambiguity" } }
+  }
+}

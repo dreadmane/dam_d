@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "monsters.schema.json",
+  "title": "monsters.json: creatures a character can become or keep",
+  "description": "Creature stat blocks as far as a character sheet needs them. Today: the Beasts of the SRD's Animals (pp.344-364), with what Wild Shape's Known Forms choose by (SRD p.42: a Beast stat block, its Challenge Rating, whether it has a Fly Speed). The rest of each stat block (abilities, traits, actions) arrives with companions (M2).",
+  "type": "object",
+  "required": ["meta", "monsters"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": { "$ref": "common.schema.json#/$defs/meta" },
+    "monsters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "size", "creatureType", "alignment", "cr", "speed", "source", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string" },
+          "size": { "$ref": "common.schema.json#/$defs/size", "description": "For a swarm, the swarm's own size (Large Swarm of Tiny Beasts: large)." },
+          "creatureType": { "enum": ["beast"], "description": "The creature type of the stat block's type line. Only Beasts so far." },
+          "subtype": { "type": "string", "description": "The type line's parenthesis, as printed: Dinosaur." },
+          "swarm": {
+            "description": "A swarm's type line (Large Swarm of Tiny Beasts): the size of the creatures it is made of.",
+            "type": "object", "required": ["of"], "additionalProperties": false,
+            "properties": { "of": { "$ref": "common.schema.json#/$defs/size" } }
+          },
+          "alignment": { "type": "string", "description": "As printed: Unaligned." },
+          "cr": { "type": "number", "minimum": 0, "description": "Challenge Rating as a number: 1/8 is 0.125, 1/4 is 0.25, 1/2 is 0.5." },
+          "speed": {
+            "type": "object", "required": ["walk"], "additionalProperties": false,
+            "properties": {
+              "walk": { "type": "integer", "minimum": 0 },
+              "burrow": { "type": "integer", "minimum": 0 },
+              "climb": { "type": "integer", "minimum": 0 },
+              "fly": { "type": "integer", "minimum": 0 },
+              "swim": { "type": "integer", "minimum": 0 },
+              "either": {
+                "description": "A speed printed as one of two modes at the GM's choice (Swarm of Insects: 'Climb or Fly 20 ft. (GM's choice)', p.361).",
+                "type": "object", "required": ["modes", "feet", "printed"], "additionalProperties": false,
+                "properties": {
+                  "modes": { "type": "array", "minItems": 2, "items": { "enum": ["burrow", "climb", "fly", "swim"] } },
+                  "feet": { "type": "integer", "minimum": 0 },
+                  "printed": { "type": "string" }
+                }
+              }
+            }
+          },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        },
+        "allOf": [ { "if": { "properties": { "confidence": { "not": { "const": "printed" } } } }, "then": { "required": ["note"] } } ]
+      }
+    },
+    "rules": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/rule" } },
+    "ambiguities": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/ambiguity" } }
+  }
+}

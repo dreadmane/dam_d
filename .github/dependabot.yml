@@ -1,0 +1,27 @@
+# Dependabot's version updates. Its security updates are switched on in the
+# repository's settings and come as soon as an alert does, whatever this
+# says about schedules.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    # Offer only versions at least a week old: a bad or malicious release is
+    # usually caught and pulled within days. Security updates skip this.
+    cooldown:
+      default-days: 7
+    groups:
+      # One pull request a month for every minor and patch update. A major
+      # version stays out of it and comes as its own pull request, to be
+      # taken as a deliberate round of its own.
+      minor-and-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: [minor, patch]
+    ignore:
+      # @types/node's major version follows the Node version the app runs
+      # on, which is chosen deliberately, not by an update. Majors in
+      # general are not ignored: an ignore also stops security updates.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]

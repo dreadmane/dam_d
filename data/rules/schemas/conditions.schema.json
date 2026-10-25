@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "conditions.schema.json",
+  "title": "conditions.json: the 15 conditions",
+  "description": "Each condition's rule text and what the sheet applies of it, in the effect vocabulary. Exhaustion carries its cumulative levels. Other states the Rules Glossary defines (Bloodied, Concentration, Heroic Inspiration) are rules in core.json, not conditions.",
+  "type": "object",
+  "required": ["meta", "conditions"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": { "$ref": "common.schema.json#/$defs/meta" },
+    "conditions": {
+      "type": "array", "minItems": 15, "maxItems": 15,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "text", "effects", "source", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/condition" },
+          "name": { "type": "string" },
+          "text": { "$ref": "common.schema.json#/$defs/text" },
+          "effects": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/effect" } },
+          "includes": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/condition" }, "description": "Conditions this one also imposes (Paralyzed includes Incapacitated)." },
+          "levels": {
+            "description": "Exhaustion only: the cumulative levels. perLevel effects multiply by the level; deathAt is the level that kills.",
+            "type": "object", "required": ["max", "perLevel"], "additionalProperties": false,
+            "properties": {
+              "max": { "type": "integer" },
+              "deathAt": { "type": "integer" },
+              "perLevel": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/effect" } }
+            }
+          },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        },
+        "allOf": [ { "if": { "properties": { "confidence": { "not": { "const": "printed" } } } }, "then": { "required": ["note"] } } ]
+      }
+    },
+    "rules": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/rule" } },
+    "ambiguities": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/ambiguity" } }
+  }
+}

@@ -1,0 +1,287 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "roster-v1.schema.json",
+  "title": "RosterRecord",
+  "description": "A saved roster at schemaVersion 1 (the d-amp-d spec §4.1): one D&D 2024 character plus, from M2, the companions they control. Only choices are stored; every derived value (ability modifiers, saves, skills, AC, max HP, the proficiency bonus, slots, resource maximums) is computed from the rules data. Open to change until M1 ships (the spec §8, D5's U3); frozen once a later version exists, so fixtures at this version keep validating against it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "schemaVersion", "gameDataVersion", "createdAt", "updatedAt", "name", "primaryEntityId", "entities"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "const": 1 },
+    "gameDataVersion": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The rulesVersion of the data snapshot this record was last checked against (data/rules/manifest.json). Bumped only after the player has seen a drift report (§4.2)."
+    },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "name": { "type": "string" },
+    "primaryEntityId": { "type": "string", "minLength": 1 },
+    "entities": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/characterEntity" } }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "description": "A rules-data id (kebab-case). Kept even when the device's data cannot resolve it, and shown as unresolved (§4.2)." },
+    "ability": { "enum": ["str", "dex", "con", "int", "wis", "cha"] },
+    "abilityScores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["str", "dex", "con", "int", "wis", "cha"],
+      "properties": {
+        "str": { "type": "integer", "minimum": 1, "maximum": 30 },
+        "dex": { "type": "integer", "minimum": 1, "maximum": 30 },
+        "con": { "type": "integer", "minimum": 1, "maximum": 30 },
+        "int": { "type": "integer", "minimum": 1, "maximum": 30 },
+        "wis": { "type": "integer", "minimum": 1, "maximum": 30 },
+        "cha": { "type": "integer", "minimum": 1, "maximum": 30 }
+      }
+    },
+    "characterEntity": {
+      "title": "CharacterEntity",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "name", "classes", "species", "background", "abilities", "choices", "spells", "hp", "deathSaves", "hitDiceSpent", "slotsExpended", "pactSlotsExpended", "resourcesUsed", "conditions", "exhaustion", "concentration", "toggles", "inventory", "coins", "heroicInspiration", "levelling", "quickBar", "companions", "details", "creation", "notes"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "const": "character" },
+        "name": { "type": "string" },
+        "classes": {
+          "type": "array",
+          "description": "The character's classes, multiclassing from the start (A2). Empty until a class is chosen. The character level is the sum of their levels.",
+          "items": { "$ref": "#/$defs/classEntry" }
+        },
+        "classOrder": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/id" },
+          "description": "The order classes were taken; the first decides level 1's hit points and saving throws (the Multiclassing rules). Absent with one class or none."
+        },
+        "species": {
+          "anyOf": [{ "type": "null" }, {
+            "type": "object", "additionalProperties": false, "required": ["speciesId"],
+            "properties": {
+              "speciesId": { "$ref": "#/$defs/id" },
+              "size": { "enum": ["small", "medium"], "description": "Where the species lets the player choose." }
+            }
+          }]
+        },
+        "background": {
+          "anyOf": [{ "type": "null" }, {
+            "type": "object", "additionalProperties": false, "required": ["backgroundId", "abilityIncreases"],
+            "properties": {
+              "backgroundId": { "$ref": "#/$defs/id" },
+              "abilityIncreases": {
+                "type": "object", "additionalProperties": false,
+                "properties": { "str": { "type": "integer" }, "dex": { "type": "integer" }, "con": { "type": "integer" }, "int": { "type": "integer" }, "wis": { "type": "integer" }, "cha": { "type": "integer" } },
+                "description": "+2/+1 or +1/+1/+1 among the background's three abilities (the background rules)."
+              }
+            }
+          }]
+        },
+        "abilities": {
+          "type": "object", "additionalProperties": false, "required": ["base", "generation"],
+          "properties": {
+            "base": { "$ref": "#/$defs/abilityScores", "description": "Before the background's increases, feats and effects." },
+            "generation": {
+              "type": "object", "additionalProperties": false, "required": ["method", "rolls"],
+              "properties": {
+                "method": { "enum": ["standard-array", "point-buy", "random", "entered"] },
+                "rolls": { "type": "array", "items": { "type": "integer" } }
+              }
+            }
+          }
+        },
+        "choices": {
+          "type": "array",
+          "description": "Every choice a level, the origin or a feat made (a lineage, a skill, a feat and that feat's own picks), each with where it came from, so changing an earlier choice knows what depends on it. A subclass is not here: it is its class entry's subclassId.",
+          "items": { "$ref": "#/$defs/choice" }
+        },
+        "spells": { "type": "array", "items": { "$ref": "#/$defs/spellEntry" } },
+        "hp": {
+          "type": "object", "additionalProperties": false, "required": ["current", "temp"],
+          "description": "Max HP is derived, never stored.",
+          "properties": { "current": { "type": "integer", "minimum": 0 }, "temp": { "type": "integer", "minimum": 0 } }
+        },
+        "deathSaves": {
+          "type": "object", "additionalProperties": false, "required": ["successes", "failures"],
+          "properties": { "successes": { "type": "integer", "minimum": 0, "maximum": 3 }, "failures": { "type": "integer", "minimum": 0, "maximum": 3 }, "dead": { "type": "boolean" } }
+        },
+        "hitDiceSpent": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 }, "description": "Spent Hit Point Dice by die: { \"d10\": 1 }." },
+        "slotsExpended": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 }, "description": "Expended spell slots by slot level, \"1\" to \"9\"." },
+        "pactSlotsExpended": { "type": "integer", "minimum": 0 },
+        "resourcesUsed": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 }, "description": "Uses spent, by resource id (a class feature's resource effect)." },
+        "conditions": { "type": "array", "items": { "$ref": "#/$defs/condition" } },
+        "exhaustion": { "type": "integer", "minimum": 0, "maximum": 6 },
+        "concentration": {
+          "anyOf": [{ "type": "null" }, { "type": "object", "additionalProperties": false, "required": ["spellId"], "properties": { "spellId": { "$ref": "#/$defs/id" } } }]
+        },
+        "toggles": { "type": "object", "additionalProperties": { "type": "boolean" }, "description": "Ongoing effects switched on from the quick bar (C4), by feature or spell id." },
+        "inventory": { "type": "array", "items": { "$ref": "#/$defs/item" } },
+        "coins": {
+          "type": "object", "additionalProperties": false, "required": ["cp", "sp", "ep", "gp", "pp"],
+          "properties": { "cp": { "type": "integer", "minimum": 0 }, "sp": { "type": "integer", "minimum": 0 }, "ep": { "type": "integer", "minimum": 0 }, "gp": { "type": "integer", "minimum": 0 }, "pp": { "type": "integer", "minimum": 0 } }
+        },
+        "heroicInspiration": { "type": "boolean" },
+        "levelling": {
+          "type": "object", "additionalProperties": false, "required": ["mode", "xp"],
+          "properties": { "mode": { "enum": ["xp", "milestone"] }, "xp": { "type": "integer", "minimum": 0 } }
+        },
+        "quickBar": {
+          "type": "array", "minItems": 8, "maxItems": 10,
+          "description": "The quick bar's slots (C4): eight. A bar saved with ten before 2026-10-19's eight-slot bar still reads, its first eight shown, and is saved as eight when a slot changes.",
+          "items": { "anyOf": [{ "type": "null" }, { "$ref": "#/$defs/quickBarSlot" }] }
+        },
+        "quickBarChosen": {
+          "type": "boolean",
+          "description": "True once the player has changed a slot: the bar is theirs, even with every slot emptied. Absent, an empty bar is suggested from the sheet (2026-10-20: before it, emptying the last slot brought the suggestions back)."
+        },
+        "companions": { "type": "array", "items": { "$ref": "#/$defs/companion" }, "description": "M2. Empty until then." },
+        "details": {
+          "type": "object", "additionalProperties": false, "required": ["alignment", "languages", "appearance"],
+          "properties": {
+            "alignment": { "type": "string" },
+            "languages": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+            "appearance": { "type": "string" }
+          }
+        },
+        "creation": {
+          "type": "object", "additionalProperties": false, "required": ["route", "complete"],
+          "properties": {
+            "route": { "enum": ["any-level", "level-1"] },
+            "complete": { "type": "boolean" },
+            "equipment": {
+              "type": "object", "additionalProperties": false,
+              "description": "The starting equipment packages the build picked, by the class's and the background's option ids (a, b, c). What they added is tagged 'starting equipment' in the inventory.",
+              "properties": { "class": { "type": "string" }, "background": { "type": "string" } }
+            }
+          }
+        },
+        "notes": { "type": "string", "description": "The Scratch pad, as typed." },
+        "portrait": { "$ref": "#/$defs/portrait" },
+        "legacy": { "type": "object", "description": "Fields a migration could not map, kept rather than dropped (§4.3).", "additionalProperties": true }
+      }
+    },
+    "classEntry": {
+      "type": "object", "additionalProperties": false, "required": ["classId", "level", "hp"],
+      "properties": {
+        "classId": { "$ref": "#/$defs/id" },
+        "subclassId": { "$ref": "#/$defs/id" },
+        "level": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "hp": {
+          "type": "array",
+          "description": "Each level of this class's hit points: the fixed value or a roll (C3). The first class's level 1 takes the die's maximum.",
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["level", "method"],
+            "properties": {
+              "level": { "type": "integer", "minimum": 1, "maximum": 20 },
+              "method": { "enum": ["max", "fixed", "rolled"] },
+              "value": { "type": "integer", "minimum": 1, "description": "The roll, where method is rolled." }
+            }
+          }
+        }
+      }
+    },
+    "choice": {
+      "type": "object", "additionalProperties": false, "required": ["source", "choice", "values"],
+      "properties": {
+        "source": { "type": "string", "minLength": 1, "description": "What made the choice, as a path: class:fighter:4 (a class level), species:elf, background:sage, and a feat taken there after >, as class:fighter:4>feat:skilled or background:acolyte>feat:magic-initiate. Unique per choice, so a repeatable feat taken twice keeps its picks apart." },
+        "choice": { "$ref": "#/$defs/id", "description": "The rules data's choice: a choice effect's id (weapon-mastery), a lineage's trait id (elven-lineage), class-skills for a class's skill proficiencies, or ability-increase for an ability increase the player places." },
+        "values": { "type": "array", "items": { "type": "string" }, "description": "What was picked, as many as the choice allows: rules ids (skill, feat, option, weapon kind), or a feat's id where the choice grants a feat." },
+        "increases": {
+          "type": "object", "additionalProperties": false,
+          "properties": { "str": { "type": "integer" }, "dex": { "type": "integer" }, "con": { "type": "integer" }, "int": { "type": "integer" }, "wis": { "type": "integer" }, "cha": { "type": "integer" } },
+          "description": "For ability-increase: where the increase went, as the effect's patterns allow ({ str: 2 }, or { str: 1, con: 1 })."
+        }
+      }
+    },
+    "spellEntry": {
+      "type": "object", "additionalProperties": false, "required": ["spellId", "source", "prepared"],
+      "properties": {
+        "spellId": { "$ref": "#/$defs/id" },
+        "classId": { "$ref": "#/$defs/id" },
+        "source": { "type": "string", "minLength": 1, "description": "class:wizard, species:tiefling, feat:magic-initiate." },
+        "prepared": { "type": "boolean" }
+      }
+    },
+    "condition": {
+      "type": "object", "additionalProperties": false, "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "conditionId": { "$ref": "#/$defs/id", "description": "One of the 15 conditions; absent for the player's own effect." },
+        "custom": {
+          "type": "object", "additionalProperties": false, "required": ["name", "text"],
+          "properties": { "name": { "type": "string" }, "text": { "type": "string" } }
+        },
+        "duration": { "type": "string" }
+      }
+    },
+    "item": {
+      "title": "Item",
+      "description": "The flat item form's stored fields (Crawler Interface's §3.2, with D&D's fields): what an item does is copied onto it when added from the catalogue, so custom and catalogue items are one kind.",
+      "type": "object", "additionalProperties": false, "required": ["id", "name", "description", "quantity", "tags"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "quantity": { "type": "integer", "minimum": 0 },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "itemId": { "type": "string", "minLength": 1, "description": "The catalogue record it was added from, equipment:<id> or magic-items:<id>. Absent on a custom item." },
+        "baseItemId": { "type": "string", "pattern": "^equipment:[a-z0-9-]+$", "description": "The mundane weapon or armor a magic one is made from (Weapon, +1 as a Longsword: equipment:longsword), for its attack or its Armor Class. Only on a magic item whose base is a weapon or armor." },
+        "weight": { "type": "number", "minimum": 0, "description": "Pounds, each." },
+        "worn": { "type": "boolean", "description": "Worn or held: armor and a Shield count toward Armor Class, and an item's effects apply, only while worn." },
+        "attuned": { "type": "boolean", "description": "Attuned to it (Rules Glossary, Attunement): an item that requires Attunement applies its effects only while attuned and worn." },
+        "countsAs": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^[a-z0-9-]+$" }, "description": "Sets of weapons the DM has ruled this weapon into for this character, by the set's id in the rules data (an attackOption's id: monk-weapons, a Monk weapon for Martial Arts). Added 2026-10-25 for the user's Frye, whose DM awarded him a sword and a katana that count as Monk weapons." },
+        "effects": { "type": "array", "items": { "type": "object" }, "description": "Effects in the rules data's vocabulary (dnd-rules common.schema.json, effect), copied when added. M1 validates their shape." },
+        "lastUsedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "quickBarSlot": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "ref"],
+      "properties": {
+        "kind": { "enum": ["attack", "spell", "item", "resource", "toggle"] },
+        "ref": { "type": "string", "minLength": 1, "description": "The item's id, or the rules id of the spell, resource or toggle." }
+      }
+    },
+    "companion": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name"],
+      "description": "M2 fills this in (C5). Only its identity is fixed now.",
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string" },
+        "portrait": { "$ref": "#/$defs/portrait" }
+      }
+    },
+    "portrait": {
+      "title": "Portrait",
+      "type": "object",
+      "description": "An optional photo of the character or a companion, shrunk on the player's device to at most 1024 px on its long side and kept whole; crop says which square of it is shown, so the framing can change without a new upload. Carried over from Crawler Interface unchanged.",
+      "additionalProperties": false,
+      "required": ["image", "width", "height", "crop"],
+      "properties": {
+        "image": {
+          "type": "string",
+          "description": "The photo as a data URL. Only raster types a browser draws without running anything, and capped, so an imported file cannot carry something else or something huge.",
+          "pattern": "^data:image/(webp|jpeg|png);base64,[A-Za-z0-9+/]+={0,2}$",
+          "maxLength": 2000000
+        },
+        "thumbnail": {
+          "type": "string",
+          "description": "The framed square, rendered small for the character list, which reads summaries rather than whole records. Derived from image and crop.",
+          "pattern": "^data:image/(webp|jpeg|png);base64,[A-Za-z0-9+/]+={0,2}$",
+          "maxLength": 100000
+        },
+        "width": { "type": "integer", "minimum": 1, "maximum": 4096 },
+        "height": { "type": "integer", "minimum": 1, "maximum": 4096 },
+        "crop": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["x", "y", "zoom"],
+          "properties": {
+            "x": { "type": "number", "minimum": 0, "maximum": 1 },
+            "y": { "type": "number", "minimum": 0, "maximum": 1 },
+            "zoom": { "type": "number", "minimum": 1, "maximum": 4 }
+          }
+        }
+      }
+    }
+  }
+}

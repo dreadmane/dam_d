@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "backgrounds.schema.json",
+  "title": "backgrounds.json: the backgrounds",
+  "description": "Each background's three abilities (+2/+1 or +1/+1/+1, the rule in rules), Origin feat, two skills, tool, and equipment choice.",
+  "type": "object",
+  "required": ["meta", "backgrounds"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": { "$ref": "common.schema.json#/$defs/meta" },
+    "backgrounds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "abilities", "feat", "skills", "tool", "equipment", "source", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string" },
+          "abilities": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "common.schema.json#/$defs/ability" } },
+          "feat": {
+            "type": "object", "required": ["feat"], "additionalProperties": false,
+            "properties": { "feat": { "$ref": "common.schema.json#/$defs/ref" }, "choice": { "type": "string", "description": "A printed choice inside the feat: Magic Initiate (Cleric)." }, "text": { "type": "string" } }
+          },
+          "skills": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "common.schema.json#/$defs/skill" } },
+          "tool": {
+            "type": "object", "required": ["text"], "additionalProperties": false,
+            "properties": { "id": { "$ref": "common.schema.json#/$defs/id" }, "choice": { "$ref": "common.schema.json#/$defs/effChoice" }, "text": { "type": "string" } }
+          },
+          "equipment": {
+            "type": "array", "minItems": 1,
+            "items": {
+              "type": "object", "required": ["id", "text"], "additionalProperties": false,
+              "properties": {
+                "id": { "enum": ["a", "b"] },
+                "text": { "type": "string" },
+                "items": { "type": "array", "items": { "type": "object", "required": ["item", "quantity"], "additionalProperties": false, "properties": { "item": { "$ref": "common.schema.json#/$defs/ref" }, "quantity": { "type": "integer", "minimum": 1 }, "note": { "type": "string" } } } },
+                "gp": { "type": "integer", "minimum": 0 }
+              }
+            }
+          },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        },
+        "allOf": [ { "if": { "properties": { "confidence": { "not": { "const": "printed" } } } }, "then": { "required": ["note"] } } ]
+      }
+    },
+    "rules": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/rule" } },
+    "ambiguities": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/ambiguity" } }
+  }
+}

@@ -1,0 +1,502 @@
+{
+  "meta": {
+    "dataVersion": "0.1.0",
+    "extractedOn": "2026-10-18",
+    "complete": true,
+    "tier": "srd",
+    "textPolicy": "srd-verbatim",
+    "attribution": "This work includes material from the System Reference Document 5.2.1 (\"SRD 5.2.1\") by Wizards of the Coast LLC, available at https://www.dndbeyond.com/srd. The SRD 5.2.1 is licensed under the Creative Commons Attribution 4.0 International License, available at https://creativecommons.org/licenses/by/4.0/legalcode.",
+    "notes": "The 15 conditions from the Rules Glossary (pp.177-191), each with its text and its effects in the common vocabulary, and the glossary's Condition entry (p.179). Exhaustion's per-level effects are under levels: the d20 penalty (−2 per level) and the Speed loss (−5 feet per level, on speed:all because the glossary's Speed entry says a change to your Speed changes every special speed by the same amount). Speed 0, automatic failures, automatic Critical Hits and the like are text effects, since the vocabulary has no node for them. Bloodied, Concentration and Heroic Inspiration are core.json rules."
+  },
+  "conditions": [
+    {
+      "id": "blinded",
+      "name": "Blinded",
+      "text": "While you have the Blinded condition, you experience the following effects.\n\n**Can’t See.** You can’t see and automatically fail any ability check that requires sight.\n\n**Attacks Affected.** Attack rolls against you have Advantage, and your attack rolls have Disadvantage.",
+      "effects": [
+        {
+          "type": "text",
+          "summary": "Can’t see; automatically fail any ability check that requires sight."
+        },
+        {
+          "type": "advantage",
+          "mode": "advantage",
+          "on": "attack:all",
+          "who": "attackers"
+        },
+        {
+          "type": "advantage",
+          "mode": "disadvantage",
+          "on": "attack:all",
+          "who": "self"
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Blinded [Condition]",
+        "page": 177
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "charmed",
+      "name": "Charmed",
+      "text": "While you have the Charmed condition, you experience the following effects.\n\n**Can’t Harm the Charmer.** You can’t attack the charmer or target the charmer with damaging abilities or magical effects.\n\n**Social Advantage.** The charmer has Advantage on any ability check to interact with you socially.",
+      "effects": [
+        {
+          "type": "text",
+          "summary": "Can’t attack the charmer or target it with damaging abilities or magical effects."
+        },
+        {
+          "type": "text",
+          "summary": "The charmer has Advantage on any ability check to interact with you socially."
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Charmed [Condition]",
+        "page": 178
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "deafened",
+      "name": "Deafened",
+      "text": "While you have the Deafened condition, you experience the following effect.\n\n**Can’t Hear.** You can’t hear and automatically fail any ability check that requires hearing.",
+      "effects": [
+        {
+          "type": "text",
+          "summary": "Can’t hear; automatically fail any ability check that requires hearing."
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Deafened [Condition]",
+        "page": 181
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "exhaustion",
+      "name": "Exhaustion",
+      "text": "While you have the Exhaustion condition, you experience the following effects.\n\n**Exhaustion Levels.** This condition is cumulative. Each time you receive it, you gain 1 Exhaustion level. You die if your Exhaustion level is 6.\n\n**D20 Tests Affected.** When you make a D20 Test, the roll is reduced by 2 times your Exhaustion level.\n\n**Speed Reduced.** Your Speed is reduced by a number of feet equal to 5 times your Exhaustion level.\n\n**Removing Exhaustion Levels.** Finishing a Long Rest removes 1 of your Exhaustion levels. When your Exhaustion level reaches 0, the condition ends.",
+      "effects": [
+        {
+          "type": "text",
+          "summary": "Cumulative: each time you receive it, you gain 1 Exhaustion level. Finishing a Long Rest removes 1 level; at level 0 the condition ends."
+        }
+      ],
+      "levels": {
+        "max": 6,
+        "deathAt": 6,
+        "perLevel": [
+          {
+            "type": "bonus",
+            "target": "d20:all",
+            "value": -2
+          },
+          {
+            "type": "bonus",
+            "target": "speed:all",
+            "value": -5
+          }
+        ]
+      },
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Exhaustion [Condition]",
+        "page": 181
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "frightened",
+      "name": "Frightened",
+      "text": "While you have the Frightened condition, you experience the following effects.\n\n**Ability Checks and Attacks Affected.** You have Disadvantage on ability checks and attack rolls while the source of fear is within line of sight.\n\n**Can’t Approach.** You can’t willingly move closer to the source of fear.",
+      "effects": [
+        {
+          "type": "advantage",
+          "mode": "disadvantage",
+          "on": "check:all",
+          "who": "self",
+          "when": "while the source of fear is within line of sight"
+        },
+        {
+          "type": "advantage",
+          "mode": "disadvantage",
+          "on": "attack:all",
+          "who": "self",
+          "when": "while the source of fear is within line of sight"
+        },
+        {
+          "type": "text",
+          "summary": "Can’t willingly move closer to the source of fear."
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Frightened [Condition]",
+        "page": 182
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "grappled",
+      "name": "Grappled",
+      "text": "While you have the Grappled condition, you experience the following effects.\n\n**Speed 0.** Your Speed is 0 and can’t increase.\n\n**Attacks Affected.** You have Disadvantage on attack rolls against any target other than the grappler.\n\n**Movable.** The grappler can drag or carry you when it moves, but every foot of movement costs it 1 extra foot unless you are Tiny or two or more sizes smaller than it.",
+      "effects": [
+        {
+          "type": "text",
+          "summary": "Speed 0 and can’t increase."
+        },
+        {
+          "type": "advantage",
+          "mode": "disadvantage",
+          "on": "attack:all",
+          "who": "self",
+          "when": "against any target other than the grappler"
+        },
+        {
+          "type": "text",
+          "summary": "The grappler can drag or carry you; each foot it moves costs 1 extra foot unless you are Tiny or two or more sizes smaller than it."
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Grappled [Condition]",
+        "page": 182
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "incapacitated",
+      "name": "Incapacitated",
+      "text": "While you have the Incapacitated condition, you experience the following effects.\n\n**Inactive.** You can’t take any action, Bonus Action, or Reaction.\n\n**No Concentration.** Your Concentration is broken.\n\n**Speechless.** You can’t speak.\n\n**Surprised.** If you’re Incapacitated when you roll Initiative, you have Disadvantage on the roll.",
+      "effects": [
+        {
+          "type": "text",
+          "summary": "Can’t take any action, Bonus Action, or Reaction."
+        },
+        {
+          "type": "text",
+          "summary": "Concentration is broken."
+        },
+        {
+          "type": "text",
+          "summary": "Can’t speak."
+        },
+        {
+          "type": "advantage",
+          "mode": "disadvantage",
+          "on": "initiative",
+          "who": "self",
+          "when": "if you’re Incapacitated when you roll Initiative"
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Incapacitated [Condition]",
+        "page": 184
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "invisible",
+      "name": "Invisible",
+      "text": "While you have the Invisible condition, you experience the following effects.\n\n**Surprise.** If you’re Invisible when you roll Initiative, you have Advantage on the roll.\n\n**Concealed.** You aren’t affected by any effect that requires its target to be seen unless the effect’s creator can somehow see you. Any equipment you are wearing or carrying is also concealed.\n\n**Attacks Affected.** Attack rolls against you have Disadvantage, and your attack rolls have Advantage. If a creature can somehow see you, you don’t gain this benefit against that creature.",
+      "effects": [
+        {
+          "type": "advantage",
+          "mode": "advantage",
+          "on": "initiative",
+          "who": "self",
+          "when": "if you’re Invisible when you roll Initiative"
+        },
+        {
+          "type": "text",
+          "summary": "Not affected by any effect that requires its target to be seen unless the effect’s creator can somehow see you; equipment worn or carried is also concealed."
+        },
+        {
+          "type": "advantage",
+          "mode": "disadvantage",
+          "on": "attack:all",
+          "who": "attackers",
+          "when": "unless the attacker can somehow see you"
+        },
+        {
+          "type": "advantage",
+          "mode": "advantage",
+          "on": "attack:all",
+          "who": "self",
+          "when": "against a creature that can’t somehow see you"
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Invisible [Condition]",
+        "page": 184
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "paralyzed",
+      "name": "Paralyzed",
+      "text": "While you have the Paralyzed condition, you experience the following effects.\n\n**Incapacitated.** You have the Incapacitated condition.\n\n**Speed 0.** Your Speed is 0 and can’t increase.\n\n**Saving Throws Affected.** You automatically fail Strength and Dexterity saving throws.\n\n**Attacks Affected.** Attack rolls against you have Advantage.\n\n**Automatic Critical Hits.** Any attack roll that hits you is a Critical Hit if the attacker is within 5 feet of you.",
+      "effects": [
+        {
+          "type": "text",
+          "summary": "Speed 0 and can’t increase."
+        },
+        {
+          "type": "text",
+          "summary": "Automatically fail Strength and Dexterity saving throws."
+        },
+        {
+          "type": "advantage",
+          "mode": "advantage",
+          "on": "attack:all",
+          "who": "attackers"
+        },
+        {
+          "type": "text",
+          "summary": "Any attack roll that hits you is a Critical Hit if the attacker is within 5 feet of you."
+        }
+      ],
+      "includes": [
+        "incapacitated"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Paralyzed [Condition]",
+        "page": 186
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "petrified",
+      "name": "Petrified",
+      "text": "While you have the Petrified condition, you experience the following effects.\n\n**Turned to Inanimate Substance.** You are transformed, along with any nonmagical objects you are wearing and carrying, into a solid inanimate substance (usually stone). Your weight increases by a factor of ten, and you cease aging.\n\n**Incapacitated.** You have the Incapacitated condition.\n\n**Speed 0.** Your Speed is 0 and can’t increase.\n\n**Attacks Affected.** Attack rolls against you have Advantage.\n\n**Saving Throws Affected.** You automatically fail Strength and Dexterity saving throws.\n\n**Resist Damage.** You have Resistance to all damage.\n\n**Poison Immunity.** You have Immunity to the Poisoned condition.",
+      "effects": [
+        {
+          "type": "text",
+          "summary": "Transformed, with nonmagical objects worn and carried, into a solid inanimate substance (usually stone); weight ×10; you cease aging."
+        },
+        {
+          "type": "text",
+          "summary": "Speed 0 and can’t increase."
+        },
+        {
+          "type": "advantage",
+          "mode": "advantage",
+          "on": "attack:all",
+          "who": "attackers"
+        },
+        {
+          "type": "text",
+          "summary": "Automatically fail Strength and Dexterity saving throws."
+        },
+        {
+          "type": "defense",
+          "defense": "resistance",
+          "damageTypes": [
+            "all"
+          ]
+        },
+        {
+          "type": "conditionImmunity",
+          "conditions": [
+            "poisoned"
+          ]
+        }
+      ],
+      "includes": [
+        "incapacitated"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Petrified [Condition]",
+        "page": 186
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "poisoned",
+      "name": "Poisoned",
+      "text": "While you have the Poisoned condition, you experience the following effect.\n\n**Ability Checks and Attacks Affected.** You have Disadvantage on attack rolls and ability checks.",
+      "effects": [
+        {
+          "type": "advantage",
+          "mode": "disadvantage",
+          "on": "attack:all",
+          "who": "self"
+        },
+        {
+          "type": "advantage",
+          "mode": "disadvantage",
+          "on": "check:all",
+          "who": "self"
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Poisoned [Condition]",
+        "page": 186
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "prone",
+      "name": "Prone",
+      "text": "While you have the Prone condition, you experience the following effects.\n\n**Restricted Movement.** Your only movement options are to crawl or to spend an amount of movement equal to half your Speed (round down) to right yourself and thereby end the condition. If your Speed is 0, you can’t right yourself.\n\n**Attacks Affected.** You have Disadvantage on attack rolls. An attack roll against you has Advantage if the attacker is within 5 feet of you. Otherwise, that attack roll has Disadvantage.",
+      "effects": [
+        {
+          "type": "text",
+          "summary": "Only movement options: crawl, or spend half your Speed (round down) to right yourself and end the condition; can’t right yourself at Speed 0."
+        },
+        {
+          "type": "advantage",
+          "mode": "disadvantage",
+          "on": "attack:all",
+          "who": "self"
+        },
+        {
+          "type": "advantage",
+          "mode": "advantage",
+          "on": "attack:all",
+          "who": "attackers",
+          "when": "if the attacker is within 5 feet of you"
+        },
+        {
+          "type": "advantage",
+          "mode": "disadvantage",
+          "on": "attack:all",
+          "who": "attackers",
+          "when": "if the attacker isn’t within 5 feet of you"
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Prone [Condition]",
+        "page": 186
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "restrained",
+      "name": "Restrained",
+      "text": "While you have the Restrained condition, you experience the following effects.\n\n**Speed 0.** Your Speed is 0 and can’t increase.\n\n**Attacks Affected.** Attack rolls against you have Advantage, and your attack rolls have Disadvantage.\n\n**Saving Throws Affected.** You have Disadvantage on Dexterity saving throws.",
+      "effects": [
+        {
+          "type": "text",
+          "summary": "Speed 0 and can’t increase."
+        },
+        {
+          "type": "advantage",
+          "mode": "advantage",
+          "on": "attack:all",
+          "who": "attackers"
+        },
+        {
+          "type": "advantage",
+          "mode": "disadvantage",
+          "on": "attack:all",
+          "who": "self"
+        },
+        {
+          "type": "advantage",
+          "mode": "disadvantage",
+          "on": "save:dex",
+          "who": "self"
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Restrained [Condition]",
+        "page": 187
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "stunned",
+      "name": "Stunned",
+      "text": "While you have the Stunned condition, you experience the following effects.\n\n**Incapacitated.** You have the Incapacitated condition.\n\n**Saving Throws Affected.** You automatically fail Strength and Dexterity saving throws.\n\n**Attacks Affected.** Attack rolls against you have Advantage.",
+      "effects": [
+        {
+          "type": "text",
+          "summary": "Automatically fail Strength and Dexterity saving throws."
+        },
+        {
+          "type": "advantage",
+          "mode": "advantage",
+          "on": "attack:all",
+          "who": "attackers"
+        }
+      ],
+      "includes": [
+        "incapacitated"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Stunned [Condition]",
+        "page": 189
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "unconscious",
+      "name": "Unconscious",
+      "text": "While you have the Unconscious condition, you experience the following effects.\n\n**Inert.** You have the Incapacitated and Prone conditions, and you drop whatever you’re holding. When this condition ends, you remain Prone.\n\n**Speed 0.** Your Speed is 0 and can’t increase.\n\n**Attacks Affected.** Attack rolls against you have Advantage.\n\n**Saving Throws Affected.** You automatically fail Strength and Dexterity saving throws.\n\n**Automatic Critical Hits.** Any attack roll that hits you is a Critical Hit if the attacker is within 5 feet of you.\n\n**Unaware.** You’re unaware of your surroundings.",
+      "effects": [
+        {
+          "type": "text",
+          "summary": "You drop whatever you’re holding; when this condition ends, you remain Prone."
+        },
+        {
+          "type": "text",
+          "summary": "Speed 0 and can’t increase."
+        },
+        {
+          "type": "advantage",
+          "mode": "advantage",
+          "on": "attack:all",
+          "who": "attackers"
+        },
+        {
+          "type": "text",
+          "summary": "Automatically fail Strength and Dexterity saving throws."
+        },
+        {
+          "type": "text",
+          "summary": "Any attack roll that hits you is a Critical Hit if the attacker is within 5 feet of you."
+        },
+        {
+          "type": "text",
+          "summary": "You’re unaware of your surroundings."
+        }
+      ],
+      "includes": [
+        "incapacitated",
+        "prone"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Unconscious [Condition]",
+        "page": 191
+      },
+      "confidence": "printed"
+    }
+  ],
+  "rules": [
+    {
+      "id": "condition",
+      "name": "Condition",
+      "text": "A condition is a temporary game state. The definition of a condition says how it affects its recipient, and various rules define how to end a condition. This glossary defines these conditions:\n\n- Blinded\n- Charmed\n- Deafened\n- Exhaustion\n- Frightened\n- Grappled\n- Incapacitated\n- Invisible\n- Paralyzed\n- Petrified\n- Poisoned\n- Prone\n- Restrained\n- Stunned\n- Unconscious\n\nA condition doesn’t stack with itself; a recipient either has a condition or doesn’t. The Exhaustion condition is an exception to that rule.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Condition",
+        "page": 179
+      },
+      "confidence": "printed"
+    }
+  ]
+}

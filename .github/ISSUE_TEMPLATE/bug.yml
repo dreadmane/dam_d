@@ -1,0 +1,45 @@
+name: Something's wrong
+description: The app did something it shouldn't, or didn't do something it should.
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, step by step, and what the app did.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: character
+    attributes:
+      label: Which character
+      description: Its name, or an example's (Unga-Bunga, Halvard Stoneward, Maren Holt, Ilsabet Vane). If it's your own, you can attach its exported file below.
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device
+      options:
+        - Phone
+        - Tablet
+        - Desktop or laptop
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: Safari on iPhone, Chrome on Android, Firefox on Windows…
+  - type: input
+    id: rules-data
+    attributes:
+      label: Rules data version
+      description: Settings shows it near the foot, as "Rules data" and a code.
+  - type: textarea
+    id: more
+    attributes:
+      label: Anything else
+      description: Screenshots, the character's exported file, or what you'd already tried. Drag files in here.

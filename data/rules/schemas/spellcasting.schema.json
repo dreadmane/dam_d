@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "spellcasting.schema.json",
+  "title": "spellcasting.json: the rules of casting, and the Multiclass Spellcaster table",
+  "description": "The Spells chapter's rules (gaining and preparing spells, slots, casting time, range, components, duration, Concentration, rituals, combining effects) as rule records, and the Multiclass Spellcaster table. A single class's own slots are its features table's, in classes.json.",
+  "type": "object",
+  "required": ["meta", "rules", "multiclassSlots"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": { "$ref": "common.schema.json#/$defs/meta" },
+    "rules": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/rule" } },
+    "multiclassSlots": {
+      "type": "object", "required": ["rows", "source"], "additionalProperties": false,
+      "properties": {
+        "rows": {
+          "type": "array", "minItems": 20, "maxItems": 20,
+          "items": {
+            "type": "object", "required": ["casterLevel", "slots"], "additionalProperties": false,
+            "properties": {
+              "casterLevel": { "type": "integer", "minimum": 1, "maximum": 20 },
+              "slots": { "type": "array", "minItems": 9, "maxItems": 9, "items": { "type": "integer", "minimum": 0 }, "description": "Slots of levels 1 to 9." }
+            }
+          }
+        },
+        "source": { "$ref": "common.schema.json#/$defs/source" }
+      }
+    },
+    "ambiguities": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/ambiguity" } }
+  }
+}

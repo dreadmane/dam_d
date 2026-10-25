@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "equipment.schema.json",
+  "title": "equipment.json: coins, weapons and their properties and masteries, armor, tools, adventuring gear",
+  "description": "The Equipment chapter as catalogues. Mounts, vehicles, lifestyle, services and crafting are rules (or later files), not items a sheet carries. Cost is stored in its printed coin.",
+  "type": "object",
+  "required": ["meta", "coins", "weaponProperties", "masteryProperties", "weapons", "armor", "tools", "gear"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": { "$ref": "common.schema.json#/$defs/meta" },
+    "coins": {
+      "type": "array", "minItems": 5, "maxItems": 5,
+      "items": {
+        "type": "object", "required": ["id", "name", "valueInGp", "source", "confidence"], "additionalProperties": false,
+        "properties": { "id": { "enum": ["cp", "sp", "ep", "gp", "pp"] }, "name": { "type": "string" }, "valueInGp": { "type": "number" }, "source": { "$ref": "common.schema.json#/$defs/source" }, "confidence": { "$ref": "common.schema.json#/$defs/confidence" }, "note": { "type": "string" } }
+      }
+    },
+    "weaponProperties": { "type": "array", "items": { "$ref": "#/$defs/definition" } },
+    "masteryProperties": { "type": "array", "items": { "$ref": "#/$defs/definition" } },
+    "weapons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "category", "kind", "damage", "properties", "mastery", "weight", "cost", "source", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string" },
+          "category": { "enum": ["simple", "martial"] },
+          "kind": { "enum": ["melee", "ranged"] },
+          "damage": {
+            "type": "object", "required": ["dice", "type"], "additionalProperties": false,
+            "properties": { "dice": { "$ref": "common.schema.json#/$defs/dice" }, "type": { "$ref": "common.schema.json#/$defs/damageType" } }
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "type": "object", "required": ["id"], "additionalProperties": false,
+              "properties": {
+                "id": { "$ref": "common.schema.json#/$defs/id" },
+                "range": { "type": "object", "required": ["normal", "long"], "additionalProperties": false, "properties": { "normal": { "type": "integer" }, "long": { "type": "integer" } } },
+                "versatile": { "$ref": "common.schema.json#/$defs/dice" },
+                "ammunition": { "$ref": "common.schema.json#/$defs/id", "description": "The gear id of the ammunition it fires (arrows, bullets-sling); by name where the Weapons table says only Bullet (ruled 2026-10-19)." }
+              }
+            }
+          },
+          "mastery": { "$ref": "common.schema.json#/$defs/id" },
+          "weight": { "$ref": "#/$defs/weight" },
+          "cost": { "$ref": "#/$defs/cost" },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "armor": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "category", "ac", "stealthDisadvantage", "weight", "cost", "source", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string" },
+          "category": { "enum": ["light", "medium", "heavy", "shield"] },
+          "ac": {
+            "description": "Armor: base plus Dexterity (full, capped at max 2, or none). Shield: bonus.",
+            "type": "object", "additionalProperties": false,
+            "properties": { "base": { "type": "integer" }, "dex": { "enum": ["full", "max-2", "none"] }, "bonus": { "type": "integer" }, "text": { "type": "string" } }
+          },
+          "strength": { "type": "integer", "description": "The Strength score required, if printed." },
+          "stealthDisadvantage": { "type": "boolean" },
+          "weight": { "$ref": "#/$defs/weight" },
+          "cost": { "$ref": "#/$defs/cost" },
+          "don": { "type": "string" },
+          "doff": { "type": "string" },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "kind", "text", "cost", "weight", "source", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string" },
+          "kind": { "enum": ["artisan", "gaming-set", "musical-instrument", "other"] },
+          "ability": { "$ref": "common.schema.json#/$defs/ability" },
+          "text": { "$ref": "common.schema.json#/$defs/text", "description": "Ability, Utilize and Craft as printed." },
+          "variants": { "type": "array", "items": { "type": "object", "required": ["id", "name"], "additionalProperties": false, "properties": { "id": { "$ref": "common.schema.json#/$defs/id" }, "name": { "type": "string" }, "cost": { "$ref": "#/$defs/cost" }, "weight": { "$ref": "#/$defs/weight" } } }, "description": "Gaming sets and instruments, which come in kinds." },
+          "cost": { "$ref": "#/$defs/cost" },
+          "weight": { "$ref": "#/$defs/weight" },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "gear": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "text", "cost", "weight", "source", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string" },
+          "text": { "$ref": "common.schema.json#/$defs/text" },
+          "contents": { "type": "array", "items": { "type": "object", "required": ["item", "quantity"], "additionalProperties": false, "properties": { "item": { "$ref": "common.schema.json#/$defs/ref" }, "quantity": { "type": "integer", "minimum": 1 } } }, "description": "A pack's contents." },
+          "ammunitionFor": { "type": "string" },
+          "focus": { "enum": ["arcane", "druidic", "holy"] },
+          "cost": { "$ref": "#/$defs/cost" },
+          "weight": { "$ref": "#/$defs/weight" },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "rules": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/rule" } },
+    "ambiguities": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/ambiguity" } }
+  },
+  "$defs": {
+    "cost": {
+      "description": "A printed cost, or 'varies' where the table prints Varies (Ammunition, the foci, Gaming Set, Musical Instrument); 'varies' added 2026-10-18.",
+      "anyOf": [
+        { "type": "object", "required": ["amount", "coin"], "additionalProperties": false,
+          "properties": { "amount": { "type": "number", "minimum": 0 }, "coin": { "enum": ["cp", "sp", "ep", "gp", "pp"] } } },
+        { "const": "varies" }
+      ]
+    },
+    "weight": {
+      "description": "Pounds; 0 where printed as —; 'varies' where printed Varies.",
+      "anyOf": [ { "type": "number", "minimum": 0 }, { "const": "varies" } ]
+    },
+    "definition": {
+      "type": "object", "required": ["id", "name", "text", "source", "confidence"], "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/id" },
+        "name": { "type": "string" },
+        "text": { "$ref": "common.schema.json#/$defs/text" },
+        "source": { "$ref": "common.schema.json#/$defs/source" },
+        "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

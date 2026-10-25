@@ -1,0 +1,727 @@
+{
+  "meta": {
+    "dataVersion": "0.1.0",
+    "extractedOn": "2026-10-18",
+    "complete": true,
+    "tier": "srd",
+    "textPolicy": "srd-verbatim",
+    "attribution": "This work includes material from the System Reference Document 5.2.1 (\"SRD 5.2.1\") by Wizards of the Coast LLC, available at https://www.dndbeyond.com/srd. The SRD 5.2.1 is licensed under the Creative Commons Attribution 4.0 International License, available at https://creativecommons.org/licenses/by/4.0/legalcode.",
+    "notes": "The formulas a character sheet computes, each citing where it is printed: the ability modifier, Proficiency Bonus, saving throws, ability and skill checks (with Expertise), Passive Perception, Initiative and the Initiative score, base AC, spell save DC and attack modifier, Hit Points at level 1 and per level (fixed and rolled), carrying capacity and drag/lift/push, the Concentration DC, weapon and Unarmed Strike attack and damage, the multiclass spellcaster level, and the jumps. Formulas that need a parameter (which ability or skill), a proficiency state, the class's Hit Die, the character's size, or an input at play (damage, a roll) carry a computeNote with the tree they would have under a proposed node. dependsOn names ability:<a>, level, class, class-level:<id>, size, proficiency:<category>, expertise:<category>, effects:<target>, advantage:<target>, or another derivation's id. Armor AC formulas are equipment.json's and features'."
+  },
+  "derivations": [
+    {
+      "id": "ability-modifier",
+      "name": "Ability Modifier",
+      "display": "floor((score − 10) ÷ 2), as on the Ability Modifiers table",
+      "computeNote": "The vocabulary has no parameter for 'the ability (or skill) in question', and no node for a proficiency state, so one tree cannot cover every ability. Per ability a: {floorDiv: {sum: [abilityScore a, constant −10]}, by 2}, which is what the abilityMod node computes. The app evaluates abilityMod; core.json's abilityModifiers holds the printed table to test it against.",
+      "dependsOn": [
+        "ability:str",
+        "ability:dex",
+        "ability:con",
+        "ability:int",
+        "ability:wis",
+        "ability:cha"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > The Six Abilities > Ability Modifiers",
+        "page": 5,
+        "table": "Ability Modifiers"
+      },
+      "confidence": "derived",
+      "note": "The SRD prints a table (p.6), not a formula, and says to round down (p.5). The formula reproduces every row of the table for scores 1 to 30; checked by the build script."
+    },
+    {
+      "id": "proficiency-bonus",
+      "name": "Proficiency Bonus",
+      "display": "+2 at character levels 1–4, +3 at 5–8, +4 at 9–12, +5 at 13–16, +6 at 17–20",
+      "compute": {
+        "type": "byLevel",
+        "of": "character",
+        "steps": [
+          {
+            "level": 1,
+            "value": 2
+          },
+          {
+            "level": 5,
+            "value": 3
+          },
+          {
+            "level": 9,
+            "value": 4
+          },
+          {
+            "level": 13,
+            "value": 5
+          },
+          {
+            "level": 17,
+            "value": 6
+          }
+        ]
+      },
+      "dependsOn": [
+        "level"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Creation > Level Advancement",
+        "page": 23,
+        "table": "Character Advancement"
+      },
+      "confidence": "printed",
+      "note": "By total character level, not a class's level (Multiclassing > Proficiency Bonus, p.25)."
+    },
+    {
+      "id": "saving-throw",
+      "name": "Saving Throw",
+      "display": "ability modifier + Proficiency Bonus if you have proficiency in that kind of save",
+      "computeNote": "The vocabulary has no parameter for 'the ability (or skill) in question', and no node for a proficiency state, so one tree cannot cover every ability. Per ability a: {sum: [abilityMod a, {product: [proficiencyBonus, proficiencyMultiplier save a]}]} plus effects on save:a and save:all, where proficiencyMultiplier is a proposed node (0 or 1 here).",
+      "dependsOn": [
+        "ability-modifier",
+        "proficiency-bonus",
+        "proficiency:save",
+        "effects:save"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Creation > Step 5: Character Creation Details > Fill In Numbers",
+        "page": 22
+      },
+      "confidence": "printed",
+      "note": "Saving Throws (p.7) says the same: 'You add your Proficiency Bonus to your saving throw if you have proficiency in that kind of save.'"
+    },
+    {
+      "id": "ability-check",
+      "name": "Ability Check",
+      "display": "ability modifier + Proficiency Bonus when a skill or tool proficiency you have is relevant",
+      "computeNote": "The vocabulary has no parameter for 'the ability (or skill) in question', and no node for a proficiency state, so one tree cannot cover every ability. Per ability a, with the relevant proficiency p: {sum: [abilityMod a, {product: [proficiencyBonus, proficiencyMultiplier p]}]} plus effects on check:a and check:all. The Proficiency Bonus is added once even if two proficiencies apply (The Bonus Doesn’t Stack, p.8); proficiency in both the skill and the tool also gives Advantage (Equipment Proficiencies, p.9).",
+      "dependsOn": [
+        "ability-modifier",
+        "proficiency-bonus",
+        "proficiency:skill",
+        "proficiency:tool",
+        "effects:check"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > D20 Tests > Ability Checks",
+        "page": 6
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "skill-check",
+      "name": "Skill Check",
+      "display": "the skill’s ability modifier + Proficiency Bonus if proficient, doubled with Expertise",
+      "computeNote": "The vocabulary has no parameter for 'the ability (or skill) in question', and no node for a proficiency state, so one tree cannot cover every ability. Per skill s with ability a (skills.json): {sum: [abilityMod a, {product: [proficiencyBonus, proficiencyMultiplier skill s]}]} plus effects on skill:s, check:a and check:all; proficiencyMultiplier is 0 without proficiency, 1 proficient, 2 with Expertise. Expertise doubles the bonus 'unless the bonus is doubled by another feature' (Rules Glossary, Expertise, p.182), and a Proficiency Bonus can be multiplied only once (p.8).",
+      "dependsOn": [
+        "ability-modifier",
+        "proficiency-bonus",
+        "proficiency:skill",
+        "expertise:skill",
+        "effects:skill"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Creation > Step 5: Character Creation Details > Fill In Numbers",
+        "page": 22
+      },
+      "confidence": "printed",
+      "note": "Fill In Numbers > Skills (p.22) gives modifier + Proficiency Bonus; the Expertise doubling is the Rules Glossary's Expertise (p.182)."
+    },
+    {
+      "id": "passive-perception",
+      "name": "Passive Perception",
+      "display": "10 + Wisdom (Perception) check bonus; +5 with Advantage, −5 with Disadvantage on such checks",
+      "computeNote": "The tree needs the Wisdom (Perception) check total and whether those checks have Advantage or Disadvantage, which the vocabulary has no node for: {sum: [constant 10, derivation skill-check(perception), advantageAdjust(+5/−5)]}. The app takes the Perception total and adds 5 or subtracts 5 when every Wisdom (Perception) check has Advantage or Disadvantage. effects on passive:perception also apply.",
+      "dependsOn": [
+        "skill-check",
+        "advantage:skill:perception"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Passive Perception",
+        "page": 186
+      },
+      "confidence": "printed",
+      "note": "Fill In Numbers (p.22) prints 'Passive Perception = 10 + Wisdom (Perception) check modifier'; the glossary adds the ±5."
+    },
+    {
+      "id": "initiative",
+      "name": "Initiative",
+      "display": "Dexterity modifier (Initiative is a Dexterity check)",
+      "compute": {
+        "type": "abilityMod",
+        "ability": "dex"
+      },
+      "dependsOn": [
+        "ability-modifier",
+        "effects:initiative",
+        "effects:check:dex"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Creation > Step 5: Character Creation Details > Fill In Numbers",
+        "page": 22
+      },
+      "confidence": "printed",
+      "note": "Effects on initiative add to it. Whether effects on Dexterity checks also add is open: see core.json ambiguity initiative-includes-dexterity-check-bonuses."
+    },
+    {
+      "id": "initiative-score",
+      "name": "Initiative Score",
+      "display": "10 + Dexterity modifier; +5 with Advantage on Initiative rolls, −5 with Disadvantage",
+      "compute": {
+        "type": "sum",
+        "terms": [
+          {
+            "type": "constant",
+            "value": 10
+          },
+          {
+            "type": "abilityMod",
+            "ability": "dex"
+          }
+        ]
+      },
+      "dependsOn": [
+        "ability-modifier",
+        "advantage:initiative"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Initiative",
+        "page": 184
+      },
+      "confidence": "printed",
+      "note": "Used when the GM has combatants use Initiative scores instead of rolling. The ±5 for Advantage or Disadvantage is applied by the app; the vocabulary has no node for it."
+    },
+    {
+      "id": "unarmored-ac",
+      "name": "Base AC",
+      "display": "10 + Dexterity modifier",
+      "compute": {
+        "type": "sum",
+        "terms": [
+          {
+            "type": "constant",
+            "value": 10
+          },
+          {
+            "type": "abilityMod",
+            "ability": "dex"
+          }
+        ]
+      },
+      "dependsOn": [
+        "ability-modifier"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > D20 Tests > Attack Rolls > Armor Class",
+        "page": 7
+      },
+      "confidence": "printed",
+      "note": "'Base AC = 10 + the creature’s Dexterity modifier' (p.7); also Rules Glossary, Armor Class (p.177) and Fill In Numbers (p.22: 'Without armor or a shield'). Another base AC calculation replaces it; only one applies."
+    },
+    {
+      "id": "spell-save-dc",
+      "name": "Spell Save DC",
+      "display": "8 + your spellcasting ability modifier + your Proficiency Bonus",
+      "compute": {
+        "type": "sum",
+        "terms": [
+          {
+            "type": "constant",
+            "value": 8
+          },
+          {
+            "type": "abilityMod",
+            "ability": "spellcasting"
+          },
+          {
+            "type": "proficiencyBonus"
+          }
+        ]
+      },
+      "dependsOn": [
+        "ability-modifier",
+        "proficiency-bonus",
+        "effects:spell-dc"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Spells > Casting Spells > Effects > Saving Throws",
+        "page": 106
+      },
+      "confidence": "printed",
+      "note": "Also Fill In Numbers (p.23). The spellcasting ability is the one of the feature that gives the spell; multiclassed, the ability of the class the spell is prepared for (p.25)."
+    },
+    {
+      "id": "spell-attack-bonus",
+      "name": "Spell Attack Modifier",
+      "display": "your spellcasting ability modifier + your Proficiency Bonus",
+      "compute": {
+        "type": "sum",
+        "terms": [
+          {
+            "type": "abilityMod",
+            "ability": "spellcasting"
+          },
+          {
+            "type": "proficiencyBonus"
+          }
+        ]
+      },
+      "dependsOn": [
+        "ability-modifier",
+        "proficiency-bonus",
+        "effects:spell-attack"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Spells > Casting Spells > Effects > Attack Rolls",
+        "page": 106
+      },
+      "confidence": "printed",
+      "note": "Called 'Spell attack bonus' in Fill In Numbers (p.23)."
+    },
+    {
+      "id": "hit-points-level-1",
+      "name": "Hit Points at Level 1",
+      "display": "Barbarian 12, Fighter, Paladin or Ranger 10, Bard, Cleric, Druid, Monk, Rogue or Warlock 8, Sorcerer or Wizard 6; + Con. modifier",
+      "computeNote": "The value depends on the first class, which a tree cannot read: the vocabulary has no node for a class's Hit Point Die. With a proposed hitDie node: {sum: [hitDie first-class, abilityMod con]} (each printed value is the class's Hit Die size, classes.json hitDie). Multiclassed, the level 1 Hit Points come only from the class taken at character level 1 (p.25).",
+      "dependsOn": [
+        "class",
+        "ability-modifier"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Creation > Step 5: Character Creation Details > Fill In Numbers",
+        "page": 22,
+        "table": "Level 1 Hit Points by Class"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "hit-points-per-level-fixed",
+      "name": "Hit Points per Level (Fixed)",
+      "display": "Barbarian 7, Fighter, Paladin or Ranger 6, Bard, Cleric, Druid, Monk, Rogue or Warlock 5, Sorcerer or Wizard 4; + Con. modifier",
+      "computeNote": "Per level gained, by the class the level is taken in; the vocabulary has no node for a class's Hit Point Die. Each printed value is half the class's Hit Die + 1, so with a proposed hitDie node: {sum: [floorDiv(hitDie class, 2), constant 1, abilityMod con]}. Whether 'minimum of 1' applies to this option is open: see ambiguity fixed-hit-points-minimum. A change to the Constitution modifier changes every level's share (Gaining a Level, step 5).",
+      "dependsOn": [
+        "class",
+        "ability-modifier"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Creation > Level Advancement > Gaining a Level",
+        "page": 23,
+        "table": "Fixed Hit Points by Class"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "hit-points-per-level-rolled",
+      "name": "Hit Points per Level (Rolled)",
+      "display": "roll the class’s Hit Die + Con. modifier (minimum of 1)",
+      "computeNote": "The roll is stored on the character for each level; the vocabulary has no node for a stored roll. With a proposed input node: {max: [constant 1, {sum: [input roll, abilityMod con]}]}.",
+      "dependsOn": [
+        "class",
+        "ability-modifier",
+        "roll"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Creation > Level Advancement > Gaining a Level",
+        "page": 23
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "carrying-capacity",
+      "name": "Carrying Capacity",
+      "display": "Strength score × 15 lb. (Small or Medium); Tiny × 7.5, Large × 30, Huge × 60, Gargantuan × 120",
+      "computeNote": "The multiplier depends on the character's size, which a tree cannot read. The app multiplies the Strength score by core.json sizes[size].carryingMultiplier; with a proposed sizeValue node: {product: [abilityScore str, sizeValue carryingMultiplier]}.",
+      "dependsOn": [
+        "ability:str",
+        "size"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Carrying Capacity",
+        "page": 178,
+        "table": "Carrying Capacity"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "drag-lift-push",
+      "name": "Drag, Lift, or Push",
+      "display": "Strength score × 30 lb. (Small or Medium); Tiny × 15, Large × 60, Huge × 120, Gargantuan × 240",
+      "computeNote": "As carrying-capacity, from the table's Drag/Lift/Push column, which core.json's sizes record in their notes. While dragging, lifting, or pushing more than you can carry, your Speed can be no more than 5 feet.",
+      "dependsOn": [
+        "ability:str",
+        "size"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Carrying Capacity",
+        "page": 178,
+        "table": "Carrying Capacity"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "concentration-save-dc",
+      "name": "Concentration Save DC",
+      "display": "10 or half the damage taken (round down), whichever is higher, up to a maximum of 30",
+      "computeNote": "The damage taken is an input at the moment of play, which the vocabulary has no node for. With a proposed input node: {min: [constant 30, {max: [constant 10, floorDiv(input damage, 2)]}]}.",
+      "dependsOn": [
+        "damage"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Concentration",
+        "page": 179
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "melee-attack-bonus",
+      "name": "Melee Attack Bonus",
+      "display": "Strength modifier + Proficiency Bonus",
+      "compute": {
+        "type": "sum",
+        "terms": [
+          {
+            "type": "abilityMod",
+            "ability": "str"
+          },
+          {
+            "type": "proficiencyBonus"
+          }
+        ]
+      },
+      "dependsOn": [
+        "ability-modifier",
+        "proficiency-bonus",
+        "proficiency:weapon",
+        "effects:attack"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Creation > Step 5: Character Creation Details > Fill In Numbers",
+        "page": 22
+      },
+      "confidence": "printed",
+      "note": "For a weapon with which you have proficiency, 'unless a weapon’s property says otherwise' (Finesse: Strength or Dexterity, p.89). Without proficiency the Proficiency Bonus is not added (p.9); never with an improvised weapon (p.183)."
+    },
+    {
+      "id": "ranged-attack-bonus",
+      "name": "Ranged Attack Bonus",
+      "display": "Dexterity modifier + Proficiency Bonus",
+      "compute": {
+        "type": "sum",
+        "terms": [
+          {
+            "type": "abilityMod",
+            "ability": "dex"
+          },
+          {
+            "type": "proficiencyBonus"
+          }
+        ]
+      },
+      "dependsOn": [
+        "ability-modifier",
+        "proficiency-bonus",
+        "proficiency:weapon",
+        "effects:attack"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Creation > Step 5: Character Creation Details > Fill In Numbers",
+        "page": 22
+      },
+      "confidence": "printed",
+      "note": "For a weapon with which you have proficiency, 'unless a weapon’s property says otherwise' (a Thrown melee weapon uses its melee ability, p.90). Without proficiency the Proficiency Bonus is not added (p.9)."
+    },
+    {
+      "id": "weapon-damage-modifier",
+      "name": "Weapon Damage Modifier",
+      "display": "the same ability modifier used for the attack roll",
+      "computeNote": "It is whichever ability modifier the attack used (Strength, Dexterity, or a choice under Finesse), which a tree cannot pick. The app reuses the attack's abilityMod node. Exception: the Light property's Bonus Action attack adds it only if it is negative (p.89); it is not added to fixed damage that doesn't use a roll (p.16).",
+      "dependsOn": [
+        "melee-attack-bonus",
+        "ranged-attack-bonus",
+        "effects:damage"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Combat > Damage and Healing > Damage Rolls",
+        "page": 16
+      },
+      "confidence": "printed",
+      "note": "Also Fill In Numbers > Attacks (p.22)."
+    },
+    {
+      "id": "unarmed-strike-attack-bonus",
+      "name": "Unarmed Strike Attack Bonus",
+      "display": "Strength modifier + Proficiency Bonus",
+      "compute": {
+        "type": "sum",
+        "terms": [
+          {
+            "type": "abilityMod",
+            "ability": "str"
+          },
+          {
+            "type": "proficiencyBonus"
+          }
+        ]
+      },
+      "dependsOn": [
+        "ability-modifier",
+        "proficiency-bonus"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Unarmed Strike",
+        "page": 190
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "unarmed-strike-damage",
+      "name": "Unarmed Strike Damage",
+      "display": "1 + Strength modifier (Bludgeoning)",
+      "compute": {
+        "type": "sum",
+        "terms": [
+          {
+            "type": "constant",
+            "value": 1
+          },
+          {
+            "type": "abilityMod",
+            "ability": "str"
+          }
+        ]
+      },
+      "dependsOn": [
+        "ability-modifier"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Unarmed Strike",
+        "page": 190
+      },
+      "confidence": "printed",
+      "note": "A penalty can bring damage to 0 but not below (Damage Rolls, p.16)."
+    },
+    {
+      "id": "unarmed-strike-save-dc",
+      "name": "Grapple and Shove DC",
+      "display": "8 + Strength modifier + Proficiency Bonus",
+      "compute": {
+        "type": "sum",
+        "terms": [
+          {
+            "type": "constant",
+            "value": 8
+          },
+          {
+            "type": "abilityMod",
+            "ability": "str"
+          },
+          {
+            "type": "proficiencyBonus"
+          }
+        ]
+      },
+      "dependsOn": [
+        "ability-modifier",
+        "proficiency-bonus"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Unarmed Strike",
+        "page": 190
+      },
+      "confidence": "printed",
+      "note": "The DC for the Grapple option's save and any escape attempts, and for the Shove option's save."
+    },
+    {
+      "id": "multiclass-spellcaster-level",
+      "name": "Multiclass Spellcaster Level",
+      "display": "all your levels in Bard, Cleric, Druid, Sorcerer and Wizard + half your levels (round up) in Paladin and Ranger",
+      "compute": {
+        "type": "sum",
+        "terms": [
+          {
+            "type": "classLevel",
+            "class": "bard"
+          },
+          {
+            "type": "classLevel",
+            "class": "cleric"
+          },
+          {
+            "type": "classLevel",
+            "class": "druid"
+          },
+          {
+            "type": "classLevel",
+            "class": "sorcerer"
+          },
+          {
+            "type": "classLevel",
+            "class": "wizard"
+          },
+          {
+            "type": "floorDiv",
+            "of": {
+              "type": "sum",
+              "terms": [
+                {
+                  "type": "classLevel",
+                  "class": "paladin"
+                },
+                {
+                  "type": "constant",
+                  "value": 1
+                }
+              ]
+            },
+            "by": 2
+          },
+          {
+            "type": "floorDiv",
+            "of": {
+              "type": "sum",
+              "terms": [
+                {
+                  "type": "classLevel",
+                  "class": "ranger"
+                },
+                {
+                  "type": "constant",
+                  "value": 1
+                }
+              ]
+            },
+            "by": 2
+          }
+        ]
+      },
+      "dependsOn": [
+        "class-level:bard",
+        "class-level:cleric",
+        "class-level:druid",
+        "class-level:sorcerer",
+        "class-level:wizard",
+        "class-level:paladin",
+        "class-level:ranger"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Creation > Multiclassing > Class Features > Spellcasting",
+        "page": 25
+      },
+      "confidence": "printed",
+      "note": "Used only once you have the Spellcasting feature from more than one class; the result is looked up in spellcasting.json's multiclassSlots. Round up is written as floor((levels + 1) ÷ 2), since the vocabulary has only floorDiv; a class you don't have counts 0. Warlock levels don't count (Pact Magic stays apart)."
+    },
+    {
+      "id": "long-jump",
+      "name": "Long Jump",
+      "display": "up to your Strength score in feet with a 10-foot run-up; half that standing",
+      "compute": {
+        "type": "abilityScore",
+        "ability": "str"
+      },
+      "dependsOn": [
+        "ability:str"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Long Jump",
+        "page": 184
+      },
+      "confidence": "printed",
+      "note": "The running distance; the standing jump is half (round down, p.5), which the app halves."
+    },
+    {
+      "id": "high-jump",
+      "name": "High Jump",
+      "display": "3 + Strength modifier feet (minimum of 0) with a 10-foot run-up; half that standing",
+      "compute": {
+        "type": "max",
+        "terms": [
+          {
+            "type": "constant",
+            "value": 0,
+            "unit": "feet"
+          },
+          {
+            "type": "sum",
+            "terms": [
+              {
+                "type": "constant",
+                "value": 3,
+                "unit": "feet"
+              },
+              {
+                "type": "abilityMod",
+                "ability": "str"
+              }
+            ]
+          }
+        ]
+      },
+      "dependsOn": [
+        "ability-modifier"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > High Jump",
+        "page": 183
+      },
+      "confidence": "printed",
+      "note": "The running height; the standing jump is half (round down, p.5), which the app halves."
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "fixed-hit-points-minimum",
+      "question": "Does Gaining a Level's 'minimum of 1' apply when you take the fixed Hit Points value instead of rolling?",
+      "readings": [
+        {
+          "id": "minimum-applies",
+          "text": "Yes: 'Instead of rolling' replaces only the roll, so the total added is still at least 1 (a Sorcerer or Wizard with a Constitution modifier of −4 or less would otherwise gain 0 or fewer).",
+          "recommended": true
+        },
+        {
+          "id": "minimum-for-rolls-only",
+          "text": "No: the minimum is written into the rolling sentence; the fixed value is the table's number plus the Con. modifier, whatever it comes to."
+        }
+      ],
+      "status": "ruled",
+      "affects": [
+        "derivations:hit-points-per-level-fixed"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Creation > Level Advancement > Gaining a Level",
+        "page": 23
+      },
+      "ruling": {
+        "reading": "minimum-applies",
+        "confidence": "house",
+        "signedOff": "2026-10-19, by the user",
+        "note": "The minimum of 1 applies to the fixed value too: 'instead of rolling' replaces only the roll."
+      }
+    }
+  ]
+}

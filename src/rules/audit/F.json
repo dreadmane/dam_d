@@ -1,0 +1,348 @@
+{
+  "id": "audit-f-save",
+  "schemaVersion": 1,
+  "gameDataVersion": "example",
+  "createdAt": "2026-10-19T10:27:00.000Z",
+  "updatedAt": "2026-10-19T10:27:00.000Z",
+  "name": "Dunna Ironroot",
+  "primaryEntityId": "audit-f",
+  "entities": [
+    {
+      "id": "audit-f",
+      "kind": "character",
+      "name": "Dunna Ironroot",
+      "classes": [
+        {
+          "classId": "druid",
+          "subclassId": "circle-of-the-land",
+          "level": 5,
+          "hp": [
+            {
+              "level": 1,
+              "method": "max"
+            },
+            {
+              "level": 2,
+              "method": "fixed"
+            },
+            {
+              "level": 3,
+              "method": "fixed"
+            },
+            {
+              "level": 4,
+              "method": "fixed"
+            },
+            {
+              "level": 5,
+              "method": "fixed"
+            }
+          ]
+        }
+      ],
+      "species": {
+        "speciesId": "dwarf",
+        "size": "medium"
+      },
+      "background": {
+        "backgroundId": "sage",
+        "abilityIncreases": {
+          "wis": 2,
+          "con": 1
+        }
+      },
+      "abilities": {
+        "base": {
+          "str": 10,
+          "dex": 13,
+          "con": 14,
+          "int": 12,
+          "wis": 15,
+          "cha": 8
+        },
+        "generation": {
+          "method": "standard-array",
+          "rolls": []
+        }
+      },
+      "choices": [
+        {
+          "source": "background:sage>feat:magic-initiate",
+          "choice": "magic-initiate-ability",
+          "values": [
+            "int"
+          ]
+        },
+        {
+          "source": "background:sage>feat:magic-initiate",
+          "choice": "magic-initiate-cantrips",
+          "values": [
+            "fire-bolt",
+            "minor-illusion"
+          ]
+        },
+        {
+          "source": "background:sage>feat:magic-initiate",
+          "choice": "magic-initiate-level-1-spell",
+          "values": [
+            "find-familiar"
+          ]
+        },
+        {
+          "source": "class:druid:1",
+          "choice": "class-skills",
+          "values": [
+            "nature",
+            "perception"
+          ]
+        },
+        {
+          "source": "class:druid:1",
+          "choice": "primal-order",
+          "values": [
+            "magician"
+          ]
+        },
+        {
+          "source": "class:druid:2",
+          "choice": "wild-shape-known-forms",
+          "values": [
+            "cat",
+            "badger",
+            "frog",
+            "hawk"
+          ]
+        },
+        {
+          "source": "class:druid:3",
+          "choice": "land-type",
+          "values": [
+            "temperate"
+          ]
+        },
+        {
+          "source": "class:druid:4",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:druid:4",
+          "choice": "wild-shape-known-forms",
+          "values": [
+            "goat",
+            "deer"
+          ]
+        },
+        {
+          "source": "class:druid:1>option:magician",
+          "choice": "magician-cantrip",
+          "values": [
+            "shillelagh"
+          ]
+        },
+        {
+          "source": "class:druid:4>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "wis": 1,
+            "con": 1
+          }
+        }
+      ],
+      "spells": [
+        {
+          "spellId": "guidance",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        },
+        {
+          "spellId": "produce-flame",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        },
+        {
+          "spellId": "shillelagh",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        },
+        {
+          "spellId": "druidcraft",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        },
+        {
+          "spellId": "cure-wounds",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        },
+        {
+          "spellId": "healing-word",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        },
+        {
+          "spellId": "entangle",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        },
+        {
+          "spellId": "goodberry",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        },
+        {
+          "spellId": "moonbeam",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        },
+        {
+          "spellId": "spike-growth",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        },
+        {
+          "spellId": "barkskin",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        },
+        {
+          "spellId": "faerie-fire",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        },
+        {
+          "spellId": "pass-without-trace",
+          "classId": "druid",
+          "source": "class:druid",
+          "prepared": true
+        }
+      ],
+      "hp": {
+        "current": 12,
+        "temp": 0
+      },
+      "deathSaves": {
+        "successes": 0,
+        "failures": 0
+      },
+      "hitDiceSpent": {},
+      "slotsExpended": {},
+      "pactSlotsExpended": 0,
+      "resourcesUsed": {},
+      "conditions": [],
+      "exhaustion": 0,
+      "concentration": null,
+      "toggles": {},
+      "inventory": [
+        {
+          "id": "audit-F-1",
+          "name": "Leather Armor",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:leather-armor",
+          "weight": 0,
+          "worn": true
+        },
+        {
+          "id": "audit-F-2",
+          "name": "Shield",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:shield",
+          "weight": 0,
+          "worn": true
+        },
+        {
+          "id": "audit-F-3",
+          "name": "Sickle",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:sickle",
+          "weight": 0
+        },
+        {
+          "id": "audit-F-4",
+          "name": "Quarterstaff",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:quarterstaff",
+          "weight": 0
+        },
+        {
+          "id": "audit-F-5",
+          "name": "Druidic Focus",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:druidic-focus",
+          "weight": 0
+        },
+        {
+          "id": "audit-F-6",
+          "name": "Herbalism Kit",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:herbalism-kit",
+          "weight": 0
+        }
+      ],
+      "coins": {
+        "cp": 0,
+        "sp": 0,
+        "ep": 0,
+        "gp": 18,
+        "pp": 0
+      },
+      "heroicInspiration": true,
+      "levelling": {
+        "mode": "milestone",
+        "xp": 0
+      },
+      "quickBar": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "companions": [],
+      "details": {
+        "alignment": "Lawful Good",
+        "languages": [
+          "common",
+          "dwarvish",
+          "giant"
+        ],
+        "appearance": ""
+      },
+      "creation": {
+        "route": "level-1",
+        "complete": true
+      },
+      "notes": ""
+    }
+  ]
+}

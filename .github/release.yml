@@ -1,0 +1,16 @@
+# Sorts the pull requests in a release's generated notes by their labels.
+# A pull request goes in the first section whose label it has.
+changelog:
+  categories:
+    - title: New and improved
+      labels: [enhancement]
+    - title: Fixes
+      labels: [bug]
+    - title: Accessibility
+      labels: [accessibility]
+    - title: Dependencies
+      labels: [dependencies]
+    - title: Housekeeping
+      labels: [chore, documentation]
+    - title: Other changes
+      labels: ["*"]

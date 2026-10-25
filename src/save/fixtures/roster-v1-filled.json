@@ -1,0 +1,55 @@
+{
+  "id": "fixture-filled",
+  "schemaVersion": 1,
+  "gameDataVersion": "cf5aee5d029f",
+  "createdAt": "2026-10-19T09:00:00.000Z",
+  "updatedAt": "2026-10-19T09:30:00.000Z",
+  "name": "Lia Brightwater",
+  "primaryEntityId": "fixture-filled-character",
+  "entities": [
+    {
+      "id": "fixture-filled-character",
+      "kind": "character",
+      "name": "Lia Brightwater",
+      "classes": [],
+      "species": null,
+      "background": null,
+      "abilities": {
+        "base": { "str": 10, "dex": 10, "con": 10, "int": 10, "wis": 10, "cha": 10 },
+        "generation": { "method": "entered", "rolls": [] }
+      },
+      "choices": [],
+      "spells": [],
+      "hp": { "current": 0, "temp": 0 },
+      "deathSaves": { "successes": 0, "failures": 0 },
+      "hitDiceSpent": {},
+      "slotsExpended": {},
+      "pactSlotsExpended": 0,
+      "resourcesUsed": {},
+      "conditions": [],
+      "exhaustion": 0,
+      "concentration": null,
+      "toggles": {},
+      "inventory": [
+        { "id": "item-rope", "name": "Rope", "description": "Hempen, knotted every few feet.", "quantity": 1, "tags": ["camp", "climbing"], "weight": 5 },
+        { "id": "item-letter", "name": "Sealed letter", "description": "For the abbess at Greywater; not to be opened.", "quantity": 1, "tags": ["quest"] },
+        { "id": "item-candles", "name": "Candles", "description": "", "quantity": 6, "tags": [] }
+      ],
+      "coins": { "cp": 14, "sp": 3, "ep": 0, "gp": 15, "pp": 1 },
+      "heroicInspiration": false,
+      "levelling": { "mode": "xp", "xp": 0 },
+      "quickBar": [null, null, null, null, null, null, null, null, null, null],
+      "companions": [],
+      "details": { "alignment": "", "languages": [], "appearance": "" },
+      "creation": { "route": "any-level", "complete": false },
+      "notes": "Owes the ferryman a favour.\nAsk about the bell tower.",
+      "portrait": {
+        "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+        "thumbnail": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+        "width": 1,
+        "height": 1,
+        "crop": { "x": 0.5, "y": 0.5, "zoom": 1 }
+      }
+    }
+  ]
+}

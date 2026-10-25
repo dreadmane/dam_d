@@ -1,0 +1,340 @@
+{
+  "id": "audit-c-save",
+  "schemaVersion": 1,
+  "gameDataVersion": "example",
+  "createdAt": "2026-10-19T10:27:00.000Z",
+  "updatedAt": "2026-10-19T10:27:00.000Z",
+  "name": "Vex Ashmark",
+  "primaryEntityId": "audit-c",
+  "entities": [
+    {
+      "id": "audit-c",
+      "kind": "character",
+      "name": "Vex Ashmark",
+      "classes": [
+        {
+          "classId": "sorcerer",
+          "subclassId": "draconic-sorcery",
+          "level": 3,
+          "hp": [
+            {
+              "level": 1,
+              "method": "max"
+            },
+            {
+              "level": 2,
+              "method": "fixed"
+            },
+            {
+              "level": 3,
+              "method": "fixed"
+            }
+          ]
+        },
+        {
+          "classId": "warlock",
+          "subclassId": "fiend-patron",
+          "level": 3,
+          "hp": [
+            {
+              "level": 1,
+              "method": "fixed"
+            },
+            {
+              "level": 2,
+              "method": "fixed"
+            },
+            {
+              "level": 3,
+              "method": "fixed"
+            }
+          ]
+        }
+      ],
+      "species": {
+        "speciesId": "tiefling",
+        "size": "medium"
+      },
+      "background": {
+        "backgroundId": "acolyte",
+        "abilityIncreases": {
+          "cha": 2,
+          "wis": 1
+        }
+      },
+      "abilities": {
+        "base": {
+          "str": 8,
+          "dex": 13,
+          "con": 14,
+          "int": 10,
+          "wis": 12,
+          "cha": 15
+        },
+        "generation": {
+          "method": "standard-array",
+          "rolls": []
+        }
+      },
+      "choices": [
+        {
+          "source": "species:tiefling",
+          "choice": "fiendish-legacy",
+          "values": [
+            "infernal"
+          ]
+        },
+        {
+          "source": "species:tiefling",
+          "choice": "fiendish-legacy-spellcasting-ability",
+          "values": [
+            "cha"
+          ]
+        },
+        {
+          "source": "background:acolyte>feat:magic-initiate",
+          "choice": "magic-initiate-ability",
+          "values": [
+            "cha"
+          ]
+        },
+        {
+          "source": "background:acolyte>feat:magic-initiate",
+          "choice": "magic-initiate-cantrips",
+          "values": [
+            "guidance",
+            "spare-the-dying"
+          ]
+        },
+        {
+          "source": "background:acolyte>feat:magic-initiate",
+          "choice": "magic-initiate-level-1-spell",
+          "values": [
+            "bless"
+          ]
+        },
+        {
+          "source": "class:sorcerer:1",
+          "choice": "class-skills",
+          "values": [
+            "arcana",
+            "persuasion"
+          ]
+        },
+        {
+          "source": "class:sorcerer:2",
+          "choice": "metamagic",
+          "values": [
+            "quickened-spell",
+            "twinned-spell"
+          ]
+        },
+        {
+          "source": "class:warlock:1",
+          "choice": "eldritch-invocations",
+          "values": [
+            "pact-of-the-blade"
+          ]
+        },
+        {
+          "source": "class:warlock:2",
+          "choice": "eldritch-invocations",
+          "values": [
+            "agonizing-blast",
+            "eldritch-mind"
+          ]
+        }
+      ],
+      "spells": [
+        {
+          "spellId": "light",
+          "classId": "sorcerer",
+          "source": "class:sorcerer",
+          "prepared": true
+        },
+        {
+          "spellId": "mage-hand",
+          "classId": "sorcerer",
+          "source": "class:sorcerer",
+          "prepared": true
+        },
+        {
+          "spellId": "prestidigitation",
+          "classId": "sorcerer",
+          "source": "class:sorcerer",
+          "prepared": true
+        },
+        {
+          "spellId": "shocking-grasp",
+          "classId": "sorcerer",
+          "source": "class:sorcerer",
+          "prepared": true
+        },
+        {
+          "spellId": "magic-missile",
+          "classId": "sorcerer",
+          "source": "class:sorcerer",
+          "prepared": true
+        },
+        {
+          "spellId": "shield",
+          "classId": "sorcerer",
+          "source": "class:sorcerer",
+          "prepared": true
+        },
+        {
+          "spellId": "sleep",
+          "classId": "sorcerer",
+          "source": "class:sorcerer",
+          "prepared": true
+        },
+        {
+          "spellId": "detect-magic",
+          "classId": "sorcerer",
+          "source": "class:sorcerer",
+          "prepared": true
+        },
+        {
+          "spellId": "misty-step",
+          "classId": "sorcerer",
+          "source": "class:sorcerer",
+          "prepared": true
+        },
+        {
+          "spellId": "scorching-ray",
+          "classId": "sorcerer",
+          "source": "class:sorcerer",
+          "prepared": true
+        },
+        {
+          "spellId": "eldritch-blast",
+          "classId": "warlock",
+          "source": "class:warlock",
+          "prepared": true
+        },
+        {
+          "spellId": "chill-touch",
+          "classId": "warlock",
+          "source": "class:warlock",
+          "prepared": true
+        },
+        {
+          "spellId": "minor-illusion",
+          "classId": "warlock",
+          "source": "class:warlock",
+          "prepared": true
+        },
+        {
+          "spellId": "hex",
+          "classId": "warlock",
+          "source": "class:warlock",
+          "prepared": true
+        },
+        {
+          "spellId": "charm-person",
+          "classId": "warlock",
+          "source": "class:warlock",
+          "prepared": true
+        },
+        {
+          "spellId": "hold-person",
+          "classId": "warlock",
+          "source": "class:warlock",
+          "prepared": true
+        },
+        {
+          "spellId": "invisibility",
+          "classId": "warlock",
+          "source": "class:warlock",
+          "prepared": true
+        }
+      ],
+      "hp": {
+        "current": 12,
+        "temp": 0
+      },
+      "deathSaves": {
+        "successes": 0,
+        "failures": 0
+      },
+      "hitDiceSpent": {},
+      "slotsExpended": {},
+      "pactSlotsExpended": 0,
+      "resourcesUsed": {},
+      "conditions": [],
+      "exhaustion": 0,
+      "concentration": null,
+      "toggles": {},
+      "inventory": [
+        {
+          "id": "audit-C-1",
+          "name": "Longsword",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:longsword",
+          "weight": 0
+        },
+        {
+          "id": "audit-C-2",
+          "name": "Dagger",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:dagger",
+          "weight": 0
+        },
+        {
+          "id": "audit-C-3",
+          "name": "Arcane Focus",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:arcane-focus",
+          "weight": 0
+        }
+      ],
+      "coins": {
+        "cp": 0,
+        "sp": 0,
+        "ep": 0,
+        "gp": 18,
+        "pp": 0
+      },
+      "heroicInspiration": true,
+      "levelling": {
+        "mode": "milestone",
+        "xp": 0
+      },
+      "quickBar": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "companions": [],
+      "details": {
+        "alignment": "Lawful Good",
+        "languages": [
+          "common",
+          "infernal",
+          "draconic"
+        ],
+        "appearance": ""
+      },
+      "creation": {
+        "route": "level-1",
+        "complete": true
+      },
+      "notes": "",
+      "classOrder": [
+        "sorcerer",
+        "warlock"
+      ]
+    }
+  ]
+}

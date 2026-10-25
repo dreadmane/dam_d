@@ -1,0 +1,232 @@
+{
+  "id": "audit-a-save",
+  "schemaVersion": 1,
+  "gameDataVersion": "example",
+  "createdAt": "2026-10-19T10:27:00.000Z",
+  "updatedAt": "2026-10-19T10:27:00.000Z",
+  "name": "Sefa Windleaf",
+  "primaryEntityId": "audit-a",
+  "entities": [
+    {
+      "id": "audit-a",
+      "kind": "character",
+      "name": "Sefa Windleaf",
+      "classes": [
+        {
+          "classId": "monk",
+          "subclassId": "warrior-of-the-open-hand",
+          "level": 6,
+          "hp": [
+            {
+              "level": 1,
+              "method": "max"
+            },
+            {
+              "level": 2,
+              "method": "fixed"
+            },
+            {
+              "level": 3,
+              "method": "fixed"
+            },
+            {
+              "level": 4,
+              "method": "fixed"
+            },
+            {
+              "level": 5,
+              "method": "fixed"
+            },
+            {
+              "level": 6,
+              "method": "fixed"
+            }
+          ]
+        }
+      ],
+      "species": {
+        "speciesId": "elf",
+        "size": "medium"
+      },
+      "background": {
+        "backgroundId": "acolyte",
+        "abilityIncreases": {
+          "wis": 2,
+          "int": 1
+        }
+      },
+      "abilities": {
+        "base": {
+          "str": 10,
+          "dex": 15,
+          "con": 13,
+          "int": 8,
+          "wis": 14,
+          "cha": 12
+        },
+        "generation": {
+          "method": "standard-array",
+          "rolls": []
+        }
+      },
+      "choices": [
+        {
+          "source": "species:elf",
+          "choice": "elven-lineage",
+          "values": [
+            "wood-elf"
+          ]
+        },
+        {
+          "source": "species:elf",
+          "choice": "elven-lineage-spellcasting-ability",
+          "values": [
+            "wis"
+          ]
+        },
+        {
+          "source": "species:elf",
+          "choice": "keen-senses",
+          "values": [
+            "perception"
+          ]
+        },
+        {
+          "source": "background:acolyte>feat:magic-initiate",
+          "choice": "magic-initiate-ability",
+          "values": [
+            "wis"
+          ]
+        },
+        {
+          "source": "background:acolyte>feat:magic-initiate",
+          "choice": "magic-initiate-cantrips",
+          "values": [
+            "guidance",
+            "sacred-flame"
+          ]
+        },
+        {
+          "source": "background:acolyte>feat:magic-initiate",
+          "choice": "magic-initiate-level-1-spell",
+          "values": [
+            "cure-wounds"
+          ]
+        },
+        {
+          "source": "class:monk:1",
+          "choice": "class-skills",
+          "values": [
+            "acrobatics",
+            "stealth"
+          ]
+        },
+        {
+          "source": "class:monk:1",
+          "choice": "monk-tool-proficiency",
+          "values": [
+            "flute"
+          ]
+        },
+        {
+          "source": "class:monk:4",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:monk:4>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "dex": 2
+          }
+        }
+      ],
+      "spells": [],
+      "hp": {
+        "current": 12,
+        "temp": 0
+      },
+      "deathSaves": {
+        "successes": 0,
+        "failures": 0
+      },
+      "hitDiceSpent": {},
+      "slotsExpended": {},
+      "pactSlotsExpended": 0,
+      "resourcesUsed": {},
+      "conditions": [],
+      "exhaustion": 0,
+      "concentration": null,
+      "toggles": {},
+      "inventory": [
+        {
+          "id": "audit-A-1",
+          "name": "Spear",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:spear",
+          "weight": 0
+        },
+        {
+          "id": "audit-A-2",
+          "name": "Dagger",
+          "description": "",
+          "quantity": 5,
+          "tags": [],
+          "itemId": "equipment:dagger",
+          "weight": 0
+        },
+        {
+          "id": "audit-A-3",
+          "name": "Explorer’s Pack",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:explorers-pack",
+          "weight": 0
+        }
+      ],
+      "coins": {
+        "cp": 0,
+        "sp": 0,
+        "ep": 0,
+        "gp": 18,
+        "pp": 0
+      },
+      "heroicInspiration": true,
+      "levelling": {
+        "mode": "milestone",
+        "xp": 0
+      },
+      "quickBar": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "companions": [],
+      "details": {
+        "alignment": "Lawful Good",
+        "languages": [
+          "common",
+          "elvish",
+          "dwarvish"
+        ],
+        "appearance": ""
+      },
+      "creation": {
+        "route": "level-1",
+        "complete": true
+      },
+      "notes": ""
+    }
+  ]
+}

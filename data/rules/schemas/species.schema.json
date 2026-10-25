@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "species.schema.json",
+  "title": "species.json: the species and their traits",
+  "description": "Each species' creature type, size, Speed and traits. A choice the species makes (a Dragonborn's ancestry, an Elf's lineage, a Gnome's lineage, a Goliath's giant ancestry, a Tiefling's legacy) is a lineages list; the chosen one's traits apply.",
+  "type": "object",
+  "required": ["meta", "species"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": { "$ref": "common.schema.json#/$defs/meta" },
+    "species": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "creatureType", "sizes", "speed", "traits", "source", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string" },
+          "creatureType": { "type": "string" },
+          "sizes": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/size" }, "description": "More than one where the player chooses." },
+          "sizeText": { "type": "string" },
+          "speed": { "type": "integer" },
+          "traits": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/feature" } },
+          "lineages": {
+            "description": "The choice a trait offers, and each option. traitId names the trait that offers it.",
+            "type": "object", "required": ["traitId", "label", "options"], "additionalProperties": false,
+            "properties": {
+              "traitId": { "$ref": "common.schema.json#/$defs/id" },
+              "label": { "type": "string" },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "object", "required": ["id", "name", "effects"], "additionalProperties": false,
+                  "properties": {
+                    "id": { "$ref": "common.schema.json#/$defs/id" },
+                    "name": { "type": "string" },
+                    "text": { "type": "string" },
+                    "effects": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/effect" } },
+                    "action": { "$ref": "common.schema.json#/$defs/actionType", "description": "Added 2026-10-20 (user): what using the lineage's limited benefit costs, as a trait's action, so the turn can group it." },
+                    "note": { "type": "string", "description": "Added 2026-10-20: the reasoning for a value that isn't verbatim, such as a derived action." },
+                    "damageType": { "$ref": "common.schema.json#/$defs/damageType" }
+                  }
+                }
+              }
+            }
+          },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        },
+        "allOf": [ { "if": { "properties": { "confidence": { "not": { "const": "printed" } } } }, "then": { "required": ["note"] } } ]
+      }
+    },
+    "rules": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/rule" } },
+    "ambiguities": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/ambiguity" } }
+  }
+}

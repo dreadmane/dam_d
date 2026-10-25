@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "classes.schema.json",
+  "title": "classes.json: the classes, their features tables, features, option lists and subclasses",
+  "description": "One record per class: its core traits, multiclassing terms, spellcasting, its features table (with every column, so a resource maximum or a die is read from the table, never typed in code), its features by level, its option lists (Eldritch Invocations, Metamagic), its spell list, and its subclasses. The SRD prints one subclass per class; the books' others go in data/books/classes.json in this same shape, as subclass records whose classId names the SRD class.",
+  "type": "object",
+  "required": ["meta", "classes"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": { "$ref": "common.schema.json#/$defs/meta" },
+    "classes": { "type": "array", "items": { "$ref": "#/$defs/class" } },
+    "subclasses": {
+      "description": "Subclasses recorded apart from their class: the books tier's, whose class lives in the srd tier. In the srd tier, subclasses sit inside their class and this stays empty.",
+      "type": "array", "items": { "$ref": "#/$defs/subclass" }
+    },
+    "rules": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/rule" } },
+    "ambiguities": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/ambiguity" } }
+  },
+  "$defs": {
+    "class": {
+      "type": "object",
+      "required": ["id", "name", "primaryAbilities", "hitDie", "savingThrows", "skillChoice", "weaponProficiencies", "armorTraining", "startingEquipment", "multiclass", "table", "features", "subclassLevel", "subclasses", "source", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/id" },
+        "name": { "type": "string" },
+        "primaryAbilities": {
+          "description": "Every listed ability; primaryAbilitiesMode says whether one or all are needed (Fighter: Strength or Dexterity).",
+          "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/ability" }
+        },
+        "primaryAbilitiesMode": { "enum": ["all", "any"] },
+        "hitDie": { "enum": [6, 8, 10, 12] },
+        "savingThrows": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "$ref": "common.schema.json#/$defs/ability" } },
+        "skillChoice": {
+          "type": "object", "required": ["count", "options"], "additionalProperties": false,
+          "properties": {
+            "count": { "type": "integer", "minimum": 1 },
+            "options": { "description": "The listed skills, or ['any'] where the class may choose any.", "type": "array", "items": { "anyOf": [ { "$ref": "common.schema.json#/$defs/skill" }, { "const": "any" } ] } }
+          }
+        },
+        "weaponProficiencies": { "type": "array", "items": { "type": "string" }, "description": "simple, martial, or weapon ids from equipment.json. A printed qualifier ('Martial weapons that have the Light property') is listed as the ids it covers in the Weapons table, and its printed words stay in weaponProficienciesNote (2026-10-24, the rules audit's finding 3)." },
+        "weaponProficienciesNote": { "type": "string" },
+        "armorTraining": { "type": "array", "items": { "enum": ["light", "medium", "heavy", "shields"] } },
+        "toolProficiencies": {
+          "description": "Fixed tools by id, and/or a choice.",
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "ids": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" } },
+            "choice": { "$ref": "common.schema.json#/$defs/effChoice" }
+          }
+        },
+        "startingEquipment": {
+          "description": "The printed options (A, B, sometimes C). items lists equipment ids with quantities where the option is a list; gp where it is coin.",
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "required": ["id", "text"], "additionalProperties": false,
+            "properties": {
+              "id": { "enum": ["a", "b", "c"] },
+              "text": { "type": "string" },
+              "items": { "type": "array", "items": { "type": "object", "required": ["item", "quantity"], "additionalProperties": false, "properties": { "item": { "$ref": "common.schema.json#/$defs/ref" }, "quantity": { "type": "integer", "minimum": 1 } } } },
+              "gp": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "multiclass": {
+          "description": "As a Multiclass: what a character gains taking this class after level 1 (the class's Core traits table and the Multiclassing rules).",
+          "type": "object", "required": ["gains"], "additionalProperties": false,
+          "properties": {
+            "gains": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/effect" } },
+            "text": { "type": "string" }
+          }
+        },
+        "spellcasting": { "$ref": "#/$defs/spellcasting" },
+        "table": {
+          "description": "The class's features table. columns name every column beyond Level, Proficiency Bonus and Class Features; rows carry each level's value for each.",
+          "type": "object", "required": ["columns", "rows"], "additionalProperties": false,
+          "properties": {
+            "columns": {
+              "type": "array",
+              "items": { "type": "object", "required": ["id", "name"], "additionalProperties": false, "properties": { "id": { "$ref": "common.schema.json#/$defs/id" }, "name": { "type": "string" } } }
+            },
+            "rows": {
+              "type": "array", "minItems": 20, "maxItems": 20,
+              "items": {
+                "type": "object", "required": ["level", "features", "values"], "additionalProperties": false,
+                "properties": {
+                  "level": { "type": "integer", "minimum": 1, "maximum": 20 },
+                  "features": { "type": "array", "items": { "type": "string" }, "description": "Feature ids, or subclass-feature for the levels the table prints 'Subclass feature'." },
+                  "values": { "type": "object", "additionalProperties": { "type": ["integer", "string"] }, "description": "Column id to the printed value: an integer, a die (d6), or a string such as 'Unlimited' or '—'." }
+                }
+              }
+            },
+            "source": { "$ref": "common.schema.json#/$defs/source" }
+          }
+        },
+        "features": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/feature" } },
+        "optionLists": {
+          "description": "Lists a feature chooses from: Eldritch Invocations, Metamagic Options, Fighting Styles printed in the class (if any).",
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["id", "name", "options"], "additionalProperties": false,
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/id" },
+              "name": { "type": "string" },
+              "options": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/feature" } }
+            }
+          }
+        },
+        "spellList": {
+          "description": "The class's spell list, as spell ids, from the class's own list (SRD prints it per class). spells.json's classes field must agree; the cross-file check holds them together.",
+          "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" }
+        },
+        "subclassLevel": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "subclasses": { "type": "array", "items": { "$ref": "#/$defs/subclass" } },
+        "source": { "$ref": "common.schema.json#/$defs/source" },
+        "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+        "note": { "type": "string" }
+      },
+      "allOf": [ { "if": { "properties": { "confidence": { "not": { "const": "printed" } } } }, "then": { "required": ["note"] } } ]
+    },
+    "spellcasting": {
+      "type": "object",
+      "required": ["ability", "progression", "focus", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "ability": { "$ref": "common.schema.json#/$defs/ability" },
+        "progression": { "enum": ["full", "half", "third", "pact"], "description": "How the class counts toward the Multiclass Spellcaster table (pact: not at all; Pact Magic is apart)." },
+        "multiclassRounding": { "enum": ["down", "up"], "description": "How a half or third caster's levels round in the multiclass caster level, as printed." },
+        "preparedColumn": { "$ref": "common.schema.json#/$defs/id", "description": "The table column holding Prepared Spells." },
+        "cantripsColumn": { "$ref": "common.schema.json#/$defs/id" },
+        "slotColumns": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" }, "description": "The table columns for slot levels 1 to 9, in order; for pact, the Spell Slots and Slot Level columns." },
+        "changesPrepared": { "enum": ["long-rest", "level-up", "special"], "description": "When the class may change its prepared list." },
+        "ritual": { "type": "boolean" },
+        "focus": { "type": "string" },
+        "text": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "subclass": {
+      "type": "object",
+      "required": ["id", "classId", "name", "features", "source", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "common.schema.json#/$defs/id" },
+        "classId": { "$ref": "common.schema.json#/$defs/id" },
+        "name": { "type": "string" },
+        "text": { "type": "string", "description": "The subclass's one-line identity, if printed." },
+        "features": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/feature" } },
+        "spells": {
+          "description": "Spells the subclass always has prepared, by class level (Domain Spells, Circle Spells, Oath Spells).",
+          "type": "array",
+          "items": { "type": "object", "required": ["level", "spells"], "additionalProperties": false, "properties": { "level": { "type": "integer" }, "spells": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" } } } }
+        },
+        "source": { "$ref": "common.schema.json#/$defs/source" },
+        "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+        "note": { "type": "string" }
+      },
+      "allOf": [ { "if": { "properties": { "confidence": { "not": { "const": "printed" } } } }, "then": { "required": ["note"] } } ]
+    }
+  }
+}

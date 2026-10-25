@@ -1,0 +1,481 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "common.schema.json",
+  "title": "Shared definitions for every dnd-rules data schema",
+  "description": "Written 2026-10-18, before any D&D data, after dcc-rules' common.schema.json: the same confidence vocabulary, provenance, meta and rule shapes, with D&D's abilities, its own compute-tree nodes, and the effect vocabulary every feature, trait, feat, item, condition and toggle uses. Every schema in this folder $refs this file rather than restating these. Both tiers, data/srd/ and data/books/, use the same schemas (d-amp-d spec §2.1). Nothing in this file is a game rule; these are the shapes game rules are recorded in.",
+  "$defs": {
+    "id": {
+      "description": "A record id. kebab-case, permanent: saved characters reference it. A replaced record keeps its id with supersededBy.",
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "ref": {
+      "description": "A reference to a record in this or another data file, written <file>:<id>, e.g. spells:fireball, feats:alert, classes:fighter. The cross-file check resolves every one.",
+      "type": "string",
+      "pattern": "^[a-z-]+:[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "ability": {
+      "description": "The six abilities (SRD 5.2.1 p.5).",
+      "enum": ["str", "dex", "con", "int", "wis", "cha"]
+    },
+    "skill": {
+      "description": "The 18 skills (SRD 5.2.1 p.6, Skills table). Their abilities live in core.json.",
+      "enum": ["acrobatics", "animal-handling", "arcana", "athletics", "deception", "history", "insight", "intimidation", "investigation", "medicine", "nature", "perception", "performance", "persuasion", "religion", "sleight-of-hand", "stealth", "survival"]
+    },
+    "damageType": {
+      "description": "The 13 damage types (SRD 5.2.1 p.16-17).",
+      "enum": ["acid", "bludgeoning", "cold", "fire", "force", "lightning", "necrotic", "piercing", "poison", "psychic", "radiant", "slashing", "thunder"]
+    },
+    "condition": {
+      "description": "The 15 conditions (Rules Glossary).",
+      "enum": ["blinded", "charmed", "deafened", "exhaustion", "frightened", "grappled", "incapacitated", "invisible", "paralyzed", "petrified", "poisoned", "prone", "restrained", "stunned", "unconscious"]
+    },
+    "size": { "enum": ["tiny", "small", "medium", "large", "huge", "gargantuan"] },
+    "recharge": {
+      "description": "When a limited use comes back. short-rest also means a Long Rest restores it, as every Short Rest benefit is also a Long Rest's. dawn is 'the next dawn' (SRD p.206).",
+      "enum": ["short-rest", "long-rest", "dawn", "turn", "special", "never"]
+    },
+    "actionType": {
+      "description": "What using it costs on a turn.",
+      "enum": ["action", "bonus-action", "reaction", "free", "none", "minute", "hour", "special"]
+    },
+    "dice": {
+      "description": "Dice notation as printed: 1d8, 2d6, 1d4+1, 10. No spaces.",
+      "type": "string",
+      "pattern": "^([0-9]+d[0-9]+)([+-][0-9]+)?$|^[0-9]+$"
+    },
+    "confidence": {
+      "description": "printed: stated directly in the source. derived: computed from printed text. inferred: our reading of ambiguous or unextractable text, needs confirmation. house: our own ruling filling a gap, with the user's dated sign-off. Anything other than printed carries a note; the schemas enforce it.",
+      "enum": ["printed", "derived", "inferred", "house"]
+    },
+    "source": {
+      "description": "Where a record came from: the cite-the-book rule. The SRD is cited by page, which equals the PDF page (calibrated 2026-10-18). Every other book is the user's clippings, which have no page numbers, so it is cited by chapter and section, and a page is never guessed: the PHB, the DMG, and since 2026-10-24 locathah-rising (the Locathah species, which D&D Beyond's sheet cites as LR) and arcana-unleashed (the Arcana Domain, cited AU). Each ref is a folder of clippings in reference/books/.",
+      "type": "object",
+      "required": ["ref", "section"],
+      "additionalProperties": false,
+      "properties": {
+        "ref": { "enum": ["srd-5.2.1", "phb-2024", "dmg-2024", "locathah-rising", "arcana-unleashed"] },
+        "section": { "type": "string", "minLength": 1 },
+        "page": { "type": "integer", "minimum": 1 },
+        "table": { "type": "string" }
+      },
+      "allOf": [
+        { "if": { "properties": { "ref": { "const": "srd-5.2.1" } } }, "then": { "required": ["page"] } },
+        { "if": { "properties": { "ref": { "enum": ["phb-2024", "dmg-2024", "locathah-rising", "arcana-unleashed"] } } }, "then": { "not": { "required": ["page"] } } }
+      ]
+    },
+    "text": {
+      "description": "The rule's words, as markdown. In data/srd/ this is the SRD 5.2.1's own text, which CC-BY-4.0 permits with the attribution (d-amp-d spec §8, D1). In data/books/ it is a short restatement, never the book's prose: meta.textPolicy says which, and the validator holds books/ to restated.",
+      "type": "string",
+      "minLength": 1
+    },
+    "provenance": {
+      "description": "The fields every catalogue record carries. Combined into records with allOf.",
+      "type": "object",
+      "required": ["source", "confidence"],
+      "properties": {
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "note": { "type": "string" },
+        "supersededBy": { "$ref": "#/$defs/id" }
+      },
+      "allOf": [
+        { "if": { "properties": { "confidence": { "not": { "const": "printed" } } } }, "then": { "required": ["note"] } }
+      ]
+    },
+    "meta": {
+      "type": "object",
+      "required": ["dataVersion", "extractedOn", "complete", "tier", "textPolicy"],
+      "additionalProperties": false,
+      "properties": {
+        "dataVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "extractedOn": { "type": "string", "format": "date" },
+        "complete": { "type": "boolean", "description": "Honest: a deliberate slice says false, and notes states both sides of the line." },
+        "tier": { "enum": ["srd", "books"], "description": "srd ships in the app's repo and site; books never does (dnd-rules CONTEXT, Two tiers)." },
+        "textPolicy": { "enum": ["srd-verbatim", "restated"], "description": "srd-verbatim only with tier srd." },
+        "attribution": { "type": "string", "description": "The SRD's required attribution statement, carried by every srd file." },
+        "notes": { "type": "string" },
+        "expressionExtensions": {
+          "type": "array",
+          "description": "Compute-tree or effect nodes this file needed beyond this vocabulary, each with the printed rule that forced it. Agents propose; the orchestrator adds the node here, so the vocabulary never grows silently.",
+          "items": {
+            "type": "object",
+            "required": ["node", "why"],
+            "additionalProperties": false,
+            "properties": { "node": { "type": "string" }, "why": { "type": "string" } }
+          }
+        }
+      },
+      "allOf": [
+        { "if": { "properties": { "tier": { "const": "books" } } }, "then": { "properties": { "textPolicy": { "const": "restated" } } } },
+        { "if": { "properties": { "tier": { "const": "srd" } } }, "then": { "required": ["attribution"] } }
+      ]
+    },
+    "rule": {
+      "description": "A statement of rule that is not itself a catalogue record (resting, death saves, multiclass prerequisites). The standard shape in every file.",
+      "type": "object",
+      "required": ["id", "name", "text", "source", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "text": { "$ref": "#/$defs/text" },
+        "compute": { "$ref": "#/$defs/expression" },
+        "dependsOn": { "type": "array", "items": { "type": "string" } },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "note": { "type": "string" }
+      },
+      "allOf": [
+        { "if": { "properties": { "confidence": { "not": { "const": "printed" } } } }, "then": { "required": ["note"] } }
+      ]
+    },
+    "ruling": {
+      "description": "The user's choice on an open reading, as dcc-rules records it: a house ruling with a dated sign-off.",
+      "type": "object",
+      "required": ["reading", "confidence", "signedOff", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "reading": { "type": "string" },
+        "confidence": { "const": "house" },
+        "signedOff": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "ambiguity": {
+      "description": "A place the source is unclear or conflicts with itself. Recorded with every reading, never ruled by an agent: status open until the user rules.",
+      "type": "object",
+      "required": ["id", "question", "readings", "status", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "question": { "type": "string" },
+        "readings": {
+          "type": "array", "minItems": 2,
+          "items": {
+            "type": "object", "required": ["id", "text"], "additionalProperties": false,
+            "properties": { "id": { "$ref": "#/$defs/id" }, "text": { "type": "string" }, "recommended": { "type": "boolean" } }
+          }
+        },
+        "status": { "enum": ["open", "ruled"] },
+        "ruling": { "$ref": "#/$defs/ruling" },
+        "affects": { "type": "array", "items": { "$ref": "#/$defs/ref" } },
+        "source": { "$ref": "#/$defs/source" }
+      },
+      "allOf": [ { "if": { "properties": { "status": { "const": "ruled" } } }, "then": { "required": ["ruling"] } } ]
+    },
+
+    "prerequisite": {
+      "description": "What must be true to take a feat or an option. The machine-checkable parts are fields; text is the printed wording, always present.",
+      "type": "object",
+      "required": ["text"],
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string" },
+        "level": { "type": "integer", "minimum": 1, "maximum": 20, "description": "Character level, or the class level where classLevelOf names the class." },
+        "classLevelOf": { "$ref": "#/$defs/id" },
+        "abilities": {
+          "description": "Minimum scores; abilitiesMode says whether one or all must be met.",
+          "type": "array",
+          "items": { "type": "object", "required": ["ability", "min"], "additionalProperties": false, "properties": { "ability": { "$ref": "#/$defs/ability" }, "min": { "type": "integer" } } }
+        },
+        "abilitiesMode": { "enum": ["all", "any"] },
+        "requires": { "type": "array", "items": { "type": "string" }, "description": "Refs or ids of features, options or proficiencies needed (an invocation requiring another; Spellcasting or Pact Magic)." }
+      }
+    },
+    "feature": {
+      "description": "A named benefit: a class or subclass feature, a species trait, a feat's benefit, an invocation, a Metamagic option. text is the rule; effects are what the sheet applies of it.",
+      "type": "object",
+      "required": ["id", "name", "text", "effects", "source", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "level": { "type": "integer", "minimum": 1, "maximum": 20, "description": "The class level that grants it; absent outside classes." },
+        "action": { "$ref": "#/$defs/actionType" },
+        "text": { "$ref": "#/$defs/text" },
+        "effects": { "type": "array", "items": { "$ref": "#/$defs/effect" } },
+        "toggle": { "type": "boolean", "description": "An ongoing state the player switches on and off (Rage), whose effects apply only while on (spec C4)." },
+        "replaces": { "$ref": "#/$defs/id", "description": "An earlier feature this one improves or supersedes." },
+        "cost": {
+          "description": "Added 2026-10-18: what using it spends from a resource ('Cost: 1 Sorcery Point', Metamagic, SRD p.66).",
+          "type": "object", "required": ["resource", "amount"], "additionalProperties": false,
+          "properties": { "resource": { "$ref": "#/$defs/id" }, "amount": { "anyOf": [ { "type": "integer" }, { "type": "string" } ] } }
+        },
+        "prerequisite": { "$ref": "#/$defs/prerequisite" },
+        "source": { "$ref": "#/$defs/source" },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "note": { "type": "string" }
+      },
+      "allOf": [
+        { "if": { "properties": { "confidence": { "not": { "const": "printed" } } } }, "then": { "required": ["note"] } }
+      ]
+    },
+
+    "expression": {
+      "description": "A compute tree. App code never hardcodes a formula, so every printed formula is a display string plus one of these. Deliberately small; a new node is declared in meta.expressionExtensions.",
+      "type": "object",
+      "required": ["type"],
+      "oneOf": [
+        { "$ref": "#/$defs/exprConstant" },
+        { "$ref": "#/$defs/exprAbilityScore" },
+        { "$ref": "#/$defs/exprAbilityMod" },
+        { "$ref": "#/$defs/exprProficiencyBonus" },
+        { "$ref": "#/$defs/exprLevel" },
+        { "$ref": "#/$defs/exprClassLevel" },
+        { "$ref": "#/$defs/exprClassColumn" },
+        { "$ref": "#/$defs/exprByLevel" },
+        { "$ref": "#/$defs/exprSum" },
+        { "$ref": "#/$defs/exprProduct" },
+        { "$ref": "#/$defs/exprMax" },
+        { "$ref": "#/$defs/exprMin" },
+        { "$ref": "#/$defs/exprFloorDiv" }
+      ]
+    },
+    "exprConstant": {
+      "type": "object", "required": ["type", "value"], "additionalProperties": false,
+      "properties": { "type": { "const": "constant" }, "value": { "type": "number" }, "unit": { "enum": ["feet", "pounds", "hours", "minutes", "rounds", "hp", "gp"] } }
+    },
+    "exprAbilityScore": {
+      "type": "object", "required": ["type", "ability"], "additionalProperties": false,
+      "properties": { "type": { "const": "abilityScore" }, "ability": { "$ref": "#/$defs/ability" } }
+    },
+    "exprAbilityMod": {
+      "description": "The ability's modifier, floor((score - 10) / 2) (SRD p.5). ability may be spellcasting: the class's spellcasting ability, resolved per class.",
+      "type": "object", "required": ["type", "ability"], "additionalProperties": false,
+      "properties": { "type": { "const": "abilityMod" }, "ability": { "anyOf": [ { "$ref": "#/$defs/ability" }, { "const": "spellcasting" } ] } }
+    },
+    "exprProficiencyBonus": {
+      "description": "The proficiency bonus by character level (core.json's table).",
+      "type": "object", "required": ["type"], "additionalProperties": false,
+      "properties": { "type": { "const": "proficiencyBonus" } }
+    },
+    "exprLevel": {
+      "description": "The character level: the sum of every class's level.",
+      "type": "object", "required": ["type"], "additionalProperties": false,
+      "properties": { "type": { "const": "level" } }
+    },
+    "exprClassLevel": {
+      "description": "One class's level. class 'self' means the class whose feature this is.",
+      "type": "object", "required": ["type", "class"], "additionalProperties": false,
+      "properties": { "type": { "const": "classLevel" }, "class": { "anyOf": [ { "$ref": "#/$defs/id" }, { "const": "self" } ] } }
+    },
+    "exprClassColumn": {
+      "description": "A column of a class's features table at its current class level, e.g. the Barbarian's Rages or the Monk's Martial Arts die.",
+      "type": "object", "required": ["type", "class", "column"], "additionalProperties": false,
+      "properties": { "type": { "const": "classColumn" }, "class": { "anyOf": [ { "$ref": "#/$defs/id" }, { "const": "self" } ] }, "column": { "$ref": "#/$defs/id" } }
+    },
+    "exprByLevel": {
+      "description": "A value that steps at printed levels: the highest entry whose level is at or below the given level. of is character or self (the feature's class level).",
+      "type": "object", "required": ["type", "of", "steps"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "byLevel" },
+        "of": { "enum": ["character", "self"] },
+        "steps": {
+          "type": "array", "minItems": 1,
+          "items": { "type": "object", "required": ["level", "value"], "additionalProperties": false,
+                     "properties": { "level": { "type": "integer", "minimum": 1, "maximum": 20 }, "value": { "type": ["number", "string"] } } }
+        }
+      }
+    },
+    "exprSum": {
+      "type": "object", "required": ["type", "terms"], "additionalProperties": false,
+      "properties": { "type": { "const": "sum" }, "terms": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/expression" } } }
+    },
+    "exprProduct": {
+      "type": "object", "required": ["type", "terms"], "additionalProperties": false,
+      "properties": { "type": { "const": "product" }, "terms": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/expression" } } }
+    },
+    "exprMax": {
+      "type": "object", "required": ["type", "terms"], "additionalProperties": false,
+      "properties": { "type": { "const": "max" }, "terms": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/expression" } } }
+    },
+    "exprMin": {
+      "type": "object", "required": ["type", "terms"], "additionalProperties": false,
+      "properties": { "type": { "const": "min" }, "terms": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/expression" } } }
+    },
+    "exprFloorDiv": {
+      "description": "floor(of / by). The 2024 rules round down (SRD p.5, 'Round Down').",
+      "type": "object", "required": ["type", "of", "by"], "additionalProperties": false,
+      "properties": { "type": { "const": "floorDiv" }, "of": { "$ref": "#/$defs/expression" }, "by": { "type": "number", "exclusiveMinimum": 0 } }
+    },
+
+    "target": {
+      "description": "What an effect changes. ability:<a>, save:<a>|save:all, save:vs-<condition>, death-save, skill:<s>|check:<a>|check:all, attack:<kind>, damage:<kind>, speed:<mode>, ac, hp-max, initiative, spell-dc, spell-attack, passive:<skill>, d20:all (every d20 Test). attack:this and damage:this, added 2026-10-18, mean rolls made with the item that carries the effect ('+1 bonus to attack rolls and damage rolls made with this magic weapon', Weapon, +1, +2, or +3, SRD p.253). proficiency-bonus added 2026-10-18 for the Ioun Stone of Mastery (SRD p.227). death-save added 2026-10-18 for Beacon of Hope and Survivor (SRD p.112, p.49); save:vs-<condition> for Protection from Poison ('saving throws to avoid or end the Poisoned condition', p.157).",
+      "type": "string",
+      "pattern": "^(ability:(str|dex|con|int|wis|cha)|save:(str|dex|con|int|wis|cha|all|vs-[a-z]+)|death-save|skill:[a-z-]+|check:(str|dex|con|int|wis|cha|all)|attack:(melee-weapon|ranged-weapon|melee-spell|ranged-spell|weapon|spell|unarmed|this|all)|damage:(melee-weapon|ranged-weapon|weapon|spell|unarmed|this|all)|speed:(walk|fly|swim|climb|burrow|all)|ac|hp-max|initiative|spell-dc|spell-attack|proficiency-bonus|passive:[a-z-]+|d20:all)$"
+    },
+    "effect": {
+      "description": "What a feature, trait, feat, item, condition or toggle does, in one closed vocabulary (d-amp-d spec §5.1). Anything it cannot say goes in a text effect and stays the table's. when holds a printed condition the app shows and never decides ('while you aren't wearing armor').",
+      "type": "object",
+      "required": ["type"],
+      "oneOf": [
+        { "$ref": "#/$defs/effBonus" },
+        { "$ref": "#/$defs/effAcFormula" },
+        { "$ref": "#/$defs/effSpeed" },
+        { "$ref": "#/$defs/effProficiency" },
+        { "$ref": "#/$defs/effExpertise" },
+        { "$ref": "#/$defs/effAdvantage" },
+        { "$ref": "#/$defs/effDefense" },
+        { "$ref": "#/$defs/effConditionImmunity" },
+        { "$ref": "#/$defs/effSense" },
+        { "$ref": "#/$defs/effResource" },
+        { "$ref": "#/$defs/effGrantSpell" },
+        { "$ref": "#/$defs/effAbilityIncrease" },
+        { "$ref": "#/$defs/effChoice" },
+        { "$ref": "#/$defs/effAttackCount" },
+        { "$ref": "#/$defs/effCritRange" },
+        { "$ref": "#/$defs/effAttackOption" },
+        { "$ref": "#/$defs/effSaveDc" },
+        { "$ref": "#/$defs/effSetScore" },
+        { "$ref": "#/$defs/effText" }
+      ]
+    },
+    "requires": {
+      "description": "Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). The when stays for display.",
+      "enum": ["armor", "no-armor", "no-armor-no-shield", "no-heavy-armor", "not-incapacitated", "strength-attack", "worn"]
+    },
+    "effBonus": {
+      "description": "Adds a number to a target. value is a number or an expression. Negative for a penalty.",
+      "type": "object", "required": ["type", "target", "value"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "bonus" }, "target": { "$ref": "#/$defs/target" },
+        "value": { "anyOf": [ { "type": "number" }, { "$ref": "#/$defs/expression" } ] },
+        "dice": { "$ref": "#/$defs/dice", "description": "A die added rather than a flat number (Bless's 1d4)." },
+        "when": { "type": "string" }, "requires": { "$ref": "#/$defs/requires" }
+      }
+    },
+    "effAcFormula": {
+      "description": "An alternative way to compute Armor Class; the character uses the highest available (SRD p.177, Armor Class). base plus the listed abilities' modifiers, dex capped by maxDex.",
+      "type": "object", "required": ["type", "id", "base", "abilities"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "acFormula" }, "id": { "$ref": "#/$defs/id" }, "base": { "type": "integer" },
+        "abilities": { "type": "array", "items": { "$ref": "#/$defs/ability" } },
+        "maxDex": { "type": "integer" }, "allowsShield": { "type": "boolean" }, "when": { "type": "string" }, "requires": { "$ref": "#/$defs/requires" }
+      }
+    },
+    "effSpeed": {
+      "description": "Gives a speed mode a value: equal to the Speed (equalsWalk) or a fixed number of feet.",
+      "type": "object", "required": ["type", "mode"], "additionalProperties": false,
+      "properties": { "type": { "const": "speed" }, "mode": { "enum": ["walk", "fly", "swim", "climb", "burrow"] }, "feet": { "type": "integer" }, "equalsWalk": { "type": "boolean" }, "minimum": { "type": "integer", "description": "Added 2026-10-18: the Speed is at least this (Boots of Striding and Springing, SRD p.214)." }, "multiplier": { "type": "number", "description": "Added 2026-10-18 for Haste: 'the target's Speed is doubled' (SRD p.139)." }, "when": { "type": "string" }, "requires": { "$ref": "#/$defs/requires" } }
+    },
+    "effProficiency": {
+      "description": "Grants proficiency. ids are skills, abilities (saves), tool or item ids, armor categories (light, medium, heavy, shields), weapon categories (simple, martial) or weapon ids, or languages.",
+      "type": "object", "required": ["type", "category", "ids"], "additionalProperties": false,
+      "properties": { "type": { "const": "proficiency" }, "category": { "enum": ["save", "skill", "tool", "armor", "weapon", "language"] }, "ids": { "type": "array", "minItems": 1, "items": { "type": "string" } } }
+    },
+    "effExpertise": {
+      "type": "object", "required": ["type", "ids"], "additionalProperties": false,
+      "properties": { "type": { "const": "expertise" }, "ids": { "type": "array", "items": { "type": "string" } } }
+    },
+    "effAdvantage": {
+      "type": "object", "required": ["type", "mode", "on"], "additionalProperties": false,
+      "properties": { "type": { "const": "advantage" }, "mode": { "enum": ["advantage", "disadvantage"] }, "on": { "$ref": "#/$defs/target" }, "who": { "enum": ["self", "attackers"], "description": "attackers: rolls made against this creature (Prone, Invisible)." }, "when": { "type": "string" }, "requires": { "$ref": "#/$defs/requires" } }
+    },
+    "effDefense": {
+      "type": "object", "required": ["type", "defense", "damageTypes"], "additionalProperties": false,
+      "properties": { "type": { "const": "defense" }, "defense": { "enum": ["resistance", "vulnerability", "immunity"] }, "damageTypes": { "type": "array", "minItems": 1, "items": { "anyOf": [ { "$ref": "#/$defs/damageType" }, { "const": "all" } ] } }, "when": { "type": "string" }, "requires": { "$ref": "#/$defs/requires" } }
+    },
+    "effConditionImmunity": {
+      "type": "object", "required": ["type", "conditions"], "additionalProperties": false,
+      "properties": { "type": { "const": "conditionImmunity" }, "conditions": { "type": "array", "items": { "$ref": "#/$defs/condition" } }, "when": { "type": "string", "description": "Added 2026-10-18 for Mindless Rage ('while your Rage is active', SRD p.30) and Aura of Courage." } }
+    },
+    "effSense": {
+      "type": "object", "required": ["type", "sense", "feet"], "additionalProperties": false,
+      "properties": { "type": { "const": "sense" }, "sense": { "enum": ["darkvision", "blindsight", "tremorsense", "truesight", "telepathy"], "description": "telepathy added 2026-10-18 for the Helm of Telepathy (SRD p.226)." }, "feet": { "type": "integer" }, "extends": { "type": "boolean", "description": "Added 2026-10-18: adds feet to a sense already held, or grants it at feet if none (Goggles of Night, SRD p.224)." }, "when": { "type": "string", "description": "Added 2026-10-18 for Stonecunning's Tremorsense (SRD p.84)." } }
+    },
+    "effSetScore": {
+      "description": "Added 2026-10-18: an ability score becomes value while this applies, and does nothing if the score is already that high ('Your Constitution is 19 while you wear this amulet', Amulet of Health, SRD p.209; Thunderous Greatclub, p.249).",
+      "type": "object", "required": ["type", "ability", "value"], "additionalProperties": false,
+      "properties": { "type": { "const": "setScore" }, "ability": { "$ref": "#/$defs/ability" }, "value": { "type": "integer" } }
+    },
+    "effAttackCount": {
+      "description": "Added 2026-10-18: Extra Attack, 'You can attack twice instead of once whenever you take the Attack action' (SRD p.48). count is the attacks per Attack action; the highest applies, since Extra Attack doesn't stack (SRD p.25).",
+      "type": "object", "required": ["type", "count"], "additionalProperties": false,
+      "properties": { "type": { "const": "attackCount" }, "count": { "type": "integer", "minimum": 2 } }
+    },
+    "effCritRange": {
+      "description": "Added 2026-10-18: Improved Critical, 'score a Critical Hit on a roll of 19 or 20' (SRD p.49). min is the lowest d20 that crits; on names the rolls.",
+      "type": "object", "required": ["type", "min", "on"], "additionalProperties": false,
+      "properties": { "type": { "const": "critRange" }, "min": { "type": "integer", "minimum": 2, "maximum": 20 }, "on": { "$ref": "#/$defs/target" } }
+    },
+    "effAttackOption": {
+      "description": "Added 2026-10-25 for Martial Arts: 'You can roll 1d6 in place of the normal damage of your Unarmed Strike or Monk weapons' and 'You can use your Dexterity modifier instead of your Strength modifier for the attack and damage rolls of your Unarmed Strikes and Monk weapons' (SRD p.50). attacks names the attacks it reaches: unarmed for the Unarmed Strike, and weapon ids. ability is one the player may use in place of the attack's own, for both rolls; die is a die they may roll in place of its damage, as dice or a class column holding them (Martial Arts'). The sheet takes whichever is better, as it does Finesse's choice. wieldingOnly: it holds only while every weapon wielded is one of attacks ('while you are unarmed or wielding only Monk weapons'). id names the set of weapons, so a DM can rule another weapon into it, saved on that item for that character (a roster item's countsAs), and name is what one of them is called (Monk weapon).",
+      "type": "object", "required": ["type", "attacks"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "attackOption" },
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "attacks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/id" } },
+        "ability": { "$ref": "#/$defs/ability" },
+        "die": { "anyOf": [ { "$ref": "#/$defs/dice" }, { "$ref": "#/$defs/exprClassColumn" } ] },
+        "wieldingOnly": { "type": "boolean" },
+        "when": { "type": "string" }, "requires": { "$ref": "#/$defs/requires" }
+      }
+    },
+    "effSaveDc": {
+      "description": "Added 2026-10-18: a feature's own save DC, '8 plus your Wisdom modifier and Proficiency Bonus' (Monk's Focus, SRD p.50; Cunning Strike, p.62). id names it so the feature's text can be shown beside the number.",
+      "type": "object", "required": ["type", "id", "ability"], "additionalProperties": false,
+      "properties": { "type": { "const": "saveDc" }, "id": { "$ref": "#/$defs/id" }, "ability": { "$ref": "#/$defs/ability" } }
+    },
+    "effResource": {
+      "description": "A limited use this grants, tracked by the sheet: its maximum and when it comes back.",
+      "type": "object", "required": ["type", "id", "name", "max", "recharge"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "resource" }, "id": { "$ref": "#/$defs/id" }, "name": { "type": "string" },
+        "max": { "anyOf": [ { "type": "integer" }, { "$ref": "#/$defs/expression" } ] },
+        "recharge": { "$ref": "#/$defs/recharge" },
+        "rechargePartial": { "type": "string", "description": "Printed partial recovery, e.g. one use on a Short Rest." },
+        "rechargeFromLevel": {
+          "description": "Added 2026-10-18 for Font of Inspiration: from a class level, the resource comes back on a shorter rest (SRD p.32).",
+          "type": "object", "required": ["level", "recharge"], "additionalProperties": false,
+          "properties": { "level": { "type": "integer", "minimum": 1, "maximum": 20 }, "recharge": { "$ref": "#/$defs/recharge" } }
+        }
+      }
+    },
+    "effGrantSpell": {
+      "type": "object", "required": ["type", "spell"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "grantSpell" }, "spell": { "$ref": "#/$defs/ref" },
+        "atLevel": { "type": "integer", "minimum": 1, "maximum": 20 },
+        "alwaysPrepared": { "type": "boolean" },
+        "atWill": { "type": "boolean", "description": "Added 2026-10-18: cast 'without expending a spell slot', with no limit (Eldritch Invocations, SRD p.72)." },
+        "ability": { "anyOf": [ { "$ref": "#/$defs/ability" }, { "const": "choice" } ] },
+        "freeCasts": { "type": "object", "required": ["uses", "recharge"], "additionalProperties": false, "properties": { "uses": { "anyOf": [ { "type": "integer" }, { "$ref": "#/$defs/expression" } ], "description": "An expression added 2026-10-18 for Forest Gnome: 'a number of times equal to your Proficiency Bonus' (SRD p.85)." }, "recharge": { "$ref": "#/$defs/recharge" }, "slotLevel": { "type": "integer" } } }
+      }
+    },
+    "effAbilityIncrease": {
+      "description": "Raises ability scores. abilities lists those allowed; choose is how many of them to pick (absent: all listed). max is the cap (20 unless printed otherwise). patterns, added 2026-10-18, holds the printed alternatives: a background's 'one by 2 and another by 1, or all three by 1' is [[2,1],[1,1,1]] (SRD p.83), and amount is then the largest single increase.",
+      "type": "object", "required": ["type", "abilities", "amount"], "additionalProperties": false,
+      "properties": { "type": { "const": "abilityIncrease" }, "abilities": { "type": "array", "items": { "$ref": "#/$defs/ability" } }, "amount": { "type": "integer" }, "choose": { "type": "integer" }, "max": { "type": "integer" }, "patterns": { "type": "array", "items": { "type": "array", "items": { "type": "integer", "minimum": 1 } } } }
+    },
+    "effChoice": {
+      "description": "A choice the player makes, whose answer is stored on the character (choices[]). Options are refs, ids, or a query: from holds 'skills:any', 'feats:origin' and the like.",
+      "type": "object", "required": ["type", "id", "count"], "additionalProperties": false,
+      "properties": {
+        "type": { "const": "choice" }, "id": { "$ref": "#/$defs/id" }, "label": { "type": "string" },
+        "count": { "anyOf": [ { "type": "integer", "minimum": 1 }, { "$ref": "#/$defs/expression" } ], "description": "An expression added 2026-10-18 for counts read from a table column: Weapon Mastery (SRD p.47), Eldritch Invocations (p.71)." },
+        "atLevel": { "type": "integer", "minimum": 1, "maximum": 20, "description": "Added 2026-10-18: a choice a feature gains at a later class level ('At Rogue level 6, you gain Expertise in two more', SRD p.61)." },
+        "kind": { "enum": ["skill", "tool", "language", "feat", "spell", "ability", "fighting-style", "weapon-mastery", "invocation", "option", "other"] },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "from": { "type": "string" },
+        "grants": { "type": "string", "description": "What the chosen option gives: proficiency, expertise, feat, spell, and so on." },
+        "where": {
+          "description": "Added 2026-10-22: limits on a monsters query's list, each read for the character. For Wild Shape's Known Forms (SRD p.42, the Beast Shapes table): maxCr, the highest Challenge Rating; fly, 1 where a form with a Fly Speed may be chosen and 0 where not; swarm, whether a swarm's stat block counts (false by the user's ruling, classes.json ambiguity wild-shape-swarms).",
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "maxCr": { "$ref": "#/$defs/expression" },
+            "fly": { "$ref": "#/$defs/expression" },
+            "swarm": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "effText": {
+      "description": "Anything the vocabulary cannot say. Shown for the table, never applied.",
+      "type": "object", "required": ["type", "summary"], "additionalProperties": false,
+      "properties": { "type": { "const": "text" }, "summary": { "type": "string" } }
+    }
+  }
+}

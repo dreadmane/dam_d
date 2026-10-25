@@ -1,0 +1,424 @@
+{
+  "meta": {
+    "dataVersion": "0.1.0",
+    "extractedOn": "2026-10-18",
+    "complete": true,
+    "tier": "srd",
+    "textPolicy": "srd-verbatim",
+    "attribution": "This work includes material from the System Reference Document 5.2.1 (\"SRD 5.2.1\") by Wizards of the Coast LLC, available at https://www.dndbeyond.com/srd. The SRD 5.2.1 is licensed under the Creative Commons Attribution 4.0 International License, available at https://creativecommons.org/licenses/by/4.0/legalcode.",
+    "notes": "SRD 5.2.1 pp.83, Character Origins > Character Backgrounds: the four backgrounds the SRD prints (Acolyte, Criminal, Sage, Soldier) and the Parts of a Background rules. Equipment refs use the equipment section’s printed names (Traveler’s Clothes is “Clothes, Traveler’s”, so equipment:clothes-travelers)."
+  },
+  "backgrounds": [
+    {
+      "id": "acolyte",
+      "name": "Acolyte",
+      "abilities": [
+        "int",
+        "wis",
+        "cha"
+      ],
+      "feat": {
+        "feat": "feats:magic-initiate",
+        "choice": "Cleric",
+        "text": "Magic Initiate (Cleric)"
+      },
+      "skills": [
+        "insight",
+        "religion"
+      ],
+      "tool": {
+        "id": "calligraphers-supplies",
+        "text": "Calligrapher’s Supplies"
+      },
+      "equipment": [
+        {
+          "id": "a",
+          "text": "Calligrapher’s Supplies, Book (prayers), Holy Symbol, Parchment (10 sheets), Robe, 8 GP",
+          "items": [
+            {
+              "item": "equipment:calligraphers-supplies",
+              "quantity": 1
+            },
+            {
+              "item": "equipment:book",
+              "quantity": 1,
+              "note": "prayers"
+            },
+            {
+              "item": "equipment:holy-symbol",
+              "quantity": 1
+            },
+            {
+              "item": "equipment:parchment",
+              "quantity": 10,
+              "note": "10 sheets"
+            },
+            {
+              "item": "equipment:robe",
+              "quantity": 1
+            }
+          ],
+          "gp": 8
+        },
+        {
+          "id": "b",
+          "text": "50 GP",
+          "gp": 50
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Backgrounds > Background Descriptions > Acolyte",
+        "page": 83
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "criminal",
+      "name": "Criminal",
+      "abilities": [
+        "dex",
+        "con",
+        "int"
+      ],
+      "feat": {
+        "feat": "feats:alert",
+        "text": "Alert"
+      },
+      "skills": [
+        "sleight-of-hand",
+        "stealth"
+      ],
+      "tool": {
+        "id": "thieves-tools",
+        "text": "Thieves’ Tools"
+      },
+      "equipment": [
+        {
+          "id": "a",
+          "text": "2 Daggers, Thieves’ Tools, Crowbar, 2 Pouches, Traveler’s Clothes, 16 GP",
+          "items": [
+            {
+              "item": "equipment:dagger",
+              "quantity": 2
+            },
+            {
+              "item": "equipment:thieves-tools",
+              "quantity": 1
+            },
+            {
+              "item": "equipment:crowbar",
+              "quantity": 1
+            },
+            {
+              "item": "equipment:pouch",
+              "quantity": 2
+            },
+            {
+              "item": "equipment:clothes-travelers",
+              "quantity": 1
+            }
+          ],
+          "gp": 16
+        },
+        {
+          "id": "b",
+          "text": "50 GP",
+          "gp": 50
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Backgrounds > Background Descriptions > Criminal",
+        "page": 83
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "sage",
+      "name": "Sage",
+      "abilities": [
+        "con",
+        "int",
+        "wis"
+      ],
+      "feat": {
+        "feat": "feats:magic-initiate",
+        "choice": "Wizard",
+        "text": "Magic Initiate (Wizard)"
+      },
+      "skills": [
+        "arcana",
+        "history"
+      ],
+      "tool": {
+        "id": "calligraphers-supplies",
+        "text": "Calligrapher’s Supplies"
+      },
+      "equipment": [
+        {
+          "id": "a",
+          "text": "Quarterstaff, Calligrapher’s Supplies, Book (history), Parchment (8 sheets), Robe, 8 GP",
+          "items": [
+            {
+              "item": "equipment:quarterstaff",
+              "quantity": 1
+            },
+            {
+              "item": "equipment:calligraphers-supplies",
+              "quantity": 1
+            },
+            {
+              "item": "equipment:book",
+              "quantity": 1,
+              "note": "history"
+            },
+            {
+              "item": "equipment:parchment",
+              "quantity": 8,
+              "note": "8 sheets"
+            },
+            {
+              "item": "equipment:robe",
+              "quantity": 1
+            }
+          ],
+          "gp": 8
+        },
+        {
+          "id": "b",
+          "text": "50 GP",
+          "gp": 50
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Backgrounds > Background Descriptions > Sage",
+        "page": 83
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "soldier",
+      "name": "Soldier",
+      "abilities": [
+        "str",
+        "dex",
+        "con"
+      ],
+      "feat": {
+        "feat": "feats:savage-attacker",
+        "text": "Savage Attacker"
+      },
+      "skills": [
+        "athletics",
+        "intimidation"
+      ],
+      "tool": {
+        "choice": {
+          "type": "choice",
+          "id": "soldier-gaming-set",
+          "label": "Choose one kind of Gaming Set",
+          "count": 1,
+          "kind": "tool",
+          "from": "equipment:gaming-set",
+          "grants": "proficiency"
+        },
+        "text": "Choose one kind of Gaming Set (see “Equipment”)"
+      },
+      "equipment": [
+        {
+          "id": "a",
+          "text": "Spear, Shortbow, 20 Arrows, Gaming Set (same as above), Healer’s Kit, Quiver, Traveler’s Clothes, 14 GP",
+          "items": [
+            {
+              "item": "equipment:spear",
+              "quantity": 1
+            },
+            {
+              "item": "equipment:shortbow",
+              "quantity": 1
+            },
+            {
+              "item": "equipment:arrows",
+              "quantity": 20
+            },
+            {
+              "item": "equipment:gaming-set",
+              "quantity": 1,
+              "note": "same as above: the kind chosen for the tool proficiency"
+            },
+            {
+              "item": "equipment:healers-kit",
+              "quantity": 1
+            },
+            {
+              "item": "equipment:quiver",
+              "quantity": 1
+            },
+            {
+              "item": "equipment:clothes-travelers",
+              "quantity": 1
+            }
+          ],
+          "gp": 14
+        },
+        {
+          "id": "b",
+          "text": "50 GP",
+          "gp": 50
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Backgrounds > Background Descriptions > Soldier",
+        "page": 83
+      },
+      "confidence": "printed"
+    }
+  ],
+  "rules": [
+    {
+      "id": "character-backgrounds",
+      "name": "Character Backgrounds",
+      "text": "Your character’s background is a collection of characteristics that represent the place and occupation that were most formative before your character embarked on a life of adventure.\n\nA background includes the following parts.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Backgrounds",
+        "page": 83
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "background-ability-scores",
+      "name": "Ability Scores",
+      "text": "A background lists three of your character’s ability scores. Increase one by 2 and another one by 1, or increase all three by 1. None of these increases can raise a score above 20.",
+      "effects": [
+        {
+          "type": "choice",
+          "id": "background-ability-scores",
+          "label": "Increase one listed score by 2 and another by 1, or all three by 1 (none above 20)",
+          "count": 1,
+          "kind": "option",
+          "options": [
+            "plus-2-plus-1",
+            "plus-1-plus-1-plus-1"
+          ]
+        }
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Backgrounds > Parts of a Background > Ability Scores",
+        "page": 83
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "background-feat",
+      "name": "Feat",
+      "text": "A background gives your character a specified Origin feat (described in “Feats”).",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Backgrounds > Parts of a Background > Feat",
+        "page": 83
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "background-skill-proficiencies",
+      "name": "Skill Proficiencies",
+      "text": "A background gives your character proficiency in two specified skills.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Backgrounds > Parts of a Background > Skill Proficiencies",
+        "page": 83
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "background-tool-proficiency",
+      "name": "Tool Proficiency",
+      "text": "Each background gives a character proficiency with one tool—either a specific tool or one chosen from the Artisan’s Tools category. Tools are detailed in “Equipment.”",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Backgrounds > Parts of a Background > Tool Proficiency",
+        "page": 83
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "background-equipment",
+      "name": "Equipment",
+      "text": "Each background offers a choice between a package of equipment and 50 GP.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Backgrounds > Parts of a Background > Equipment",
+        "page": 83
+      },
+      "confidence": "printed"
+    }
+  ],
+  "ambiguities": [
+    {
+      "id": "soldier-tool-outside-tool-rule",
+      "question": "Parts of a Background says the tool is “either a specific tool or one chosen from the Artisan’s Tools category”, but the Soldier gives a choice of Gaming Set, which is neither. Which governs?",
+      "readings": [
+        {
+          "id": "entry-governs",
+          "text": "The Soldier’s own entry governs: choose one kind of Gaming Set. The general rule describes the usual case.",
+          "recommended": true
+        },
+        {
+          "id": "rule-governs",
+          "text": "The general rule governs and the Soldier’s choice is an error; no such reading is printed anywhere."
+        }
+      ],
+      "status": "ruled",
+      "affects": [
+        "backgrounds:soldier"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Backgrounds > Parts of a Background > Tool Proficiency",
+        "page": 83
+      },
+      "ruling": {
+        "reading": "entry-governs",
+        "confidence": "house",
+        "signedOff": "2026-10-19, by the user",
+        "note": "The Soldier's own entry governs: a Gaming Set."
+      }
+    },
+    {
+      "id": "acolyte-holy-symbol-form",
+      "question": "The Acolyte’s package A lists “Holy Symbol” without a form; the Holy Symbol entry (p.97) offers Amulet, Emblem or Reliquary, each 5 GP. Which does the Acolyte get?",
+      "readings": [
+        {
+          "id": "player-chooses-form",
+          "text": "The player chooses one form of Holy Symbol.",
+          "recommended": true
+        },
+        {
+          "id": "unspecified",
+          "text": "The form is left to the table; the sheet records a Holy Symbol with no form."
+        }
+      ],
+      "status": "ruled",
+      "affects": [
+        "backgrounds:acolyte",
+        "equipment:holy-symbol"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Backgrounds > Background Descriptions > Acolyte",
+        "page": 83
+      },
+      "ruling": {
+        "reading": "player-chooses-form",
+        "confidence": "house",
+        "signedOff": "2026-10-19, by the user",
+        "note": "The player chooses the Holy Symbol form."
+      }
+    }
+  ]
+}

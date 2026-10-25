@@ -1,0 +1,298 @@
+{
+  "id": "audit-e-save",
+  "schemaVersion": 1,
+  "gameDataVersion": "example",
+  "createdAt": "2026-10-19T10:27:00.000Z",
+  "updatedAt": "2026-10-19T10:27:00.000Z",
+  "name": "Kethra Goldscale",
+  "primaryEntityId": "audit-e",
+  "entities": [
+    {
+      "id": "audit-e",
+      "kind": "character",
+      "name": "Kethra Goldscale",
+      "classes": [
+        {
+          "classId": "paladin",
+          "subclassId": "oath-of-devotion",
+          "level": 8,
+          "hp": [
+            {
+              "level": 1,
+              "method": "max"
+            },
+            {
+              "level": 2,
+              "method": "fixed"
+            },
+            {
+              "level": 3,
+              "method": "fixed"
+            },
+            {
+              "level": 4,
+              "method": "fixed"
+            },
+            {
+              "level": 5,
+              "method": "fixed"
+            },
+            {
+              "level": 6,
+              "method": "fixed"
+            },
+            {
+              "level": 7,
+              "method": "fixed"
+            },
+            {
+              "level": 8,
+              "method": "fixed"
+            }
+          ]
+        }
+      ],
+      "species": {
+        "speciesId": "dragonborn",
+        "size": "medium"
+      },
+      "background": {
+        "backgroundId": "soldier",
+        "abilityIncreases": {
+          "str": 2,
+          "con": 1
+        }
+      },
+      "abilities": {
+        "base": {
+          "str": 15,
+          "dex": 10,
+          "con": 13,
+          "int": 8,
+          "wis": 12,
+          "cha": 14
+        },
+        "generation": {
+          "method": "standard-array",
+          "rolls": []
+        }
+      },
+      "choices": [
+        {
+          "source": "species:dragonborn",
+          "choice": "draconic-ancestry",
+          "values": [
+            "gold"
+          ]
+        },
+        {
+          "source": "background:soldier",
+          "choice": "soldier-gaming-set",
+          "values": [
+            "dice-set"
+          ]
+        },
+        {
+          "source": "class:paladin:1",
+          "choice": "class-skills",
+          "values": [
+            "insight",
+            "religion"
+          ]
+        },
+        {
+          "source": "class:paladin:1",
+          "choice": "weapon-mastery",
+          "values": [
+            "longsword",
+            "javelin"
+          ]
+        },
+        {
+          "source": "class:paladin:2",
+          "choice": "fighting-style",
+          "values": [
+            "defense"
+          ]
+        },
+        {
+          "source": "class:paladin:4",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:paladin:8",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:paladin:4>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "cha": 2
+          }
+        },
+        {
+          "source": "class:paladin:8>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "str": 1,
+            "cha": 1
+          }
+        }
+      ],
+      "spells": [
+        {
+          "spellId": "bless",
+          "classId": "paladin",
+          "source": "class:paladin",
+          "prepared": true
+        },
+        {
+          "spellId": "cure-wounds",
+          "classId": "paladin",
+          "source": "class:paladin",
+          "prepared": true
+        },
+        {
+          "spellId": "shield-of-faith",
+          "classId": "paladin",
+          "source": "class:paladin",
+          "prepared": true
+        },
+        {
+          "spellId": "heroism",
+          "classId": "paladin",
+          "source": "class:paladin",
+          "prepared": true
+        },
+        {
+          "spellId": "find-steed",
+          "classId": "paladin",
+          "source": "class:paladin",
+          "prepared": true
+        },
+        {
+          "spellId": "aid",
+          "classId": "paladin",
+          "source": "class:paladin",
+          "prepared": true
+        },
+        {
+          "spellId": "magic-weapon",
+          "classId": "paladin",
+          "source": "class:paladin",
+          "prepared": true
+        }
+      ],
+      "hp": {
+        "current": 12,
+        "temp": 0
+      },
+      "deathSaves": {
+        "successes": 0,
+        "failures": 0
+      },
+      "hitDiceSpent": {},
+      "slotsExpended": {},
+      "pactSlotsExpended": 0,
+      "resourcesUsed": {},
+      "conditions": [],
+      "exhaustion": 0,
+      "concentration": null,
+      "toggles": {},
+      "inventory": [
+        {
+          "id": "audit-E-1",
+          "name": "Chain Mail",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:chain-mail",
+          "weight": 0,
+          "worn": true
+        },
+        {
+          "id": "audit-E-2",
+          "name": "Shield",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:shield",
+          "weight": 0,
+          "worn": true
+        },
+        {
+          "id": "audit-E-3",
+          "name": "Longsword",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:longsword",
+          "weight": 0
+        },
+        {
+          "id": "audit-E-4",
+          "name": "Javelin",
+          "description": "",
+          "quantity": 6,
+          "tags": [],
+          "itemId": "equipment:javelin",
+          "weight": 0
+        },
+        {
+          "id": "audit-E-5",
+          "name": "Holy Symbol",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:holy-symbol",
+          "weight": 0
+        }
+      ],
+      "coins": {
+        "cp": 0,
+        "sp": 0,
+        "ep": 0,
+        "gp": 18,
+        "pp": 0
+      },
+      "heroicInspiration": true,
+      "levelling": {
+        "mode": "milestone",
+        "xp": 0
+      },
+      "quickBar": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "companions": [],
+      "details": {
+        "alignment": "Lawful Good",
+        "languages": [
+          "common",
+          "draconic",
+          "celestial"
+        ],
+        "appearance": ""
+      },
+      "creation": {
+        "route": "level-1",
+        "complete": true
+      },
+      "notes": ""
+    }
+  ]
+}

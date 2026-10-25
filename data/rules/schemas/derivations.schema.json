@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "derivations.schema.json",
+  "title": "derivations.json: every derived value as a compute tree",
+  "description": "The formulas the sheet computes (d-amp-d spec §5.1): ability modifier, saves, skills, passive Perception, initiative, unarmored AC, spell save DC and attack, hit points per level, carrying capacity, the Concentration DC, and the like. Each is a display string plus a compute tree, with dependsOn as the recompute edges. A formula that needs the character's choices (which armour is worn, which class casts) names its inputs in dependsOn and leaves the choosing to the app.",
+  "type": "object",
+  "required": ["meta", "derivations"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": { "$ref": "common.schema.json#/$defs/meta" },
+    "derivations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "display", "dependsOn", "source", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string" },
+          "display": { "type": "string", "description": "The formula as a reader sees it: 8 + your spellcasting ability modifier + your Proficiency Bonus." },
+          "compute": { "$ref": "common.schema.json#/$defs/expression" },
+          "computeNote": { "type": "string", "description": "Required when compute is absent: why a tree cannot hold it, and what the app does instead." },
+          "dependsOn": { "type": "array", "items": { "type": "string" } },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        },
+        "allOf": [
+          { "if": { "properties": { "confidence": { "not": { "const": "printed" } } } }, "then": { "required": ["note"] } },
+          { "if": { "not": { "required": ["compute"] } }, "then": { "required": ["computeNote"] } }
+        ]
+      }
+    },
+    "rules": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/rule" } },
+    "ambiguities": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/ambiguity" } }
+  }
+}

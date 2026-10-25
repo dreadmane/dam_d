@@ -1,0 +1,1038 @@
+{
+  "id": "extreme",
+  "schemaVersion": 1,
+  "gameDataVersion": "33f04094c6f8",
+  "createdAt": "2026-10-19T21:30:00.000Z",
+  "updatedAt": "2026-10-19T21:30:00.000Z",
+  "name": "Oriel Ashcombe",
+  "primaryEntityId": "extreme-character",
+  "entities": [
+    {
+      "id": "extreme-character",
+      "kind": "character",
+      "name": "Oriel Ashcombe",
+      "classes": [
+        {
+          "classId": "wizard",
+          "level": 12,
+          "hp": [
+            {
+              "level": 1,
+              "method": "max"
+            },
+            {
+              "level": 2,
+              "method": "fixed"
+            },
+            {
+              "level": 3,
+              "method": "fixed"
+            },
+            {
+              "level": 4,
+              "method": "fixed"
+            },
+            {
+              "level": 5,
+              "method": "fixed"
+            },
+            {
+              "level": 6,
+              "method": "fixed"
+            },
+            {
+              "level": 7,
+              "method": "fixed"
+            },
+            {
+              "level": 8,
+              "method": "fixed"
+            },
+            {
+              "level": 9,
+              "method": "fixed"
+            },
+            {
+              "level": 10,
+              "method": "fixed"
+            },
+            {
+              "level": 11,
+              "method": "fixed"
+            },
+            {
+              "level": 12,
+              "method": "fixed"
+            }
+          ],
+          "subclassId": "evoker"
+        },
+        {
+          "classId": "cleric",
+          "level": 5,
+          "hp": [
+            {
+              "level": 1,
+              "method": "fixed"
+            },
+            {
+              "level": 2,
+              "method": "fixed"
+            },
+            {
+              "level": 3,
+              "method": "fixed"
+            },
+            {
+              "level": 4,
+              "method": "fixed"
+            },
+            {
+              "level": 5,
+              "method": "fixed"
+            }
+          ],
+          "subclassId": "life-domain"
+        },
+        {
+          "classId": "fighter",
+          "level": 3,
+          "hp": [
+            {
+              "level": 1,
+              "method": "fixed"
+            },
+            {
+              "level": 2,
+              "method": "fixed"
+            },
+            {
+              "level": 3,
+              "method": "fixed"
+            }
+          ],
+          "subclassId": "champion"
+        }
+      ],
+      "species": {
+        "speciesId": "elf",
+        "size": "medium"
+      },
+      "background": {
+        "backgroundId": "sage",
+        "abilityIncreases": {
+          "int": 2,
+          "con": 1
+        }
+      },
+      "abilities": {
+        "base": {
+          "str": 13,
+          "dex": 12,
+          "con": 14,
+          "int": 15,
+          "wis": 14,
+          "cha": 8
+        },
+        "generation": {
+          "method": "standard-array",
+          "rolls": []
+        }
+      },
+      "choices": [
+        {
+          "source": "species:elf",
+          "choice": "elven-lineage",
+          "values": [
+            "drow"
+          ]
+        },
+        {
+          "source": "species:elf",
+          "choice": "elven-lineage-spellcasting-ability",
+          "values": [
+            "int"
+          ]
+        },
+        {
+          "source": "species:elf",
+          "choice": "keen-senses",
+          "values": [
+            "insight"
+          ]
+        },
+        {
+          "source": "background:sage>feat:magic-initiate",
+          "choice": "magic-initiate-ability",
+          "values": [
+            "int"
+          ]
+        },
+        {
+          "source": "background:sage>feat:magic-initiate",
+          "choice": "magic-initiate-cantrips",
+          "values": [
+            "acid-splash",
+            "chill-touch"
+          ]
+        },
+        {
+          "source": "background:sage>feat:magic-initiate",
+          "choice": "magic-initiate-level-1-spell",
+          "values": [
+            "alarm"
+          ]
+        },
+        {
+          "source": "class:wizard:1",
+          "choice": "class-skills",
+          "values": [
+            "arcana",
+            "history"
+          ]
+        },
+        {
+          "source": "class:wizard:1",
+          "choice": "spellbook-initial",
+          "values": [
+            "alarm",
+            "burning-hands",
+            "charm-person",
+            "chromatic-orb",
+            "color-spray",
+            "comprehend-languages"
+          ]
+        },
+        {
+          "source": "class:wizard:2",
+          "choice": "scholar",
+          "values": [
+            "arcana"
+          ]
+        },
+        {
+          "source": "class:wizard:3",
+          "choice": "evocation-savant",
+          "values": [
+            "acid-arrow",
+            "burning-hands"
+          ]
+        },
+        {
+          "source": "class:wizard:4",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:wizard:8",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:wizard:12",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:cleric:1",
+          "choice": "divine-order",
+          "values": [
+            "protector"
+          ]
+        },
+        {
+          "source": "class:cleric:4",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:fighter:1",
+          "choice": "fighting-style",
+          "values": [
+            "archery"
+          ]
+        },
+        {
+          "source": "class:fighter:1",
+          "choice": "weapon-mastery",
+          "values": [
+            "club",
+            "dagger",
+            "greatclub"
+          ]
+        },
+        {
+          "source": "class:wizard:4>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "int": 2
+          }
+        },
+        {
+          "source": "class:wizard:8>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "int": 2
+          }
+        },
+        {
+          "source": "class:wizard:12>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "int": 2
+          }
+        },
+        {
+          "source": "class:cleric:4>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "int": 2
+          }
+        }
+      ],
+      "spells": [
+        {
+          "spellId": "acid-splash",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "chill-touch",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "dancing-lights",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "elementalism",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "fire-bolt",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "alarm",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "chromatic-orb",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "detect-magic",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "false-life",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "floating-disk",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "hideous-laughter",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "illusory-script",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "mage-armor",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "ray-of-sickness",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "sleep",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "acid-arrow",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "arcanists-magic-aura",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "blur",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "darkvision",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "enhance-ability",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "gentle-repose",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "invisibility",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "locate-object",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "mind-spike",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "phantasmal-force",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "scorching-ray",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "spider-climb",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "animate-dead",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "clairvoyance",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "fear",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "gaseous-form",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "hypnotic-pattern",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "major-image",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "protection-from-energy",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "sleet-storm",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": false
+        },
+        {
+          "spellId": "guidance",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        },
+        {
+          "spellId": "light",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        },
+        {
+          "spellId": "mending",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        },
+        {
+          "spellId": "resistance",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        },
+        {
+          "spellId": "animate-dead",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        },
+        {
+          "spellId": "augury",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        },
+        {
+          "spellId": "bane",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        },
+        {
+          "spellId": "beacon-of-hope",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        },
+        {
+          "spellId": "bestow-curse",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        },
+        {
+          "spellId": "blindness-deafness",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        },
+        {
+          "spellId": "calm-emotions",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        },
+        {
+          "spellId": "clairvoyance",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        },
+        {
+          "spellId": "command",
+          "classId": "cleric",
+          "source": "class:cleric",
+          "prepared": true
+        }
+      ],
+      "hp": {
+        "current": 133,
+        "temp": 0
+      },
+      "deathSaves": {
+        "successes": 0,
+        "failures": 0
+      },
+      "hitDiceSpent": {},
+      "slotsExpended": {},
+      "pactSlotsExpended": 0,
+      "resourcesUsed": {},
+      "conditions": [
+        {
+          "id": "extreme-condition-1",
+          "conditionId": "poisoned"
+        }
+      ],
+      "exhaustion": 1,
+      "concentration": null,
+      "toggles": {},
+      "inventory": [
+        {
+          "id": "extreme-item-1",
+          "name": "Longsword",
+          "description": "1d8 slashing · Versatile · Mastery: Sap",
+          "quantity": 1,
+          "tags": [
+            "weapon"
+          ],
+          "itemId": "equipment:longsword",
+          "weight": 3
+        },
+        {
+          "id": "extreme-item-2",
+          "name": "Shield",
+          "description": "AC +2",
+          "quantity": 1,
+          "tags": [
+            "armor"
+          ],
+          "itemId": "equipment:shield",
+          "weight": 6,
+          "worn": true
+        },
+        {
+          "id": "extreme-item-3",
+          "name": "Light Crossbow",
+          "description": "1d8 piercing · Ammunition · Loading · Two-Handed · Mastery: Slow",
+          "quantity": 1,
+          "tags": [
+            "weapon"
+          ],
+          "itemId": "equipment:light-crossbow",
+          "weight": 5
+        },
+        {
+          "id": "extreme-item-4",
+          "name": "Dagger",
+          "description": "1d4 piercing · Finesse · Light · Thrown · Mastery: Nick",
+          "quantity": 1,
+          "tags": [
+            "weapon"
+          ],
+          "itemId": "equipment:dagger",
+          "weight": 1
+        },
+        {
+          "id": "extreme-item-5",
+          "name": "Quarterstaff",
+          "description": "1d6 bludgeoning · Versatile · Mastery: Topple",
+          "quantity": 1,
+          "tags": [
+            "weapon"
+          ],
+          "itemId": "equipment:quarterstaff",
+          "weight": 4
+        },
+        {
+          "id": "extreme-item-6",
+          "name": "Explorer’s Pack",
+          "description": "An Explorer’s Pack contains the following items: Backpack, Bedroll, 2 flasks of Oil, 10 days of Rations, Rope, Tinderbox, 10 Torches, and Waterskin.",
+          "quantity": 1,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:explorers-pack",
+          "weight": 55
+        },
+        {
+          "id": "extreme-item-7",
+          "name": "Rope",
+          "description": "As a Utilize action, you can tie a knot with Rope if you succeed on a DC 10 Dexterity (Sleight of Hand) check. The Rope can be burst with a successful DC 20 Strength (Athletics) check.\n\nYou can bind an unwilling creature with the Rope only if the creature has the Grappled, Incapacitated, or Restrained condition. If the creature’s legs are bound, the creature has the Restrained condition until it escapes. Escaping the Rope requires the creature to make a successful DC 15 Dexterity (Acrobatics) check as an action.",
+          "quantity": 1,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:rope",
+          "weight": 5
+        },
+        {
+          "id": "extreme-item-8",
+          "name": "Torch",
+          "description": "A Torch burns for 1 hour, casting Bright Light in a 20-foot radius and Dim Light for an additional 20 feet. When you take the Attack action, you can attack with the Torch, using it as a Simple Melee weapon. On a hit, the target takes 1 Fire damage.",
+          "quantity": 5,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:torch",
+          "weight": 1
+        },
+        {
+          "id": "extreme-item-9",
+          "name": "Rations",
+          "description": "Rations consist of travel-ready food, including jerky, dried fruit, hardtack, and nuts. See “Malnutrition” in “Rules Glossary” for the risks of not eating.",
+          "quantity": 5,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:rations",
+          "weight": 2
+        },
+        {
+          "id": "extreme-item-10",
+          "name": "Waterskin",
+          "description": "A Waterskin holds up to 4 pints. If you don’t drink sufficient water, you risk dehydration (see “Rules Glossary”).",
+          "quantity": 1,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:waterskin",
+          "weight": 5
+        },
+        {
+          "id": "extreme-item-11",
+          "name": "Component Pouch",
+          "description": "A Component Pouch is watertight and filled with compartments that hold all the free Material components of your spells.",
+          "quantity": 1,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:component-pouch",
+          "weight": 2
+        },
+        {
+          "id": "extreme-item-12",
+          "name": "Book",
+          "description": "A Book contains fiction or nonfiction. If you consult an accurate nonfiction Book about its topic, you gain a +5 bonus to Intelligence (Arcana, History, Nature, or Religion) checks you make about that topic.",
+          "quantity": 1,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:book",
+          "weight": 5
+        },
+        {
+          "id": "extreme-item-13",
+          "name": "Ink",
+          "description": "Ink comes in a 1-ounce bottle, which provides enough ink to write about 500 pages.",
+          "quantity": 1,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:ink",
+          "weight": 0
+        },
+        {
+          "id": "extreme-item-14",
+          "name": "Parchment",
+          "description": "One sheet of Parchment can hold about 250 handwritten words.",
+          "quantity": 1,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:parchment",
+          "weight": 0
+        },
+        {
+          "id": "extreme-item-15",
+          "name": "Holy Symbol",
+          "description": "A Holy Symbol takes one of the forms in the Holy Symbol table and is bejeweled or painted to channel divine magic. A Cleric or Paladin can use a Holy Symbol as a Spellcasting Focus.\n\nThe table indicates whether a Holy Symbol needs to be held, worn, or borne on fabric (such as a tabard or banner) or a Shield.\n\nHoly Symbols\n\n| Symbol | Weight | Cost |\n|---|---|---|\n| Amulet (worn or held) | 1 lb. | 5 GP |\n| Emblem (borne on fabric or a Shield) | — | 5 GP |\n| Reliquary (held) | 2 lb. | 5 GP |",
+          "quantity": 1,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:holy-symbol"
+        },
+        {
+          "id": "extreme-item-16",
+          "name": "Healer’s Kit",
+          "description": "A Healer’s Kit has ten uses. As a Utilize action, you can expend one of its uses to stabilize an Unconscious creature that has 0 Hit Points without needing to make a Wisdom (Medicine) check.",
+          "quantity": 1,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:healers-kit",
+          "weight": 3
+        },
+        {
+          "id": "extreme-item-17",
+          "name": "Calligrapher’s Supplies",
+          "description": "Ability: Dexterity\n\nWeight: 5 lb.\n\nUtilize: Write text with impressive flourishes that guard against forgery (DC 15)\n\nCraft: Ink, Spell Scroll",
+          "quantity": 1,
+          "tags": [
+            "tool"
+          ],
+          "itemId": "equipment:calligraphers-supplies",
+          "weight": 5
+        },
+        {
+          "id": "extreme-item-18",
+          "name": "Lamp",
+          "description": "A Lamp burns Oil as fuel to cast Bright Light in a 15-foot radius and Dim Light for an additional 30 feet.",
+          "quantity": 1,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:lamp",
+          "weight": 1
+        },
+        {
+          "id": "extreme-item-19",
+          "name": "Oil",
+          "description": "You can douse a creature, object, or space with Oil or use it as fuel, as detailed below.\n\nDousing a Creature or an Object. When you take the Attack action, you can replace one of your attacks with throwing an Oil flask. Target one creature or object within 20 feet of yourself. The target must succeed on a Dexterity saving throw (DC 8 plus your Dexterity modifier and Proficiency Bonus) or be covered in oil. If the target takes Fire damage before the oil dries (after 1 minute), the target takes an extra 5 Fire damage from burning oil.\n\nDousing a Space. You can take the Utilize action to pour an Oil flask on level ground to cover a 5-foot-square area within 5 feet of yourself. If lit, the oil burns until the end of the turn 2 rounds from when the oil was lit (or 12 seconds) and deals 5 Fire damage to any creature that enters the area or ends its turn there. A creature can take this damage only once per turn.\n\nFuel. Oil serves as fuel for Lamps and Lanterns. Once lit, a flask of Oil burns for 6 hours in a Lamp or Lantern. That duration doesn’t need to be consecutive; you can extinguish the burning Oil (as a Utilize action) and rekindle it again until it has burned for a total of 6 hours.",
+          "quantity": 1,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:oil",
+          "weight": 1
+        },
+        {
+          "id": "extreme-item-20",
+          "name": "Bedroll",
+          "description": "A Bedroll sleeps one Small or Medium creature. While in a Bedroll, you automatically succeed on saving throws against extreme cold (see “Gameplay Toolbox”).",
+          "quantity": 1,
+          "tags": [
+            "gear"
+          ],
+          "itemId": "equipment:bedroll",
+          "weight": 7
+        },
+        {
+          "id": "extreme-item-21",
+          "name": "Ring of Protection",
+          "description": "You gain a +1 bonus to Armor Class and saving throws while wearing this ring.",
+          "quantity": 1,
+          "tags": [
+            "magic item"
+          ],
+          "itemId": "magic-items:ring-of-protection",
+          "effects": [
+            {
+              "type": "bonus",
+              "target": "ac",
+              "value": 1
+            },
+            {
+              "type": "bonus",
+              "target": "save:all",
+              "value": 1
+            }
+          ],
+          "worn": true,
+          "attuned": true
+        },
+        {
+          "id": "extreme-item-22",
+          "name": "Cloak of Protection",
+          "description": "You gain a +1 bonus to Armor Class and saving throws while you wear this cloak.",
+          "quantity": 1,
+          "tags": [
+            "magic item"
+          ],
+          "itemId": "magic-items:cloak-of-protection",
+          "effects": [
+            {
+              "type": "bonus",
+              "target": "ac",
+              "value": 1
+            },
+            {
+              "type": "bonus",
+              "target": "save:all",
+              "value": 1
+            }
+          ],
+          "worn": true,
+          "attuned": true
+        },
+        {
+          "id": "extreme-item-23",
+          "name": "Amulet of Health",
+          "description": "Your Constitution is 19 while you wear this amulet. It has no effect on you if your Constitution is 19 or higher without it.",
+          "quantity": 1,
+          "tags": [
+            "magic item"
+          ],
+          "itemId": "magic-items:amulet-of-health",
+          "worn": true,
+          "attuned": true
+        },
+        {
+          "id": "extreme-item-24",
+          "name": "Bag of Holding",
+          "description": "This bag has an interior space considerably larger than its outside dimensions—roughly 2 feet square and 4 feet deep on the inside. The bag can hold up to 500 pounds, not exceeding a volume of 64 cubic feet. The bag weighs 5 pounds, regardless of its contents. Retrieving an item from the bag requires a Utilize action.\n\nIf the bag is overloaded, pierced, or torn, it is destroyed, and its contents are scattered in the Astral Plane. If the bag is turned inside out, its contents spill forth unharmed, but the bag must be put right before it can be used again. The bag holds enough air for 10 minutes of breathing, divided by the number of breathing creatures inside.\n\nPlacing a *Bag of Holding* inside an extradimensional space created by a *Handy Haversack*, *Portable Hole*, or similar item instantly destroys both items and opens a gate to the Astral Plane. The gate originates where the one item was placed inside the other. Any creature within a 10-foot-radius Sphere centered on the gate is sucked through it to a random location on the Astral Plane. The gate then closes. The gate is one-way and can’t be reopened.",
+          "quantity": 1,
+          "tags": [
+            "magic item"
+          ],
+          "itemId": "magic-items:bag-of-holding"
+        },
+        {
+          "id": "extreme-item-25",
+          "name": "Potion of Healing",
+          "description": "You regain Hit Points when you drink this potion. The number of Hit Points depends on the potion’s rarity, as shown in the table below.\n\nWhatever its potency, the potion’s red liquid glimmers when agitated.\n\n| Potion | HP Regained | Rarity |\n|---|---|---|\n| Potion of Healing | 2d4 + 2 | Common |\n| Potion of Healing (greater) | 4d4 + 4 | Uncommon |\n| Potion of Healing (superior) | 8d4 + 8 | Rare |\n| Potion of Healing (supreme) | 10d4 + 20 | Very Rare |",
+          "quantity": 5,
+          "tags": [
+            "magic item"
+          ],
+          "itemId": "magic-items:potion-of-healing"
+        },
+        {
+          "id": "extreme-item-26",
+          "name": "Wand of Magic Missiles",
+          "description": "This wand has 7 charges. While holding it, you can expend no more than 3 charges to cast Magic Missile from it. For 1 charge, you cast the level 1 version of the spell. You can increase the spell’s level by 1 for each additional charge you expend.\n\nRegaining Charges. The wand regains 1d6 + 1 expended charges daily at dawn. If you expend the wand’s last charge, roll 1d20. On a 1, the wand crumbles into ashes and is destroyed.",
+          "quantity": 1,
+          "tags": [
+            "magic item"
+          ],
+          "itemId": "magic-items:wand-of-magic-missiles"
+        },
+        {
+          "id": "extreme-item-27",
+          "name": "Boots of Elvenkind",
+          "description": "While you wear these boots, your steps make no sound, regardless of the surface you are moving across. You also have Advantage on Dexterity (Stealth) checks.",
+          "quantity": 1,
+          "tags": [
+            "magic item"
+          ],
+          "itemId": "magic-items:boots-of-elvenkind",
+          "effects": [
+            {
+              "type": "advantage",
+              "mode": "advantage",
+              "on": "skill:stealth"
+            }
+          ],
+          "worn": true
+        },
+        {
+          "id": "extreme-item-28",
+          "name": "Weapon, +2 (Longsword)",
+          "description": "1d8 slashing · Versatile · Mastery: Sap\n\nYou have a bonus to attack rolls and damage rolls made with this magic weapon. The bonus is determined by the weapon’s rarity.",
+          "quantity": 1,
+          "tags": [
+            "magic item"
+          ],
+          "itemId": "magic-items:weapon-plus-2",
+          "baseItemId": "equipment:longsword",
+          "weight": 3,
+          "effects": [
+            {
+              "type": "bonus",
+              "target": "attack:this",
+              "value": 2
+            },
+            {
+              "type": "bonus",
+              "target": "damage:this",
+              "value": 2
+            }
+          ]
+        }
+      ],
+      "coins": {
+        "cp": 37,
+        "sp": 112,
+        "ep": 3,
+        "gp": 1480,
+        "pp": 25
+      },
+      "heroicInspiration": false,
+      "levelling": {
+        "mode": "xp",
+        "xp": 355000
+      },
+      "quickBar": [
+        {
+          "kind": "resource",
+          "ref": "wizard:arcane-recovery"
+        },
+        {
+          "kind": "resource",
+          "ref": "cleric:channel-divinity"
+        },
+        {
+          "kind": "resource",
+          "ref": "fighter:second-wind"
+        },
+        {
+          "kind": "resource",
+          "ref": "fighter:action-surge"
+        },
+        {
+          "kind": "attack",
+          "ref": "extreme-item-28"
+        },
+        null,
+        null,
+        null
+      ],
+      "companions": [
+        {
+          "id": "extreme-companion-1",
+          "name": "Quill, an owl familiar"
+        },
+        {
+          "id": "extreme-companion-2",
+          "name": "Brannoc, a warhorse"
+        }
+      ],
+      "details": {
+        "alignment": "Neutral Good",
+        "languages": [
+          "common",
+          "dwarvish",
+          "orc"
+        ],
+        "appearance": "Ink-stained fingers, a scarred shield arm."
+      },
+      "creation": {
+        "route": "any-level",
+        "complete": true
+      },
+      "notes": "The extreme fixture: built by make-extreme.ts in the m1/finish notes.",
+      "classOrder": [
+        "wizard",
+        "cleric",
+        "fighter"
+      ]
+    }
+  ]
+}

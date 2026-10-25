@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "spells.schema.json",
+  "title": "spells.json: every spell",
+  "description": "Each spell's printed header (level, school, classes, casting time, range, components, duration) as fields, its description as text, and the structure the sheet acts on: Concentration, ritual, the attack or save it makes, its damage or healing dice, and what a higher slot or a cantrip's level adds. The text is the authority; the structure is what the app reads.",
+  "type": "object",
+  "required": ["meta", "spells"],
+  "additionalProperties": false,
+  "properties": {
+    "meta": { "$ref": "common.schema.json#/$defs/meta" },
+    "spells": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "level", "school", "classes", "castingTime", "range", "components", "duration", "text", "source", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string" },
+          "level": { "type": "integer", "minimum": 0, "maximum": 9, "description": "0 is a cantrip." },
+          "school": { "enum": ["abjuration", "conjuration", "divination", "enchantment", "evocation", "illusion", "necromancy", "transmutation"] },
+          "classes": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/id" }, "description": "As the spell's header lists them." },
+          "castingTime": {
+            "type": "object", "required": ["text", "unit"], "additionalProperties": false,
+            "properties": {
+              "text": { "type": "string" },
+              "amount": { "type": "integer", "minimum": 1 },
+              "unit": { "enum": ["action", "bonus-action", "reaction", "minute", "hour"] },
+              "ritual": { "type": "boolean" },
+              "reactionTrigger": { "type": "string" }
+            }
+          },
+          "range": {
+            "type": "object", "required": ["text", "kind"], "additionalProperties": false,
+            "properties": {
+              "text": { "type": "string" },
+              "kind": { "enum": ["self", "touch", "feet", "miles", "sight", "unlimited", "special"] },
+              "amount": { "type": "integer" },
+              "area": { "type": "string", "description": "Self (15-foot Cone) and the like." }
+            }
+          },
+          "components": {
+            "type": "object", "required": ["v", "s", "m"], "additionalProperties": false,
+            "properties": {
+              "v": { "type": "boolean" }, "s": { "type": "boolean" }, "m": { "type": "boolean" },
+              "material": { "type": "string" },
+              "costGp": { "type": "number", "minimum": 0, "description": "A material component's printed cost." },
+              "consumed": { "type": "boolean" }
+            }
+          },
+          "duration": {
+            "type": "object", "required": ["text", "concentration"], "additionalProperties": false,
+            "properties": { "text": { "type": "string" }, "concentration": { "type": "boolean" } }
+          },
+          "text": { "$ref": "common.schema.json#/$defs/text" },
+          "higherLevels": { "type": "string", "description": "The 'Using a Higher-Level Spell Slot' paragraph." },
+          "cantripUpgrade": { "type": "string", "description": "The 'Cantrip Upgrade' paragraph." },
+          "attack": { "enum": ["melee", "ranged"], "description": "A spell attack roll, if the spell makes one." },
+          "save": { "$ref": "common.schema.json#/$defs/ability", "description": "The saving throw the spell calls for, if one." },
+          "damage": {
+            "type": "array",
+            "description": "type is absent where the caster chooses it, from damageChoice (Chromatic Orb, SRD p.115); changed 2026-10-18.",
+            "items": { "type": "object", "required": ["dice"], "additionalProperties": false, "properties": { "dice": { "$ref": "common.schema.json#/$defs/dice" }, "type": { "$ref": "common.schema.json#/$defs/damageType" }, "note": { "type": "string" } } }
+          },
+          "damageChoice": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/damageType" }, "description": "Types the caster chooses from (Chromatic Orb)." },
+          "healing": { "type": "string", "description": "Healing as printed: 2d8 plus your spellcasting ability modifier." },
+          "scaling": {
+            "description": "What a higher slot or character level adds, where it is a die count: perSlot for leveled spells, atLevels for cantrips.",
+            "type": "object", "additionalProperties": false,
+            "properties": {
+              "perSlot": { "$ref": "common.schema.json#/$defs/dice" },
+              "atLevels": { "type": "array", "items": { "type": "object", "required": ["level", "dice"], "additionalProperties": false, "properties": { "level": { "type": "integer" }, "dice": { "$ref": "common.schema.json#/$defs/dice" } } } }
+            }
+          },
+          "effects": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/effect" }, "description": "What the spell does to its caster's sheet while active, where the vocabulary can say it (Mage Armor's AC formula, Shield's +5 AC, Bless's 1d4). Used by the quick bar's toggles." },
+          "source": { "$ref": "common.schema.json#/$defs/source" },
+          "confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+          "note": { "type": "string" }
+        },
+        "allOf": [ { "if": { "properties": { "confidence": { "not": { "const": "printed" } } } }, "then": { "required": ["note"] } } ]
+      }
+    },
+    "rules": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/rule" } },
+    "ambiguities": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/ambiguity" } }
+  }
+}

@@ -1,0 +1,41 @@
+name: A rule reads wrong
+description: The app's reading of a rule differs from the book's.
+labels: [question]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The app's rules are data, and each entry cites its page, so a reading is fixed in one place once it's settled. Please cite the page rather than paste the book's text.
+  - type: input
+    id: rule
+    attributes:
+      label: The rule
+      placeholder: Martial Arts, the Wood Elf's speed, Fireball's damage…
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Where the book says it
+      description: The book, page and section.
+      placeholder: SRD 5.2.1, p.50, Monk, Martial Arts
+    validations:
+      required: true
+  - type: textarea
+    id: app
+    attributes:
+      label: What the app does
+    validations:
+      required: true
+  - type: textarea
+    id: book
+    attributes:
+      label: What you read the book to say
+      description: In your own words.
+    validations:
+      required: true
+  - type: input
+    id: character
+    attributes:
+      label: A character that shows it
+      description: Its name, or an example's. You can attach its exported file to the issue once it's open.

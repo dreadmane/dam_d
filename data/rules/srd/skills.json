@@ -1,0 +1,272 @@
+{
+  "meta": {
+    "dataVersion": "0.1.0",
+    "extractedOn": "2026-10-18",
+    "complete": true,
+    "tier": "srd",
+    "textPolicy": "srd-verbatim",
+    "attribution": "This work includes material from the System Reference Document 5.2.1 (\"SRD 5.2.1\") by Wizards of the Coast LLC, available at https://www.dndbeyond.com/srd. The SRD 5.2.1 is licensed under the Creative Commons Attribution 4.0 International License, available at https://creativecommons.org/licenses/by/4.0/legalcode.",
+    "notes": "The 18 skills from the Skills table (p.9) with their abilities and example uses, and the skill rules: Skill Proficiencies (Playing the Game > Proficiency, pp.8-9) and the Rules Glossary's Skill (p.188). Expertise and the Proficiency Bonus are in core.json; the skill-check formula is in derivations.json."
+  },
+  "skills": [
+    {
+      "id": "acrobatics",
+      "name": "Acrobatics",
+      "ability": "dex",
+      "examples": "Stay on your feet in a tricky situation, or perform an acrobatic stunt.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "animal-handling",
+      "name": "Animal Handling",
+      "ability": "wis",
+      "examples": "Calm or train an animal, or get an animal to behave in a certain way.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "arcana",
+      "name": "Arcana",
+      "ability": "int",
+      "examples": "Recall lore about spells, magic items, and the planes of existence.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "athletics",
+      "name": "Athletics",
+      "ability": "str",
+      "examples": "Jump farther than normal, stay afloat in rough water, or break something.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "deception",
+      "name": "Deception",
+      "ability": "cha",
+      "examples": "Tell a convincing lie, or wear a disguise convincingly.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "history",
+      "name": "History",
+      "ability": "int",
+      "examples": "Recall lore about historical events, people, nations, and cultures.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "insight",
+      "name": "Insight",
+      "ability": "wis",
+      "examples": "Discern a person’s mood and intentions.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "intimidation",
+      "name": "Intimidation",
+      "ability": "cha",
+      "examples": "Awe or threaten someone into doing what you want.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "investigation",
+      "name": "Investigation",
+      "ability": "int",
+      "examples": "Find obscure information in books, or deduce how something works.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "medicine",
+      "name": "Medicine",
+      "ability": "wis",
+      "examples": "Diagnose an illness, or determine what killed the recently slain.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "nature",
+      "name": "Nature",
+      "ability": "int",
+      "examples": "Recall lore about terrain, plants, animals, and weather.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "perception",
+      "name": "Perception",
+      "ability": "wis",
+      "examples": "Using a combination of senses, notice something that’s easy to miss.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "performance",
+      "name": "Performance",
+      "ability": "cha",
+      "examples": "Act, tell a story, perform music, or dance.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "persuasion",
+      "name": "Persuasion",
+      "ability": "cha",
+      "examples": "Honestly and graciously convince someone of something.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "religion",
+      "name": "Religion",
+      "ability": "int",
+      "examples": "Recall lore about gods, religious rituals, and holy symbols.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "sleight-of-hand",
+      "name": "Sleight of Hand",
+      "ability": "dex",
+      "examples": "Pick a pocket, conceal a handheld object, or perform legerdemain.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "stealth",
+      "name": "Stealth",
+      "ability": "dex",
+      "examples": "Escape notice by moving quietly and hiding behind things.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    },
+    {
+      "id": "survival",
+      "name": "Survival",
+      "ability": "wis",
+      "examples": "Follow tracks, forage, find a trail, or avoid natural hazards.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 9,
+        "table": "Skills"
+      },
+      "confidence": "printed"
+    }
+  ],
+  "rules": [
+    {
+      "id": "skill-proficiencies",
+      "name": "Skill Proficiencies",
+      "text": "Most ability checks involve using a skill, which represents a category of things creatures try to do with an ability check. The descriptions of the actions you take (see “Actions” later in “Playing the Game”) specify which skill applies if you make an ability check for that action, and many other rules note when a skill is relevant. The GM has the ultimate say on whether a skill is relevant in a situation.\n\nIf a creature is proficient in a skill, the creature applies its Proficiency Bonus to ability checks involving that skill. Without proficiency in a skill, a creature can still make ability checks involving that skill but doesn’t add its Proficiency Bonus. For example, if a character tries to climb a cliff, the GM might ask for a Strength (Athletics) check. If the character has Athletics proficiency, the character adds their Proficiency Bonus to the Strength check. If the character lacks that proficiency, they make the check without adding their Proficiency Bonus.\n\n**Skill List**\n\nThe skills are shown on the Skills table, which notes example uses for each skill proficiency as well as the ability check the skill most often applies to.\n\n**Determining Skills**\n\nA character’s starting skill proficiencies are determined at character creation, and a monster’s skill proficiencies appear in its stat block.",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Playing the Game > Proficiency > Skill Proficiencies",
+        "page": 8
+      },
+      "confidence": "printed",
+      "note": "The Skills table it refers to is the skills array. Expertise is core.json's expertise; tool and skill together is core.json's equipment-proficiencies."
+    },
+    {
+      "id": "skill",
+      "name": "Skill",
+      "text": "A skill is an area of specialization associated with an ability check. If you have proficiency in a skill, you can add your Proficiency Bonus when you make an ability check associated with that skill. See also “Playing the Game” (“Proficiency”).",
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Rules Glossary > Skill",
+        "page": 188
+      },
+      "confidence": "printed"
+    }
+  ]
+}

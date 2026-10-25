@@ -1,0 +1,472 @@
+{
+  "id": "audit-h-save",
+  "schemaVersion": 1,
+  "gameDataVersion": "example",
+  "createdAt": "2026-10-19T10:27:00.000Z",
+  "updatedAt": "2026-10-19T10:27:00.000Z",
+  "name": "Mara Quickwater",
+  "primaryEntityId": "audit-h",
+  "entities": [
+    {
+      "id": "audit-h",
+      "kind": "character",
+      "name": "Mara Quickwater",
+      "classes": [
+        {
+          "classId": "ranger",
+          "subclassId": "hunter",
+          "level": 20,
+          "hp": [
+            {
+              "level": 1,
+              "method": "max"
+            },
+            {
+              "level": 2,
+              "method": "fixed"
+            },
+            {
+              "level": 3,
+              "method": "fixed"
+            },
+            {
+              "level": 4,
+              "method": "fixed"
+            },
+            {
+              "level": 5,
+              "method": "fixed"
+            },
+            {
+              "level": 6,
+              "method": "fixed"
+            },
+            {
+              "level": 7,
+              "method": "fixed"
+            },
+            {
+              "level": 8,
+              "method": "fixed"
+            },
+            {
+              "level": 9,
+              "method": "fixed"
+            },
+            {
+              "level": 10,
+              "method": "fixed"
+            },
+            {
+              "level": 11,
+              "method": "fixed"
+            },
+            {
+              "level": 12,
+              "method": "fixed"
+            },
+            {
+              "level": 13,
+              "method": "fixed"
+            },
+            {
+              "level": 14,
+              "method": "fixed"
+            },
+            {
+              "level": 15,
+              "method": "fixed"
+            },
+            {
+              "level": 16,
+              "method": "fixed"
+            },
+            {
+              "level": 17,
+              "method": "fixed"
+            },
+            {
+              "level": 18,
+              "method": "fixed"
+            },
+            {
+              "level": 19,
+              "method": "fixed"
+            },
+            {
+              "level": 20,
+              "method": "fixed"
+            }
+          ]
+        }
+      ],
+      "species": {
+        "speciesId": "human",
+        "size": "medium"
+      },
+      "background": {
+        "backgroundId": "criminal",
+        "abilityIncreases": {
+          "dex": 2,
+          "con": 1
+        }
+      },
+      "abilities": {
+        "base": {
+          "str": 12,
+          "dex": 15,
+          "con": 13,
+          "int": 10,
+          "wis": 14,
+          "cha": 8
+        },
+        "generation": {
+          "method": "standard-array",
+          "rolls": []
+        }
+      },
+      "choices": [
+        {
+          "source": "species:human",
+          "choice": "skillful",
+          "values": [
+            "athletics"
+          ]
+        },
+        {
+          "source": "species:human",
+          "choice": "versatile",
+          "values": [
+            "skilled"
+          ]
+        },
+        {
+          "source": "class:ranger:1",
+          "choice": "class-skills",
+          "values": [
+            "nature",
+            "perception",
+            "survival"
+          ]
+        },
+        {
+          "source": "class:ranger:1",
+          "choice": "weapon-mastery",
+          "values": [
+            "longbow",
+            "shortsword"
+          ]
+        },
+        {
+          "source": "class:ranger:2",
+          "choice": "deft-explorer-expertise",
+          "values": [
+            "perception"
+          ]
+        },
+        {
+          "source": "class:ranger:2",
+          "choice": "deft-explorer-languages",
+          "values": [
+            "elvish",
+            "sylvan"
+          ]
+        },
+        {
+          "source": "class:ranger:2",
+          "choice": "fighting-style",
+          "values": [
+            "archery"
+          ]
+        },
+        {
+          "source": "class:ranger:3",
+          "choice": "hunters-prey",
+          "values": [
+            "colossus-slayer"
+          ]
+        },
+        {
+          "source": "class:ranger:4",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:ranger:7",
+          "choice": "defensive-tactics",
+          "values": [
+            "multiattack-defense"
+          ]
+        },
+        {
+          "source": "class:ranger:8",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:ranger:9",
+          "choice": "expertise",
+          "values": [
+            "stealth",
+            "survival"
+          ]
+        },
+        {
+          "source": "class:ranger:12",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:ranger:16",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:ranger:19",
+          "choice": "epic-boon",
+          "values": [
+            "boon-of-truesight"
+          ]
+        },
+        {
+          "source": "species:human>feat:skilled",
+          "choice": "skilled",
+          "values": [
+            "acrobatics",
+            "insight",
+            "investigation"
+          ]
+        },
+        {
+          "source": "class:ranger:4>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "dex": 1,
+            "wis": 1
+          }
+        },
+        {
+          "source": "class:ranger:8>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "dex": 2
+          }
+        },
+        {
+          "source": "class:ranger:12>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "wis": 2
+          }
+        },
+        {
+          "source": "class:ranger:16>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "con": 2
+          }
+        },
+        {
+          "source": "class:ranger:19>feat:boon-of-truesight",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "wis": 1
+          }
+        }
+      ],
+      "spells": [
+        {
+          "spellId": "hunters-mark",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "cure-wounds",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "goodberry",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "ensnaring-strike",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "pass-without-trace",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "spike-growth",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "lesser-restoration",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "conjure-animals",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "plant-growth",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "freedom-of-movement",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "locate-creature",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "conjure-woodland-beings",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "tree-stride",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        },
+        {
+          "spellId": "greater-restoration",
+          "classId": "ranger",
+          "source": "class:ranger",
+          "prepared": true
+        }
+      ],
+      "hp": {
+        "current": 12,
+        "temp": 0
+      },
+      "deathSaves": {
+        "successes": 0,
+        "failures": 0
+      },
+      "hitDiceSpent": {},
+      "slotsExpended": {},
+      "pactSlotsExpended": 0,
+      "resourcesUsed": {},
+      "conditions": [],
+      "exhaustion": 0,
+      "concentration": null,
+      "toggles": {},
+      "inventory": [
+        {
+          "id": "audit-H-1",
+          "name": "Studded Leather Armor",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:studded-leather-armor",
+          "weight": 0,
+          "worn": true
+        },
+        {
+          "id": "audit-H-2",
+          "name": "Longbow",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:longbow",
+          "weight": 0
+        },
+        {
+          "id": "audit-H-3",
+          "name": "Arrows",
+          "description": "",
+          "quantity": 20,
+          "tags": [],
+          "itemId": "equipment:arrows",
+          "weight": 0
+        },
+        {
+          "id": "audit-H-4",
+          "name": "Shortsword",
+          "description": "",
+          "quantity": 2,
+          "tags": [],
+          "itemId": "equipment:shortsword",
+          "weight": 0
+        }
+      ],
+      "coins": {
+        "cp": 0,
+        "sp": 0,
+        "ep": 0,
+        "gp": 18,
+        "pp": 0
+      },
+      "heroicInspiration": true,
+      "levelling": {
+        "mode": "milestone",
+        "xp": 0
+      },
+      "quickBar": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "companions": [],
+      "details": {
+        "alignment": "Lawful Good",
+        "languages": [
+          "common",
+          "halfling",
+          "dwarvish",
+          "elvish",
+          "sylvan"
+        ],
+        "appearance": ""
+      },
+      "creation": {
+        "route": "level-1",
+        "complete": true
+      },
+      "notes": ""
+    }
+  ]
+}

@@ -1,0 +1,331 @@
+{
+  "id": "audit-g-save",
+  "schemaVersion": 1,
+  "gameDataVersion": "example",
+  "createdAt": "2026-10-19T10:27:00.000Z",
+  "updatedAt": "2026-10-19T10:27:00.000Z",
+  "name": "Fizzwick Tallowby",
+  "primaryEntityId": "audit-g",
+  "entities": [
+    {
+      "id": "audit-g",
+      "kind": "character",
+      "name": "Fizzwick Tallowby",
+      "classes": [
+        {
+          "classId": "bard",
+          "subclassId": "college-of-lore",
+          "level": 6,
+          "hp": [
+            {
+              "level": 1,
+              "method": "max"
+            },
+            {
+              "level": 2,
+              "method": "fixed"
+            },
+            {
+              "level": 3,
+              "method": "fixed"
+            },
+            {
+              "level": 4,
+              "method": "fixed"
+            },
+            {
+              "level": 5,
+              "method": "fixed"
+            },
+            {
+              "level": 6,
+              "method": "fixed"
+            }
+          ]
+        }
+      ],
+      "species": {
+        "speciesId": "gnome",
+        "size": "small"
+      },
+      "background": {
+        "backgroundId": "acolyte",
+        "abilityIncreases": {
+          "cha": 2,
+          "wis": 1
+        }
+      },
+      "abilities": {
+        "base": {
+          "str": 8,
+          "dex": 14,
+          "con": 13,
+          "int": 10,
+          "wis": 12,
+          "cha": 15
+        },
+        "generation": {
+          "method": "standard-array",
+          "rolls": []
+        }
+      },
+      "choices": [
+        {
+          "source": "species:gnome",
+          "choice": "gnomish-lineage",
+          "values": [
+            "rock-gnome"
+          ]
+        },
+        {
+          "source": "species:gnome",
+          "choice": "gnomish-lineage-spellcasting-ability",
+          "values": [
+            "cha"
+          ]
+        },
+        {
+          "source": "background:acolyte>feat:magic-initiate",
+          "choice": "magic-initiate-ability",
+          "values": [
+            "cha"
+          ]
+        },
+        {
+          "source": "background:acolyte>feat:magic-initiate",
+          "choice": "magic-initiate-cantrips",
+          "values": [
+            "guidance",
+            "light"
+          ]
+        },
+        {
+          "source": "background:acolyte>feat:magic-initiate",
+          "choice": "magic-initiate-level-1-spell",
+          "values": [
+            "bless"
+          ]
+        },
+        {
+          "source": "class:bard:1",
+          "choice": "class-skills",
+          "values": [
+            "deception",
+            "performance",
+            "persuasion"
+          ]
+        },
+        {
+          "source": "class:bard:1",
+          "choice": "bard-musical-instruments",
+          "values": [
+            "lute",
+            "drum",
+            "flute"
+          ]
+        },
+        {
+          "source": "class:bard:2",
+          "choice": "expertise",
+          "values": [
+            "persuasion",
+            "deception"
+          ]
+        },
+        {
+          "source": "class:bard:3",
+          "choice": "lore-bonus-proficiencies",
+          "values": [
+            "arcana",
+            "history",
+            "perception"
+          ]
+        },
+        {
+          "source": "class:bard:4",
+          "choice": "ability-score-improvement",
+          "values": [
+            "ability-score-improvement"
+          ]
+        },
+        {
+          "source": "class:bard:6",
+          "choice": "magical-discoveries",
+          "values": [
+            "guiding-bolt",
+            "shield"
+          ]
+        },
+        {
+          "source": "class:bard:4>feat:ability-score-improvement",
+          "choice": "ability-increase",
+          "values": [],
+          "increases": {
+            "cha": 1,
+            "dex": 1
+          }
+        }
+      ],
+      "spells": [
+        {
+          "spellId": "vicious-mockery",
+          "classId": "bard",
+          "source": "class:bard",
+          "prepared": true
+        },
+        {
+          "spellId": "mage-hand",
+          "classId": "bard",
+          "source": "class:bard",
+          "prepared": true
+        },
+        {
+          "spellId": "minor-illusion",
+          "classId": "bard",
+          "source": "class:bard",
+          "prepared": true
+        },
+        {
+          "spellId": "healing-word",
+          "classId": "bard",
+          "source": "class:bard",
+          "prepared": true
+        },
+        {
+          "spellId": "dissonant-whispers",
+          "classId": "bard",
+          "source": "class:bard",
+          "prepared": true
+        },
+        {
+          "spellId": "faerie-fire",
+          "classId": "bard",
+          "source": "class:bard",
+          "prepared": true
+        },
+        {
+          "spellId": "heroism",
+          "classId": "bard",
+          "source": "class:bard",
+          "prepared": true
+        },
+        {
+          "spellId": "hold-person",
+          "classId": "bard",
+          "source": "class:bard",
+          "prepared": true
+        },
+        {
+          "spellId": "invisibility",
+          "classId": "bard",
+          "source": "class:bard",
+          "prepared": true
+        },
+        {
+          "spellId": "shatter",
+          "classId": "bard",
+          "source": "class:bard",
+          "prepared": true
+        },
+        {
+          "spellId": "hypnotic-pattern",
+          "classId": "bard",
+          "source": "class:bard",
+          "prepared": true
+        }
+      ],
+      "hp": {
+        "current": 12,
+        "temp": 0
+      },
+      "deathSaves": {
+        "successes": 0,
+        "failures": 0
+      },
+      "hitDiceSpent": {},
+      "slotsExpended": {},
+      "pactSlotsExpended": 0,
+      "resourcesUsed": {},
+      "conditions": [],
+      "exhaustion": 0,
+      "concentration": null,
+      "toggles": {},
+      "inventory": [
+        {
+          "id": "audit-G-1",
+          "name": "Leather Armor",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:leather-armor",
+          "weight": 0,
+          "worn": true
+        },
+        {
+          "id": "audit-G-2",
+          "name": "Rapier",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:rapier",
+          "weight": 0
+        },
+        {
+          "id": "audit-G-3",
+          "name": "Dagger",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:dagger",
+          "weight": 0
+        },
+        {
+          "id": "audit-G-4",
+          "name": "Lute",
+          "description": "",
+          "quantity": 1,
+          "tags": [],
+          "itemId": "equipment:lute",
+          "weight": 0
+        }
+      ],
+      "coins": {
+        "cp": 0,
+        "sp": 0,
+        "ep": 0,
+        "gp": 18,
+        "pp": 0
+      },
+      "heroicInspiration": true,
+      "levelling": {
+        "mode": "milestone",
+        "xp": 0
+      },
+      "quickBar": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "companions": [],
+      "details": {
+        "alignment": "Lawful Good",
+        "languages": [
+          "common",
+          "gnomish",
+          "halfling"
+        ],
+        "appearance": ""
+      },
+      "creation": {
+        "route": "level-1",
+        "complete": true
+      },
+      "notes": ""
+    }
+  ]
+}
