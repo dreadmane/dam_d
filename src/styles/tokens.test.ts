@@ -19,11 +19,19 @@ describe('design tokens', () => {
   })
 
   it('checks each pair in the themes the file declares, dark and light here', () => {
-    const pairs = tokens.$extensions.dcc.contrast.pairs.length
-    expect(tokens.$extensions.dcc.themes).toEqual(['dark', 'light'])
+    const pairs = tokens.$extensions.dnd.contrast.pairs.length
+    expect(tokens.$extensions.dnd.themes).toEqual(['dark', 'light'])
     expect(rows).toHaveLength(pairs * 2)
-    const darkOnly = { ...tokens, $extensions: { dcc: { ...tokens.$extensions.dcc, themes: ['dark'] } } }
+    const darkOnly = { ...tokens, $extensions: { dnd: { ...tokens.$extensions.dnd, themes: ['dark'] } } }
     expect(new Set(checkContrast(darkOnly).map((r) => r.theme))).toEqual(new Set(['dark']))
+  })
+
+  // d-amp-d's own key, not the seed's (#37): every colour's light value is
+  // under it, and nothing is left under DCC's.
+  it('keeps its extensions under dnd, and none under the seed’s dcc', () => {
+    expect(Object.keys(tokens.$extensions)).toEqual(['dnd'])
+    expect(JSON.stringify(tokens)).not.toContain('"dcc":')
+    expect(tokens.$description).toMatch(/^Design tokens for dam’d/)
   })
 
   it.each(rows.map((r) => [`${r.theme}: ${r.fg} on ${r.bg} ≥ ${r.min}:1`, r] as const))('%s', (_, row) => {

@@ -19,7 +19,7 @@ export function flatten(tokens) {
   const walk = (node, trail, inheritedType) => {
     const type = node.$type ?? inheritedType
     if ('$value' in node) {
-      out.push({ path: trail.join('.'), type, value: node.$value, light: node.$extensions?.dcc?.light ?? node.$value })
+      out.push({ path: trail.join('.'), type, value: node.$value, light: node.$extensions?.dnd?.light ?? node.$value })
       return
     }
     for (const [key, child] of Object.entries(node)) {
@@ -46,13 +46,13 @@ export function contrastRatio(a, b) {
   return (hi + 0.05) / (lo + 0.05)
 }
 
-// Every declared pair in each of the file's themes ($extensions.dcc.themes;
+// Every declared pair in each of the file's themes ($extensions.dnd.themes;
 // dark and light if it names none). Returns one row per pair and theme, with
 // ok false where it falls short or names a token that does not exist.
 export function checkContrast(tokens) {
   const byPath = new Map(flatten(tokens).map((t) => [t.path, t]))
-  const pairs = tokens.$extensions?.dcc?.contrast?.pairs ?? []
-  const themes = tokens.$extensions?.dcc?.themes ?? ['dark', 'light']
+  const pairs = tokens.$extensions?.dnd?.contrast?.pairs ?? []
+  const themes = tokens.$extensions?.dnd?.themes ?? ['dark', 'light']
   const rows = []
   for (const { fg, bg, min } of pairs) {
     for (const theme of themes) {
@@ -84,7 +84,7 @@ export function tokensCss(tokens) {
   const all = flatten(tokens)
   const themed = all.filter((t) => t.value !== t.light)
   const decls = (list, key, indent = '  ') => list.map((t) => `${indent}${cssName(t.path)}: ${cssValue(t[key])};`).join('\n')
-  const version = tokens.$extensions?.dcc?.tokensVersion ?? 'unversioned'
+  const version = tokens.$extensions?.dnd?.tokensVersion ?? 'unversioned'
   return `/* Generated from data/design/tokens.json (tokens ${version}) by
    npm run sync-tokens. Do not edit: change the tokens in the workspace's
    domains/dnd-design/tokens/, then re-sync. A test fails if this file is

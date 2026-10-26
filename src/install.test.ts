@@ -9,7 +9,7 @@ import { publicPngSize, readIndexHtml, readManifest } from '../scripts/lib/insta
 
 const manifest = readManifest()
 const html = readIndexHtml()
-const color = tokens.color as unknown as Record<string, { $value: string; $extensions?: { dcc?: { light?: string } } }>
+const color = tokens.color as unknown as Record<string, { $value: string; $extensions?: { dnd?: { light?: string } } }>
 
 describe('the web app manifest', () => {
   it('names the app and opens it full screen at the root', () => {
@@ -39,7 +39,7 @@ describe('index.html', () => {
 
   it('colours the phone’s bar as the band, in each theme', () => {
     expect(html).toContain(`<meta name="theme-color" content="${color.surface.$value}" media="(prefers-color-scheme: dark)" />`)
-    expect(html).toContain(`<meta name="theme-color" content="${color.surface.$extensions?.dcc?.light}" media="(prefers-color-scheme: light)" />`)
+    expect(html).toContain(`<meta name="theme-color" content="${color.surface.$extensions?.dnd?.light}" media="(prefers-color-scheme: light)" />`)
   })
 
   it('sets no skin and forces no theme before any script runs', () => {
