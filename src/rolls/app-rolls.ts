@@ -6,6 +6,7 @@ import { forwardRoll } from '../roll20/app-roll20.ts'
 import type { CharacterEntity } from '../save/record.ts'
 import { logged, ofOwner, todays, type RollInput } from './rolls.ts'
 import { createRollStore, ROLLS_KEY } from './store.ts'
+import { useToday } from '../today.ts'
 
 // The app's one roll log, on this device's localStorage beside the
 // notifications, and the hooks the windows record into it and the Rolls menu
@@ -50,10 +51,12 @@ export function useRecordRoll() {
   }
 }
 
-// One character's rolls, newest first, and today's.
+// One character's rolls, newest first, and today's, which turn over at
+// midnight.
 export function useRolls(owner: string) {
   const all = useSyncExternalStore(rollStore.subscribe, rollStore.all)
-  return useMemo(() => ({ list: ofOwner(all, owner), today: todays(all, owner, new Date()) }), [all, owner])
+  const day = useToday()
+  return useMemo(() => ({ list: ofOwner(all, owner), today: todays(all, owner, day) }), [all, owner, day])
 }
 
 // A deleted character's rolls, once its Undo has lapsed.

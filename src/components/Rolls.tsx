@@ -4,6 +4,7 @@ import { copyCard } from '../roll20/app-roll20.ts'
 import { roll20Card } from '../roll20/roll20.ts'
 import { useRolls } from '../rolls/app-rolls.ts'
 import { isTyped, KEEP_ROLLS, type Roll } from '../rolls/rolls.ts'
+import { useToday } from '../today.ts'
 import { SheetSection } from './SheetSection.tsx'
 
 // Rolls (the dice roll's log, approved by the user 2026-10-14): every roll
@@ -24,11 +25,11 @@ const nameOf = (r: Roll) => `${r.name}${isTyped(r) ? ' · TYPED' : ''}`
 export function RollsSection({ rosterId, character }: { rosterId: string; character: string }) {
   const { list, today } = useRolls(rosterId)
   const [copied, setCopied] = useState('')
+  const now = useToday()
 
   function copyOne(r: Roll) {
     copyCard(roll20Card(character, { ...r, name: nameOf(r) }), (ok) => setCopied(ok ? `Copied ${r.name} for Roll20: paste it in its chat.` : 'The browser would not copy it.'))
   }
-  const now = new Date()
   const count = `${today.length.toLocaleString()} today`
 
   function copy() {

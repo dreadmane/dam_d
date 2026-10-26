@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { noticeStore, useNotices } from '../notify/app-notices.ts'
 import { KEEP } from '../notify/notices.ts'
 import { stamp } from '../notify/stamp.ts'
+import { useToday } from '../today.ts'
 import { Glyph } from './Glyph.tsx'
 import { useHudDialog } from './dialog.ts'
 import { Window, WindowHeader } from './Window.tsx'
@@ -47,7 +48,7 @@ export function FolderButton({ owner, ownerName }: { owner: string | null; owner
 function FolderWindow({ owner, ownerName, onClose }: { owner: string | null; ownerName: string; onClose: () => void }) {
   const { list, unread } = useNotices(owner)
   const dialog = useHudDialog({ onClose, dismissOnOutside: true })
-  const now = new Date()
+  const now = useToday()
   return (
     <Window dialog={dialog} className="folder-window" labelledBy="folder-heading">
       <WindowHeader id="folder-heading" title="Notifications" />

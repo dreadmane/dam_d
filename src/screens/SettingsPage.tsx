@@ -22,6 +22,7 @@ import { primaryEntity, useRoster } from '../save/use-roster.ts'
 import { applySettings, HEADING_FONTS, loadSettings, saveSettings, type Look, type Motion, type Settings, type Theme } from '../settings.ts'
 import { characterName } from '../components/character-name.ts'
 import { useTitle } from '../title.ts'
+import { useToday } from '../today.ts'
 
 // The few switches (spec §3.3, Settings): the theme, the look, motion, and the heading
 // font, the dice, Roll20, notifications, and whether the browser keeps saved
@@ -210,6 +211,7 @@ function CharacterSection({ id, onDeleted }: { id: string; onDeleted: (record: R
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState<RosterRecord | null>(null)
   const [confirming, setConfirming] = useState(false)
+  const day = useToday()
 
   if (status.kind === 'loading' || status.kind === 'missing') return null
   if (status.kind === 'failed') {
@@ -258,7 +260,7 @@ function CharacterSection({ id, onDeleted }: { id: string; onDeleted: (record: R
 
       <h3>Export</h3>
       <p>
-        Downloads two files: <code>{exportBasename(roster, new Date()) + EXTENSION}</code>, the character itself, which is your
+        Downloads two files: <code>{exportBasename(roster, day) + EXTENSION}</code>, the character itself, which is your
         backup and what Import reads; and a <code>.md</code> summary to read or share. This browser is the only place your
         characters are saved, so export to keep a backup.
       </p>
