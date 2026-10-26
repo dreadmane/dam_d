@@ -39,6 +39,19 @@ export function notePressed(rect: Rect, at: number) {
   lastPressed = { rect, at }
 }
 
+// A window opens at its top (WAI-ARIA's dialog pattern). showModal() focuses
+// the window's first control, and where that lies below the window's fold
+// the window has scrolled down to it: the import card with nothing to place,
+// whose first control is Cancel at its foot (#48). Then the window itself
+// takes focus, so its title is what is read first, and it goes back to its
+// top. A window whose first control is in view is left as the browser made it.
+export function openAtTop(d: Pick<HTMLElement, 'scrollTop' | 'tabIndex' | 'focus'>) {
+  if (d.scrollTop <= 0) return
+  d.tabIndex = -1
+  d.focus({ preventScroll: true })
+  d.scrollTop = 0
+}
+
 // Only a press in the last moment counts: a window opened later than that
 // (after a file was read, say) grows from the middle of the screen.
 export function recentOpener(now: number): Rect | null {
@@ -97,6 +110,7 @@ export function useHudDialog({ onClose, dismissOnOutside = false, from }: { onCl
     if (!d || d.open) return
     const opener = from ?? recentOpener(performance.now())
     d.showModal()
+    openAtTop(d)
     if (opener) d.style.transformOrigin = originFrom(opener, d.getBoundingClientRect())
     if (!motionAllowed()) return
     d.setAttribute('data-opening', '')
