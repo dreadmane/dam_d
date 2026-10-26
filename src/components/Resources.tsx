@@ -4,12 +4,14 @@ import { describeRoll } from '../dice/describe.ts'
 import { rollFaces } from '../dice/roll.ts'
 import { finishLongRest, finishShortRest, partialRecharges, spendHitDie, spendResource } from '../play/play.ts'
 import { useRecordRoll } from '../rolls/app-rolls.ts'
-import type { Sheet } from '../rules/derive.ts'
+import { groupNames, resourceRow, rowGroup } from '../play/turn.ts'
+import type { Resource, Sheet } from '../rules/derive.ts'
 import type { Rules } from '../rules/load.ts'
 import type { CharacterEntity, RosterRecord } from '../save/types.ts'
 import { LONG_REST_NOTHING } from '../voice.ts'
 import { useHudDialog } from './dialog.ts'
 import { SheetSection } from './SheetSection.tsx'
+import { UseWindow } from './Turn.tsx'
 import { Window, WindowHeader } from './Window.tsx'
 
 // Class resources and Rest (the spec §3.2): Crawler Interface's Abilities
@@ -24,7 +26,13 @@ type Update = (change: (entity: CharacterEntity) => CharacterEntity) => RosterRe
 
 const RECHARGE: Record<string, string> = { 'short-rest': 'Short or Long Rest', 'long-rest': 'Long Rest', dawn: 'dawn', turn: 'each turn', special: 'see the feature', never: 'not restored' }
 
-export function ResourcesSection({ sheet, update }: { sheet: Sheet; update: Update }) {
+// Each resource's name opens the turn's window for it (the play audit's
+// recommendation 9): its feature's rule, its uses, Use one and Get one back.
+// Spent from here it marks no pip: this list is not the turn. Its action
+// type, where its feature has one, is in its detail.
+export function ResourcesSection({ rules, entity, sheet, update }: { rules: Rules; entity: CharacterEntity; sheet: Sheet; update: Update }) {
+  const [open, setOpen] = useState<Resource | null>(null)
+  const names = groupNames(rules)
   return (
     <SheetSection id="resources" count={String(sheet.resources.length)}>
       {sheet.resources.length === 0 && <p className="meta">No limited uses yet.</p>}
@@ -33,7 +41,12 @@ export function ResourcesSection({ sheet, update }: { sheet: Sheet; update: Upda
           const left = r.max - r.used
           return (
             <li key={r.key} className="resource-row">
-              <span className="stat-name">{r.name}</span>
+              <button type="button" className="rule-name stat-name" aria-haspopup="dialog" onClick={() => setOpen(r)}>
+                <span className="rule-name-label">{r.name}</span>
+                <span aria-hidden="true" className="rule-name-mark">
+                  ⓘ
+                </span>
+              </button>
               <span className="resource-boxes" role="group" aria-label={`${r.name}: ${left} of ${r.max} left`}>
                 {Array.from({ length: r.max }, (_, i) => {
                   const spent = i >= left
@@ -50,14 +63,20 @@ export function ResourcesSection({ sheet, update }: { sheet: Sheet; update: Upda
                 })}
               </span>
               <span className="stat-detail">
-                {left} of {r.max} left · {RECHARGE[r.recharge] ?? r.recharge}
+                {[`${left} of ${r.max} left`, RECHARGE[r.recharge] ?? r.recharge, actionOf(r)].filter(Boolean).join(' · ')}
               </span>
             </li>
           )
         })}
       </ul>
+      {open && <UseWindow sheet={sheet} entity={entity} row={resourceRow(rules, entity, sheet, open)} update={update} onUsed={() => {}} onClose={() => setOpen(null)} />}
     </SheetSection>
   )
+
+  function actionOf(r: Resource): string | undefined {
+    const group = rowGroup(resourceRow(rules, entity, sheet, r))
+    return group ? names[group] : undefined
+  }
 }
 
 export function RestSection({ rules, entity, sheet, update }: { rules: Rules; entity: CharacterEntity; sheet: Sheet; update: Update }) {

@@ -337,7 +337,7 @@ function RowText({ name, detail }: { name: ReactNode; detail?: ReactNode }) {
 // A feature's or a resource's window: its rule, then what it does here:
 // a switch (Rage), a use spent or given back, or, for a feature with no
 // uses, Use it, which only spends the pip.
-function UseWindow({ sheet, entity, row, update, onUsed, onClose }: { sheet: Sheet; entity: CharacterEntity; row: Extract<TurnRow, { kind: 'feature' | 'resource' }>; update: Update; onUsed: () => void; onClose: () => void }) {
+export function UseWindow({ sheet, entity, row, update, onUsed, onClose }: { sheet: Sheet; entity: CharacterEntity; row: Extract<TurnRow, { kind: 'feature' | 'resource' }>; update: Update; onUsed: () => void; onClose: () => void }) {
   const dialog = useHudDialog({ onClose, dismissOnOutside: true })
   const [error, setError] = useState('')
   const name = row.kind === 'feature' ? row.feature.name : row.resource.name

@@ -40,7 +40,7 @@ export function RuledSection({ id, rosterId, sheet, rules, entity, update, onHea
     case 'conditions':
       return <ConditionsSection rules={rules} entity={entity} sheet={sheet} update={update} />
     case 'resources':
-      return <ResourcesSection sheet={sheet} update={update} />
+      return <ResourcesSection rules={rules} entity={entity} sheet={sheet} update={update} />
     case 'rest':
       return <RestSection rules={rules} entity={entity} sheet={sheet} update={update} />
     default:
