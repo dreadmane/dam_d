@@ -18,7 +18,7 @@ const declared = (selector: string, property: string) =>
     .find(Boolean)
 
 const DISABLED = "button:disabled:not([aria-busy='true'])"
-const pairs = (tokens as { $extensions: { dcc: { contrast: { pairs: { fg: string; bg: string }[] } } } }).$extensions.dcc.contrast.pairs
+const pairs = (tokens as { $extensions: { dnd: { contrast: { pairs: { fg: string; bg: string }[] } } } }).$extensions.dnd.contrast.pairs
 const tokenPath = (cssVar: string) => cssVar.replace(/^color-/, 'color.')
 
 describe('disabled buttons', () => {

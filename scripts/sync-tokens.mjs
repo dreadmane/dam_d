@@ -37,7 +37,7 @@ try {
 }
 console.log(`  ${flatten(tokens).length} tokens`)
 
-const themes = tokens.$extensions?.dcc?.themes ?? ['dark', 'light']
+const themes = tokens.$extensions?.dnd?.themes ?? ['dark', 'light']
 console.log(`checking contrast, ${themes.join(' and ')}`)
 const rows = checkContrast(tokens)
 const failures = rows.filter((r) => !r.ok)
