@@ -179,7 +179,7 @@ describe('reactions', () => {
 describe('a weapon the DM rules a Monk weapon', () => {
   it('offers Martial Arts’ Monk weapons for Sefa’s Longsword, not for her Spear, and nothing to a Fighter', () => {
     const e = withItem(entity(sefa), 'equipment:longsword')
-    expect(weaponSets(rules, e, e.inventory.at(-1)!)).toEqual([{ id: 'monk-weapons', name: 'Monk weapon', from: 'Monk 1: Martial Arts' }])
+    expect(weaponSets(rules, e, e.inventory.at(-1)!)).toEqual([{ id: 'monk-weapons', name: 'Monk weapon', from: 'Monk 1: Martial Arts', bond: false }])
     expect(weaponSets(rules, e, e.inventory.find((i) => i.name === 'Spear')!)).toEqual([])
     const f = withItem(entity(fighter), 'equipment:longsword')
     expect(weaponSets(rules, f, f.inventory.at(-1)!)).toEqual([])

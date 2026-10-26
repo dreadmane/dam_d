@@ -13,7 +13,7 @@ import { ABILITIES, evaluate, evaluateNumber, modifier, toNumber, type Ability, 
 import { characterChoices, classColumn, classesInOrder, isMade, placedIncrease, type OwedChoice } from './level.ts'
 import type { Rules, Weapon } from './load.ts'
 import type { EffAbilityIncrease, EffAttackOption, Effect, Expression } from './types.ts'
-import { equipped } from './equipped.ts'
+import { bondable, equipped } from './equipped.ts'
 import { unresolved } from './unresolved.ts'
 import type { CharacterEntity, Item } from '../save/types.ts'
 
@@ -490,10 +490,12 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
   // Finesse's choice is. One that doesn't hold is a note, where it would
   // change something. wieldingOnly holds while every weapon equipped is one
   // the option names. A weapon is one by the rules, or by the DM's ruling
-  // for this character (the item's countsAs names the option's id). own is
-  // the attack's die, or an Unarmed Strike's flat damage.
+  // for this character (the item's countsAs names the option's id), or by
+  // the player's bond where the option is one they bond (Pact of the Blade,
+  // p.74: one weapon its bond allows). own is the attack's die, or an
+  // Unarmed Strike's flat damage.
   const wielded = entity.inventory.filter((i) => equipped(rules, i) && rules.weapons.has(equipmentOf(i) ?? ''))
-  const ruled = (e: EffAttackOption, item?: Item) => Boolean(e.id && item?.countsAs?.includes(e.id))
+  const ruled = (e: EffAttackOption, item?: Item) => Boolean(e.id && item?.countsAs?.includes(e.id) && (!e.bond || bondable(rules, e.bond, item)))
   const inSet = (e: EffAttackOption, id: string, item?: Item) => e.attacks.includes(id) || ruled(e, item)
   const mean = (dice: string) => {
     const m = dice.match(/^(\d*)d(\d+)$/)
@@ -507,7 +509,7 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     for (const a of of('attackOption')) {
       const e = a.effect
       if (!inSet(e, id, item)) continue
-      const from = ruled(e, item) && !e.attacks.includes(id) ? `${a.from}; a ${e.name} by your DM’s ruling` : a.from
+      const from = ruled(e, item) && !e.attacks.includes(id) ? (e.bond ? `${a.from}; your ${e.name}` : `${a.from}; a ${e.name} by your DM’s ruling`) : a.from
       const die = typeof e.die === 'string' ? e.die : e.die && String(evaluate(e.die, { ...baseContext(pb), self: a.classId }))
       const better = {
         die: die && /^\d*d\d+$/.test(die) && mean(die) > mean(dice) ? die : undefined,
@@ -547,7 +549,8 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     const ranged = weapon.kind === 'ranged'
     const own: Ability = finesse ? (abilities.dex.modifier > abilities.str.modifier ? 'dex' : 'str') : ranged ? 'dex' : 'str'
     const { ability, dice, options, lapsed } = optioned(weapon.id, own, weapon.damage.dice, item)
-    const proficient = proficientWith(weapon)
+    // A bonded weapon is one the character is proficient with (p.74).
+    const proficient = proficientWith(weapon) || of('attackOption').some((a) => a.effect.bond && ruled(a.effect, item))
     const base: Part[] = [{ label: `${ability.toUpperCase()} modifier`, value: abilities[ability].modifier }]
     if (proficient) base.push({ label: 'Proficiency', value: pb })
     const kind = ranged ? 'ranged-weapon' : 'melee-weapon'

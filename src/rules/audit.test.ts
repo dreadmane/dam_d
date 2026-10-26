@@ -6,8 +6,8 @@
 import { describe, expect, it } from 'vitest'
 import { deriveSheet } from './derive.ts'
 import { cast, castOptions, casterFor, characterSpells, preparedCount } from '../play/spells.ts'
-import { catalogueItem } from '../play/kit.ts'
-import { featureRule } from '../components/cards.ts'
+import { catalogueItem, setCountsAs, weaponSets } from '../play/kit.ts'
+import { damageFormula, featureRule } from '../components/cards.ts'
 import { testRules } from './test-rules.ts'
 import type { CharacterEntity } from '../save/types.ts'
 import halvard from '../save/examples/cleric-fighter.json'
@@ -408,5 +408,44 @@ describe('a free cast on its spell’s own row (#49)', () => {
   it('offers a Paladin 8’s Divine Smite free first, then the slots (p.54)', () => {
     const kinds = options(E, 'divine-smite').options.map((o) => (o.kind === 'free' ? `free (${o.from})` : o.kind === 'slot' ? `slot ${o.level}` : o.kind))
     expect(kinds).toEqual(['free (Paladin’s Smite)', 'slot 1', 'slot 2'])
+  })
+})
+
+describe('Pact of the Blade (finding 8, #4)', () => {
+  const vex = (change?: (e: CharacterEntity) => CharacterEntity) => {
+    const record: { entities: unknown[] } = C
+    const e = structuredClone(record.entities[0]) as CharacterEntity
+    return change ? change(e) : e
+  }
+  const id = (e: CharacterEntity, name: string) => e.inventory.find((i) => i.name === name)!.id
+  const bond = (name: string) => (e: CharacterEntity) => setCountsAs(e, id(e, name), 'pact-weapon', true, true)
+  const attack = (e: CharacterEntity, name: string) => {
+    const a = deriveSheet(rules, e).attacks.find((x) => x.name === name)!
+    return { toHit: a.toHit.total, damage: damageFormula(a), proficient: a.proficient, options: a.options.map((o) => o.from) }
+  }
+
+  it('makes a bonded Longsword proficient and Charisma’s: +6 to hit, 1d8 + 3 (p.74)', () => {
+    expect(attack(vex(bond('Longsword')), 'Longsword')).toEqual({ toHit: 6, damage: '1d8 + 3', proficient: true, options: ['Warlock 1: Pact of the Blade; your pact weapon'] })
+  })
+
+  it('leaves an unbonded Longsword as it was: −1, 1d8 − 1, not proficient', () => {
+    expect(attack(vex(), 'Longsword')).toMatchObject({ toHit: -1, damage: '1d8 − 1', proficient: false })
+  })
+
+  it('bonds one weapon at a time: bonding the Dagger ends the Longsword’s bond', () => {
+    const e = bond('Dagger')(vex(bond('Longsword')))
+    expect(e.inventory.filter((i) => i.countsAs?.includes('pact-weapon')).map((i) => i.name)).toEqual(['Dagger'])
+    expect(attack(e, 'Longsword').proficient).toBe(false)
+  })
+
+  it('offers the bond for a melee weapon or a magic one, not a mundane Shortbow', () => {
+    const e = vex((x) => {
+      x.inventory.push(catalogueItem(rules, 'equipment:shortbow', undefined, 'test-bow')!, catalogueItem(rules, 'magic-items:weapon-plus-1', 'shortbow', 'test-magic-bow')!)
+      return x
+    })
+    const sets = (itemId: string) => weaponSets(rules, e, e.inventory.find((i) => i.id === itemId)!).map((s) => `${s.id}${s.bond ? ' (bond)' : ''}`)
+    expect(sets(id(e, 'Longsword'))).toEqual(['pact-weapon (bond)'])
+    expect(sets('test-bow')).toEqual([])
+    expect(sets('test-magic-bow')).toEqual(['pact-weapon (bond)'])
   })
 })

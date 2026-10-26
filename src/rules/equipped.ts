@@ -16,3 +16,12 @@ export const equipmentId = (item: Item) => {
 export const isWeapon = (rules: Rules, item: Item) => rules.weapons.has(equipmentId(item) ?? '')
 
 export const equipped = (rules: Rules, item: Item) => (isWeapon(rules, item) ? item.worn !== false : Boolean(item.worn))
+
+// Whether a weapon may be bonded to an attackOption that the player bonds
+// (Pact of the Blade, SRD p.74): its bond lists melee, any melee weapon,
+// and magic, a magic weapon of any kind.
+export function bondable(rules: Rules, bond: readonly string[], item: Item): boolean {
+  const weapon = rules.weapons.get(equipmentId(item) ?? '')
+  if (!weapon) return false
+  return (bond.includes('melee') && weapon.kind === 'melee') || (bond.includes('magic') && Boolean(item.itemId?.startsWith('magic-items:')))
+}
