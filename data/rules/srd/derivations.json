@@ -722,6 +722,37 @@
         "signedOff": "2026-10-19, by the user",
         "note": "The minimum of 1 applies to the fixed value too: 'instead of rolling' replaces only the roll."
       }
+    },
+    {
+      "id": "powerful-build-drag-lift-push",
+      "question": "Powerful Build (Goliath) says 'You also count as one size larger when determining your carrying capacity' (p.86). The Carrying Capacity table gives, by size, both the carrying capacity and the Drag, Lift, or Push figure (p.178). Does a Goliath use the Large row for drag, lift and push too?",
+      "readings": [
+        {
+          "id": "carrying-only",
+          "text": "No: the trait names carrying capacity alone, so drag, lift and push stay on the Goliath's own size row (Strength score × 30 lb.).",
+          "recommended": true
+        },
+        {
+          "id": "large-row",
+          "text": "Yes: both figures come from the same size row, so counting as Large moves both, and drag, lift and push is Strength score × 60 lb."
+        }
+      ],
+      "status": "ruled",
+      "affects": [
+        "species:goliath",
+        "derivations:drag-lift-push"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Character Origins > Character Species > Species Descriptions > Goliath",
+        "page": 86
+      },
+      "ruling": {
+        "reading": "carrying-only",
+        "confidence": "house",
+        "signedOff": "2026-10-26, by the user",
+        "note": "As printed: only carrying capacity counts a size larger. No screen showed drag, lift or push when this was ruled."
+      }
     }
   ]
 }

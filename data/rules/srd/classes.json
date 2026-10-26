@@ -5791,6 +5791,11 @@
               "recharge": "short-rest"
             },
             {
+              "type": "saveDc",
+              "id": "monks-focus",
+              "ability": "wis"
+            },
+            {
               "type": "text",
               "summary": "Save DC for Focus Point features: 8 + Wisdom modifier + Proficiency Bonus."
             }
@@ -6188,7 +6193,14 @@
               "name": "Open Hand Technique",
               "level": 3,
               "text": "Whenever you hit a creature with an attack granted by your Flurry of Blows, you can impose one of the following effects on that target.\n\n**Addle.** The target can’t make Opportunity Attacks until the start of its next turn.\n\n**Push.** The target must succeed on a Strength saving throw or be pushed up to 15 feet away from you.\n\n**Topple.** The target must succeed on a Dexterity saving throw or have the Prone condition.",
-              "effects": [],
+              "effects": [
+                {
+                  "type": "saveDc",
+                  "id": "open-hand-technique",
+                  "ability": "wis",
+                  "ruling": "classes:open-hand-technique-save-dc"
+                }
+              ],
               "source": {
                 "ref": "srd-5.2.1",
                 "section": "Classes > Monk > Monk Subclass: Warrior of the Open Hand",
@@ -13442,6 +13454,66 @@
         "confidence": "house",
         "signedOff": "2026-10-25, by the user",
         "note": "A thrown Monk weapon keeps the Martial Arts die and Dexterity, so the attack row's one number serves a throw too. The other reading would need a thrown line of its own on the row."
+      }
+    },
+    {
+      "id": "circle-of-the-land-spells-prepared-count",
+      "question": "Circle of the Land Spells says 'you have the spells listed for your Druid level and lower prepared' (p.46). Druid Spellcasting exempts from the prepared count only spells 'that you always have prepared' (p.42), and every other subclass spell list in the SRD says 'always have'; this one alone does not. Do a Land Druid's circle spells count against the Prepared Spells number (and its cantrip against the Cantrips number)?",
+      "readings": [
+        {
+          "id": "extra",
+          "text": "They don't count: the feature chooses them, and changes them each Long Rest with the land, which may be why it can't say 'always'. A Druid 5 keeps all 9 of their own, plus the land's three and its cantrip.",
+          "recommended": true
+        },
+        {
+          "id": "within",
+          "text": "They count: the text exempts only 'always prepared' spells, and this list pointedly lacks the word, so at Druid 5 the land's three use 3 of the 9, and its cantrip is one of the known cantrips."
+        }
+      ],
+      "status": "ruled",
+      "affects": [
+        "classes:druid"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Classes > Druid > Druid Subclass: Circle of the Land",
+        "page": 46
+      },
+      "ruling": {
+        "reading": "extra",
+        "confidence": "house",
+        "signedOff": "2026-10-26, by the user",
+        "note": "The land's spells come on top of the Druid's own prepared spells and cantrips, as every other subclass list's do."
+      }
+    },
+    {
+      "id": "open-hand-technique-save-dc",
+      "question": "Open Hand Technique lets a hit from Flurry of Blows Push (a Strength save) or Topple (a Dexterity save) (p.52), but prints no DC. Monk's Focus says 'Some features that use Focus Points require your target to make a saving throw. The save DC equals 8 plus your Wisdom modifier and Proficiency Bonus' (p.50). Does Open Hand Technique use that DC?",
+      "readings": [
+        {
+          "id": "focus-dc",
+          "text": "Yes: it fires only on Flurry of Blows, which spends a Focus Point, so its saves are against 8 + Wisdom modifier + Proficiency Bonus.",
+          "recommended": true
+        },
+        {
+          "id": "none-printed",
+          "text": "No: Open Hand Technique spends no point itself and prints no DC, so the sheet names the saves and leaves the DC to the table."
+        }
+      ],
+      "status": "ruled",
+      "affects": [
+        "classes:monk"
+      ],
+      "source": {
+        "ref": "srd-5.2.1",
+        "section": "Classes > Monk > Monk Subclass: Warrior of the Open Hand",
+        "page": 52
+      },
+      "ruling": {
+        "reading": "focus-dc",
+        "confidence": "house",
+        "signedOff": "2026-10-26, by the user",
+        "note": "Push and Topple use the Monk's Focus save DC. The Monk picks one on each hit, by the target's weaker save (the user, 2026-10-26)."
       }
     }
   ],

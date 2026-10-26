@@ -32,7 +32,7 @@ export function FeaturesSection({ sheet }: { sheet: Sheet }) {
           </ul>
         </div>
       ))}
-      {open && <RuleCard rule={featureRule(open)} onClose={() => setOpen(null)} />}
+      {open && <RuleCard rule={featureRule(open, sheet)} onClose={() => setOpen(null)} />}
     </SheetSection>
   )
 }

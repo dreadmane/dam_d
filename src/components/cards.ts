@@ -1,5 +1,5 @@
 import { paragraphs } from '../play/rule-text.ts'
-import type { Attack } from '../rules/derive.ts'
+import type { Attack, Sheet } from '../rules/derive.ts'
 import type { GainedFeature } from '../rules/effects.ts'
 import type { Rule } from './RuleCard.tsx'
 
@@ -25,10 +25,26 @@ export function damageFormula(a: Attack, { named = false, dice = a.damage.dice }
 // A part's short name: "STR modifier" as STR, "Barbarian 1: Rage" as Rage.
 const partName = (label: string) => label.replace(/ modifier$/, '').replace(/^.*: /, '')
 
-export function featureRule(g: Pick<GainedFeature, 'feature'>): Rule {
+export function featureRule(g: Pick<GainedFeature, 'feature'>, sheet?: Pick<Sheet, 'featureDcs'>): Rule {
   const f = g.feature
+  const dc = sheet && featureDc(sheet, f.id)
   const notes: string[] = []
+  if (dc?.ruled) notes.push(dc.ruled)
   if (f.source.ref === 'srd-5.2.1') notes.push('From the SRD 5.2.1, under CC-BY-4.0.')
   if (f.confidence !== 'printed' && f.note) notes.push(f.note)
-  return { title: f.name, text: paragraphs(f.text), page: f.source.page, notes }
+  return { title: f.name, text: [...paragraphs(f.text), ...(dc ? [dc.line] : [])], page: f.source.page, notes }
+}
+
+// A feature's own save DC, as its card and its use window say it: "Save DC
+// 14: 8 + WIS modifier + Proficiency Bonus". ruled says so where the book
+// prints no DC for the feature and the user ruled this one (Open Hand
+// Technique, p.52).
+export function featureDc(sheet: Pick<Sheet, 'featureDcs'>, featureId: string): { total: number; line: string; ruled?: string } | undefined {
+  const d = sheet.featureDcs.find((x) => x.id === featureId)
+  if (!d) return undefined
+  return {
+    total: d.dc.total,
+    line: `Save DC ${d.dc.total}: 8 + ${d.ability.toUpperCase()} modifier + Proficiency Bonus`,
+    ruled: d.ruling ? 'The book prints no DC for this; the app uses this one, a house ruling.' : undefined,
+  }
 }

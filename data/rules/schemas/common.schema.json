@@ -415,9 +415,9 @@
       }
     },
     "effSaveDc": {
-      "description": "Added 2026-10-18: a feature's own save DC, '8 plus your Wisdom modifier and Proficiency Bonus' (Monk's Focus, SRD p.50; Cunning Strike, p.62). id names it so the feature's text can be shown beside the number.",
+      "description": "Added 2026-10-18: a feature's own save DC, '8 plus your Wisdom modifier and Proficiency Bonus' (Monk's Focus, SRD p.50; Cunning Strike, p.62). id names it so the feature's text can be shown beside the number. Added 2026-10-26: ruling, where the feature prints no DC and the user ruled which it uses, names that ambiguity, so the sheet can say so beside the number (Open Hand Technique, p.52; classes.json ambiguity open-hand-technique-save-dc).",
       "type": "object", "required": ["type", "id", "ability"], "additionalProperties": false,
-      "properties": { "type": { "const": "saveDc" }, "id": { "$ref": "#/$defs/id" }, "ability": { "$ref": "#/$defs/ability" } }
+      "properties": { "type": { "const": "saveDc" }, "id": { "$ref": "#/$defs/id" }, "ability": { "$ref": "#/$defs/ability" }, "ruling": { "$ref": "#/$defs/ref" } }
     },
     "effResource": {
       "description": "A limited use this grants, tracked by the sheet: its maximum and when it comes back.",
