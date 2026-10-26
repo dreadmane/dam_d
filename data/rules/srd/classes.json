@@ -1592,7 +1592,8 @@
                 },
                 "by": 2
               },
-              "when": "ability check using a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus"
+              "when": "ability check using a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus",
+              "requires": "skill-not-proficient"
             }
           ],
           "source": {
