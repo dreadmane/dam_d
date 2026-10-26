@@ -80,6 +80,8 @@ export interface Spellcaster {
   ability: Ability
   saveDc: Total
   attack: Total
+  // The Cantrips column's number, and one more for each extra cantrip a
+  // class feature gives (Magician, Thaumaturge: SRD pp.42, 37).
   cantrips?: number
   prepared?: number
 }
@@ -163,9 +165,10 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
   // only the condition itself counts.
   const incapacitated = entity.conditions.some((c) => c.conditionId === 'incapacitated')
 
-  // The `requires` states (common.schema.json): decided from the save, and
-  // strength-attack from the attack being totalled, where there is one.
-  const holds = (e: Effect, attackAbility?: Ability) => {
+  // The `requires` states (common.schema.json): decided from the save,
+  // strength-attack from the attack being totalled, where there is one, and
+  // skill-not-proficient from the skill.
+  const holds = (e: Effect, attackAbility?: Ability, unproficientSkill?: boolean) => {
     const requires = 'requires' in e ? e.requires : undefined
     switch (requires) {
       case undefined:
@@ -180,6 +183,8 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
         return armorRecord?.category !== 'heavy'
       case 'not-incapacitated':
         return !incapacitated
+      case 'skill-not-proficient':
+        return Boolean(unproficientSkill)
       case 'strength-attack':
         return attackAbility === 'str'
       // An item's effects reach the sheet only while it is worn or held
@@ -242,7 +247,7 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
   const valueOf = (a: Active, value: number | Expression, pb: number) =>
     evaluateNumber(value, { ...baseContext(pb), self: a.classId, spellcasting: undefined })
   const midLine = (s = '') => s.charAt(0).toLowerCase() + s.slice(1)
-  const total = (base: Part[], targets: string[], pb: number, item?: Item, ability?: Ability): Total => {
+  const total = (base: Part[], targets: string[], pb: number, item?: Item, ability?: Ability, unproficientSkill?: boolean): Total => {
     const t = emptyTotal()
     t.parts.push(...base)
     for (const a of effects) {
@@ -250,7 +255,7 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
       if (e.type === 'bonus' && targets.includes(e.target)) {
         if (e.target.endsWith(':this') && (!item || a.item !== item.id)) continue
         const v = valueOf(a, e.value, pb)
-        if (!holds(e, ability)) t.notes.push({ text: `${e.dice ? `+${e.dice}` : signed(v)} ${midLine(e.when)}`.trim(), from: a.from })
+        if (!holds(e, ability, unproficientSkill)) t.notes.push({ text: `${e.dice ? `+${e.dice}` : signed(v)} ${midLine(e.when)}`.trim(), from: a.from })
         else if (e.dice) t.notes.push({ text: `+${e.dice}`, from: a.from })
         else if (v) t.parts.push({ label: a.from, value: v })
       }
@@ -290,7 +295,7 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     const proficiency: 0 | 1 | 2 = profs.skill.has(s.id) ? (expertise.has(s.id) ? 2 : 1) : 0
     const base: Part[] = [{ label: `${ability.toUpperCase()} modifier`, value: abilities[ability].modifier }]
     if (proficiency) base.push({ label: proficiency === 2 ? 'Expertise' : 'Proficiency', value: pb * proficiency })
-    return { id: s.id, name: s.name, ability, proficiency, ...total(base, [`skill:${s.id}`, `check:${ability}`, 'check:all', 'd20:all'], pb) }
+    return { id: s.id, name: s.name, ability, proficiency, ...total(base, [`skill:${s.id}`, `check:${ability}`, 'check:all', 'd20:all'], pb, undefined, undefined, !proficiency) }
   })
 
   const perception = skills.find((s) => s.id === 'perception')!
@@ -359,10 +364,13 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
   }
   const hitDice = [...dice].sort((a, b) => b[0] - a[0]).map(([die, count]) => ({ die, count, spent: Math.min(count, entity.hitDiceSpent[`d${die}`] ?? 0) }))
 
-  // Speed: the species' walking Speed, its bonuses, Exhaustion, and heavy
-  // armor's Strength requirement.
+  // Speed: the species' walking Speed, or a trait's where it sets a higher
+  // one (Wood Elf, "Your Speed increases to 35 feet", SRD p.84), its
+  // bonuses, Exhaustion, and heavy armor's Strength requirement.
   const species = entity.species && rules.species.get(entity.species.speciesId)
-  const walkBase: Part[] = [{ label: species?.name ?? 'Speed', value: species?.speed ?? 30 }]
+  let walkSet: Part = { label: species?.name ?? 'Speed', value: species?.speed ?? 30 }
+  for (const { effect, from } of of('speed')) if (effect.mode === 'walk' && effect.feet && holds(effect) && effect.feet > walkSet.value) walkSet = { label: from, value: effect.feet }
+  const walkBase: Part[] = [walkSet]
   if (armorRecord?.strength && score('str') < armorRecord.strength) walkBase.push({ label: `${armorRecord.name} (Strength ${armorRecord.strength})`, value: -10 })
   const walk = total(walkBase, ['speed:walk', 'speed:all'], pb)
   walk.total = Math.max(0, walk.total)
@@ -389,7 +397,7 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
       ability: sc.ability,
       saveDc: total([{ label: 'Base', value: dcBase - mod - pb }, { label: `${sc.ability.toUpperCase()} modifier`, value: mod }, { label: 'Proficiency', value: pb }], ['spell-dc'], pb),
       attack: total([{ label: `${sc.ability.toUpperCase()} modifier`, value: mod }, { label: 'Proficiency', value: attackBase - mod }], ['spell-attack', 'd20:all'], pb),
-      cantrips: sc.cantripsColumn ? toNumber(columnOf(cls.id, sc.cantripsColumn)) : undefined,
+      cantrips: sc.cantripsColumn ? toNumber(columnOf(cls.id, sc.cantripsColumn)) + choices.filter((c) => c.classId === cls.id && c.kind === 'spell' && c.grants === 'cantrip').reduce((n, c) => n + c.count, 0) : undefined,
       prepared: sc.preparedColumn ? toNumber(columnOf(cls.id, sc.preparedColumn)) : undefined,
     })
   }
@@ -436,6 +444,20 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     if (from && a.classId && classLevel(a.classId) >= from.level) recharge = from.recharge
     return { key, name: a.effect.name, max, used: Math.min(max, entity.resourcesUsed[key] ?? 0), recharge, from: a.from }
   })
+  // A granted spell cast without a slot so many times a rest or a dawn (a
+  // lineage's, Paladin's Smite's, an item's): a limited use like any other,
+  // from the character level the grant comes at, named as Forest Gnome's
+  // is, "Spell (what grants it)". An item's is keyed by the item, as two
+  // items can grant the same spell.
+  for (const a of of('grantSpell')) {
+    const free = a.effect.freeCasts
+    if (!free || (a.effect.atLevel && a.effect.atLevel > level)) continue
+    const spellId = a.effect.spell.replace(/^spells:/, '')
+    const key = [a.classId, a.item, `free-cast:${spellId}`].filter(Boolean).join(':')
+    const max = valueOf(a, free.uses, pb)
+    const name = `${rules.spells.get(spellId)?.name ?? unresolved(spellId)} (${a.from.replace(/^[^:]*: /, '')})`
+    resources.push({ key, name, max, used: Math.min(max, entity.resourcesUsed[key] ?? 0), recharge: free.recharge, from: a.from })
+  }
 
   // Senses: the longest of each, and an `extends` adds to one already held.
   const senseMap = new Map<string, { feet: number; from: string }>()
