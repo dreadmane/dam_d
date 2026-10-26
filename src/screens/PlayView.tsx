@@ -379,7 +379,30 @@ function Vitals({ journal, line, readout, inspiration, id, levelReady, onHp, onI
         {inspiration && <p className="readout-inspiration">Heroic Inspiration</p>}
         {concentrating && <p className="readout-inspiration">Concentrating on {concentrating}</p>}
       </div>
+      <LineVitals readout={readout} onHp={onHp} />
     </>
+  )
+}
+
+// Classic's collapsed line keeps HP and AC in reach (the play audit's
+// recommendation 6): HP opens the Health window from the line itself
+// (data-line, Hud.tsx), AC is there to read. Shown only while the band is
+// collapsed (index.css); the Journal's line keeps its own HP.
+function LineVitals({ readout, onHp }: { readout: ReturnType<typeof bandReadout>; onHp: () => void }) {
+  const hp = readout.flat().find((i) => i.label === 'HP')
+  const ac = readout.flat().find((i) => i.label === 'AC')
+  if (!hp) return null
+  return (
+    <p className="hud-line-vitals">
+      <button type="button" className="readout-pair readout-button" data-line aria-haspopup="dialog" aria-label={`HP ${hp.value}: take damage or heal`} onClick={onHp}>
+        HP <span className="readout-value">{hp.value}</span>
+      </button>
+      {ac && (
+        <span className="readout-pair">
+          AC <span className="readout-value">{ac.value}</span>
+        </span>
+      )}
+    </p>
   )
 }
 
