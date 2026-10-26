@@ -444,6 +444,8 @@
         "alwaysPrepared": { "type": "boolean" },
         "atWill": { "type": "boolean", "description": "Added 2026-10-18: cast 'without expending a spell slot', with no limit (Eldritch Invocations, SRD p.72)." },
         "ability": { "anyOf": [ { "$ref": "#/$defs/ability" }, { "const": "choice" } ] },
+        "dc": { "type": "integer", "minimum": 1, "description": "Added 2026-10-26: the save DC the granting record prints for this spell, in place of the caster's ('cast Web (save DC 13)', Cloak of Arachnida, SRD p.215)." },
+        "attack": { "type": "integer", "description": "Added 2026-10-26: the attack bonus the granting record prints for this spell, in place of the caster's ('Scorching Ray with it (+5 to hit)', Circlet of Blasting, SRD p.215)." },
         "freeCasts": { "type": "object", "required": ["uses", "recharge"], "additionalProperties": false, "properties": { "uses": { "anyOf": [ { "type": "integer" }, { "$ref": "#/$defs/expression" } ], "description": "An expression added 2026-10-18 for Forest Gnome: 'a number of times equal to your Proficiency Bonus' (SRD p.85)." }, "recharge": { "$ref": "#/$defs/recharge" }, "slotLevel": { "type": "integer" } } }
       }
     },

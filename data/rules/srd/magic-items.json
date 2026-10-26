@@ -1287,6 +1287,7 @@
         {
           "type": "grantSpell",
           "spell": "spells:scorching-ray",
+          "attack": 5,
           "freeCasts": {
             "uses": 1,
             "recharge": "dawn"
@@ -1327,6 +1328,7 @@
         {
           "type": "grantSpell",
           "spell": "spells:web",
+          "dc": 13,
           "freeCasts": {
             "uses": 1,
             "recharge": "dawn"
@@ -1536,7 +1538,8 @@
       "effects": [
         {
           "type": "grantSpell",
-          "spell": "spells:scrying"
+          "spell": "spells:scrying",
+          "dc": 17
         }
       ],
       "consumable": false,
@@ -1560,11 +1563,13 @@
       "effects": [
         {
           "type": "grantSpell",
-          "spell": "spells:scrying"
+          "spell": "spells:scrying",
+          "dc": 17
         },
         {
           "type": "grantSpell",
-          "spell": "spells:detect-thoughts"
+          "spell": "spells:detect-thoughts",
+          "dc": 17
         }
       ],
       "consumable": false,
@@ -1588,11 +1593,13 @@
       "effects": [
         {
           "type": "grantSpell",
-          "spell": "spells:scrying"
+          "spell": "spells:scrying",
+          "dc": 17
         },
         {
           "type": "grantSpell",
           "spell": "spells:suggestion",
+          "dc": 17,
           "freeCasts": {
             "uses": 1,
             "recharge": "dawn"
@@ -1620,7 +1627,8 @@
       "effects": [
         {
           "type": "grantSpell",
-          "spell": "spells:scrying"
+          "spell": "spells:scrying",
+          "dc": 17
         }
       ],
       "consumable": false,
@@ -1644,27 +1652,33 @@
       "effects": [
         {
           "type": "grantSpell",
-          "spell": "spells:mage-armor"
+          "spell": "spells:mage-armor",
+          "dc": 17
         },
         {
           "type": "grantSpell",
-          "spell": "spells:shield"
+          "spell": "spells:shield",
+          "dc": 17
         },
         {
           "type": "grantSpell",
-          "spell": "spells:tiny-hut"
+          "spell": "spells:tiny-hut",
+          "dc": 17
         },
         {
           "type": "grantSpell",
-          "spell": "spells:private-sanctum"
+          "spell": "spells:private-sanctum",
+          "dc": 17
         },
         {
           "type": "grantSpell",
-          "spell": "spells:resilient-sphere"
+          "spell": "spells:resilient-sphere",
+          "dc": 17
         },
         {
           "type": "grantSpell",
-          "spell": "spells:wall-of-force"
+          "spell": "spells:wall-of-force",
+          "dc": 17
         }
       ],
       "charges": {
@@ -1953,7 +1967,8 @@
         },
         {
           "type": "grantSpell",
-          "spell": "spells:scrying"
+          "spell": "spells:scrying",
+          "dc": 18
         }
       ],
       "charges": {
@@ -2344,7 +2359,8 @@
       "effects": [
         {
           "type": "grantSpell",
-          "spell": "spells:charm-person"
+          "spell": "spells:charm-person",
+          "dc": 13
         }
       ],
       "charges": {
@@ -3185,19 +3201,23 @@
         },
         {
           "type": "grantSpell",
-          "spell": "spells:daylight"
+          "spell": "spells:daylight",
+          "dc": 18
         },
         {
           "type": "grantSpell",
-          "spell": "spells:fireball"
+          "spell": "spells:fireball",
+          "dc": 18
         },
         {
           "type": "grantSpell",
-          "spell": "spells:prismatic-spray"
+          "spell": "spells:prismatic-spray",
+          "dc": 18
         },
         {
           "type": "grantSpell",
-          "spell": "spells:wall-of-fire"
+          "spell": "spells:wall-of-fire",
+          "dc": 18
         }
       ],
       "consumable": false,
@@ -3250,6 +3270,7 @@
         {
           "type": "grantSpell",
           "spell": "spells:detect-thoughts",
+          "dc": 13,
           "freeCasts": {
             "uses": 1,
             "recharge": "dawn"
@@ -3258,6 +3279,7 @@
         {
           "type": "grantSpell",
           "spell": "spells:suggestion",
+          "dc": 13,
           "freeCasts": {
             "uses": 1,
             "recharge": "dawn"
@@ -4247,7 +4269,8 @@
       "effects": [
         {
           "type": "grantSpell",
-          "spell": "spells:detect-thoughts"
+          "spell": "spells:detect-thoughts",
+          "dc": 13
         }
       ],
       "charges": {
