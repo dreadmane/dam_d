@@ -9,7 +9,7 @@ import { cast, castOptions, casterFor, characterSpells, keptSpells, preparedCoun
 import { catalogueItem, setCountsAs, weaponSets } from '../play/kit.ts'
 import { damageFormula, featureRule } from '../components/cards.ts'
 import { testRules } from './test-rules.ts'
-import { turnRows } from '../play/turn.ts'
+import { resourceRow, rowGroup, turnRows } from '../play/turn.ts'
 import type { CharacterEntity } from '../save/types.ts'
 import halvard from '../save/examples/cleric-fighter.json'
 import A from './audit/A.json'
@@ -530,5 +530,26 @@ describe('Martial Arts’ Bonus Unarmed Strike and Grapple and Shove DC (#11)', 
 
   it('gives a Fighter 11 Strength’s DC, 8 + 5 + 4 = 17, and no Bonus Action strike (p.190)', () => {
     expect(unarmed(D)).toMatchObject({ bonus: undefined, dc: 17, dcWith: 'STR modifier', bonusRows: [] })
+  })
+})
+
+describe('a resource opens its feature’s window (play audit 9, #26)', () => {
+  const rowOf = (record: { entities: unknown[] }, key: string) => {
+    const e = structuredClone(record.entities[0]) as CharacterEntity
+    const sheet = deriveSheet(rules, e)
+    const row = resourceRow(rules, e, sheet, sheet.resources.find((r) => r.key === key)!)
+    return { kind: row.kind, feature: row.kind === 'feature' ? row.feature.id : undefined, group: rowGroup(row) }
+  }
+
+  it('opens Monk’s Focus for Focus Points, a Bonus Action (p.50)', () => {
+    expect(rowOf(A, 'monk:focus-points')).toEqual({ kind: 'feature', feature: 'monks-focus', group: 'bonus' })
+  })
+
+  it('opens Second Wind for its uses, a Bonus Action (p.48)', () => {
+    expect(rowOf(halvard, 'fighter:second-wind')).toEqual({ kind: 'feature', feature: 'second-wind', group: 'bonus' })
+  })
+
+  it('leaves a lineage’s free cast as the resource alone, with no action type of its own', () => {
+    expect(rowOf(A, 'free-cast:longstrider')).toEqual({ kind: 'resource', feature: undefined, group: null })
   })
 })

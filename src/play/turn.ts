@@ -139,6 +139,19 @@ export function turnRows(rules: Rules, entity: CharacterEntity, sheet: Sheet): T
   return turn
 }
 
+// A resource as the turn draws it, for the Class resources list to open
+// the same window (the play audit's recommendation 9): its feature where
+// one spends it (Second Wind, Monk's Focus), with its switch (Rage), else
+// the resource alone (a lineage's free cast, an item's charges).
+export function resourceRow(rules: Rules, entity: CharacterEntity, sheet: Sheet, resource: Resource): Extract<TurnRow, { kind: 'feature' | 'resource' }> {
+  const switches = new Map(toggles(rules, entity, sheet).map((t) => [t.ref, t]))
+  for (const g of sheet.features) {
+    const cost = featureCost(sheet, g.feature, g.classId)
+    if (cost?.key === resource.key) return { kind: 'feature', key: `feature:${g.feature.id}`, feature: g.feature, from: g.group, cost, toggle: switches.get(g.feature.id) }
+  }
+  return { kind: 'resource', key: `resource:${resource.key}`, resource }
+}
+
 // A spell that can't be cast now: a levelled spell with no slot left for it.
 export const outOfSlots = (rules: Rules, sheet: Sheet, entity: CharacterEntity, row: SpellRow): boolean => row.spell.level > 0 && castOptions(rules, sheet, entity, row).length === 0
 
