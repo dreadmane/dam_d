@@ -107,7 +107,7 @@ function QuickBarSlots({ rules, entity, sheet, update, dock = false }: { rules: 
           onClose={() => setOpen(null)}
         />
       )}
-      {hit && <QuickRoll rules={rules} entity={entity} name={`${hit.name}, to hit`} total={hit.toHit} attack onClose={() => setHit(null)} />}
+      {hit && <QuickRoll rules={rules} entity={entity} name={`${hit.name}, to hit`} total={hit.toHit} attack critMin={sheet.critMin} onClose={() => setHit(null)} />}
       {damage && <DamageWindow entity={entity} attack={damage} onClose={() => setDamage(null)} />}
       {spell && <SpellWindow rules={rules} entity={entity} sheet={sheet} row={spell} update={update} onClose={() => setSpell(null)} />}
     </>

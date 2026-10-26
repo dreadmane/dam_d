@@ -3776,6 +3776,16 @@ body[data-menu-open] main {
   font-size: var(--font-size-sm);
 }
 
+/* Each a whole touch target, the token's 44 px square, the words at its
+   left edge under the class line: Classic's Levels was 31 x 20 px, touching
+   the HP button below (#30). The Journal draws its own plates. */
+.band-links a {
+  display: inline-flex;
+  align-items: center;
+  min-width: var(--size-touch);
+  min-height: var(--size-touch);
+}
+
 /* The guided build (screens/BuildScreen.tsx): Crawler Interface's step
    rail, scrolling sideways on a phone, the current step underlined in the
    accent and the steps behind it in brass. */

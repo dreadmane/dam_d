@@ -25,13 +25,15 @@ const CHOICES: { name: string; mode: Mode }[] = [
 
 // onRolled is told once the roll is made (the Journal's turn spends its pip).
 // attack: the roll is an attack roll, so a natural 20 or 1 on it says the
-// rules' result (describe.ts, naturalWords).
+// rules' result (describe.ts, naturalWords); critMin: a weapon attack's crit
+// range, the sheet's (Improved Critical's 19).
 export function QuickRoll({
   rules,
   entity,
   name,
   total,
   attack = false,
+  critMin,
   onClose,
   onRolled,
 }: {
@@ -40,6 +42,7 @@ export function QuickRoll({
   name: string
   total: Total
   attack?: boolean
+  critMin?: number
   onClose: () => void
   onRolled?: () => void
 }) {
@@ -49,7 +52,7 @@ export function QuickRoll({
   const roll = (table: Mode) => {
     const mode = rollMode(total.advantage.length, total.disadvantage.length, table)
     const r = rollD20(rules, total.total, mode)
-    const described = describeCheck(name, check, mode, r, attack ? 'attack' : 'other')
+    const described = describeCheck(name, check, mode, r, attack ? 'attack' : 'other', critMin)
     dialog.close()
     showDice(described, { say: true, alone: true })
     record(entity, described)

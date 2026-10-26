@@ -502,13 +502,27 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
       }
       const said = [better.die && `${better.die} in place of ${dice}`, better.ability && `${better.ability.toUpperCase()} in place of ${ability.toUpperCase()}`].filter(Boolean).join(', ')
       if (!said) continue
-      if (holds(e) && (!e.wieldingOnly || wielded.every((w) => inSet(e, equipmentOf(w)!, w)))) {
+      const others = e.wieldingOnly ? wielded.filter((w) => !inSet(e, equipmentOf(w)!, w)) : []
+      if (holds(e) && !others.length) {
         dice = better.die ?? dice
         ability = better.ability ?? ability
         options.push({ text: said, from })
-      } else lapsed.push({ text: [said, midLine(e.when)].filter(Boolean).join(', '), from })
+      } else lapsed.push({ text: [said, lapsedBy(e, others) ?? midLine(e.when)].filter(Boolean).join(', '), from })
     }
     return { ability, dice, options, lapsed }
+  }
+  // Why an attackOption lapses, naming what breaks it (the design system's
+  // "a why names its cause"): the armor worn, the Shield, each weapon held
+  // that the option doesn't name. Undefined where the app can't say, and the
+  // printed condition stands.
+  function lapsedBy(e: EffAttackOption, others: Item[]): string | undefined {
+    const armor = wornArmor ?? wornMagicArmor
+    const causes = [
+      (e.requires === 'no-armor' || e.requires === 'no-armor-no-shield') && armor && `wear the ${armor.name}`,
+      e.requires === 'no-armor-no-shield' && wornShield && `wield the ${wornShield.name}`,
+      others.length && [`wield ${others.map((w) => `the ${w.name}`).join(' and ')}`, e.name && `which ${others.length > 1 ? `aren’t ${e.name}s` : `isn’t a ${e.name}`}`].filter(Boolean).join(', '),
+    ].filter(Boolean)
+    return causes.length ? `not while you ${causes.join(' or ')}` : undefined
   }
 
   const attacks: Attack[] = []

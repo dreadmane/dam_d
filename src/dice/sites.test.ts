@@ -58,7 +58,16 @@ describe('what each d20 is rolled for', () => {
     expect(sources['../components/Health.tsx']).toMatch(/describeRoll\('Death saving throw', '1d20', rolled, 'death-save'\)/)
   })
 
-  it('passes the quick roll’s kind on to its description', () => {
-    expect(sources['../components/QuickRoll.tsx']).toMatch(/describeCheck\(name, check, mode, r, attack \? 'attack' : 'other'\)/)
+  it('passes the quick roll’s kind and crit range on to its description', () => {
+    expect(sources['../components/QuickRoll.tsx']).toMatch(/describeCheck\(name, check, mode, r, attack \? 'attack' : 'other', critMin\)/)
+  })
+
+  // Improved Critical is for weapons and Unarmed Strikes (SRD p.49), so a
+  // weapon attack's roll takes the sheet's crit range and a spell attack's
+  // none (#13).
+  it('gives every weapon attack’s quick roll the sheet’s crit range, and a spell attack none', () => {
+    const weapon = quickRolls.filter((q) => /to hit|Opportunity Attack/.test(q.tag))
+    expect(weapon.filter((q) => !/\scritMin=\{sheet\.critMin\}\s/.test(q.tag)).map((q) => `${q.file}: ${q.tag}`)).toEqual([])
+    expect(quickRolls.filter((q) => /critMin=/.test(q.tag)).map((q) => q.file).toSorted()).toEqual(['Attacks.tsx', 'QuickBar.tsx', 'Reactions.tsx', 'Turn.tsx'])
   })
 })

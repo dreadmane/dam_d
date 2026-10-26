@@ -123,6 +123,25 @@ describe('Martial Arts (finding 4)', () => {
     }
   })
 
+  it('says what turns it off, by name: a weapon that isn’t a Monk weapon, the armor, the Shield (#10)', () => {
+    const note = (change: (e: CharacterEntity) => void) =>
+      changed(A, change)
+        .attacks.find((a) => a.name === 'Spear')!
+        .damage.notes.find((n) => n.from === 'Monk 1: Martial Arts')?.text
+    const said = '1d8 in place of 1d6, DEX in place of STR, not while you '
+    expect(note((e) => add(e, 'longsword'))).toBe(`${said}wield the Longsword, which isn’t a Monk weapon`)
+    expect(note((e) => (add(e, 'longsword'), add(e, 'greatsword')))).toBe(`${said}wield the Longsword and the Greatsword, which aren’t Monk weapons`)
+    expect(note((e) => add(e, 'leather-armor', true))).toBe(`${said}wear the Leather Armor`)
+    expect(note((e) => add(e, 'shield', true))).toBe(`${said}wield the Shield`)
+    expect(note((e) => (add(e, 'shield', true), add(e, 'longsword')))).toBe(`${said}wield the Shield or wield the Longsword, which isn’t a Monk weapon`)
+  })
+
+  it('names a magic weapon by its own name: Frye’s Sun Blade', () => {
+    const blade = catalogueItem(rules, 'magic-items:sun-blade', 'longsword', 'blade-1')!
+    const sheet = changed(A, (e) => e.inventory.push({ ...blade, name: 'Sun Blade', attuned: true }))
+    expect(sheet.attacks.find((a) => a.name === 'Spear')!.damage.notes.find((n) => n.from === 'Monk 1: Martial Arts')?.text).toBe('1d8 in place of 1d6, DEX in place of STR, not while you wield the Sun Blade, which isn’t a Monk weapon')
+  })
+
   it('comes back once the Longsword is put away', () => {
     expect(row(changed(A, (e) => add(e, 'longsword', false)), 'Spear')).toEqual(['dex', 6, '1d8', 3])
   })
