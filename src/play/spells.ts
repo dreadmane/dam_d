@@ -24,6 +24,9 @@ export interface SpellRow {
   // Always prepared by a feature: it never counts against the class's
   // number (SRD p.104, Always-Prepared Spells).
   always: boolean
+  // A cantrip a class feature adds to the class's number (Magician's,
+  // Thaumaturge's, SRD pp.42, 37): chosen in Levels, and counted in it.
+  extraCantrip?: boolean
   // A class spell the player can prepare or unprepare.
   preparable: boolean
 }
@@ -50,6 +53,7 @@ export function characterSpells(rules: Rules, entity: CharacterEntity, sheet: Sh
       ready: held.ready || row.ready,
       always,
       preparable: !always && (held.preparable || row.preparable),
+      ...(held.extraCantrip || row.extraCantrip ? { extraCantrip: true } : {}),
     })
   }
   for (const s of entity.spells) {
@@ -86,7 +90,8 @@ export function characterSpells(rules: Rules, entity: CharacterEntity, sheet: Sh
     const ability = c.classId ? undefined : chosenAbility(c.source)
     for (const id of c.made?.values ?? []) {
       const spell = rules.spells.get(ref(id))
-      if (spell) add({ spell, from: c.origin.name, ...(c.classId ? { classId: c.classId } : {}), ...(ability ? { ability } : {}), ready: true, always: true, preparable: false })
+      const extraCantrip = Boolean(c.classId && c.grants === 'cantrip' && spell?.level === 0)
+      if (spell) add({ spell, from: c.origin.name, ...(c.classId ? { classId: c.classId } : {}), ...(ability ? { ability } : {}), ready: true, always: true, preparable: false, ...(extraCantrip ? { extraCantrip } : {}) })
     }
   }
   return [...rows.values()].sort((a, b) => a.spell.level - b.spell.level || a.spell.name.localeCompare(b.spell.name))
@@ -94,12 +99,12 @@ export function characterSpells(rules: Rules, entity: CharacterEntity, sheet: Sh
 
 // Prepared against the class's number (the features table's Prepared Spells
 // column), the always-prepared not counted; cantrips against the Cantrips
-// column.
+// column and a feature's extra one, which is counted.
 export function preparedCount(rows: SpellRow[], caster: Spellcaster) {
   const mine = rows.filter((r) => r.classId === caster.classId && !r.always)
   return {
     prepared: mine.filter((r) => r.spell.level > 0 && r.ready).length,
-    cantrips: mine.filter((r) => r.spell.level === 0).length,
+    cantrips: rows.filter((r) => r.classId === caster.classId && r.spell.level === 0 && (!r.always || r.extraCantrip)).length,
   }
 }
 
