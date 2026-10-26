@@ -12,8 +12,10 @@ import { characterName } from '../components/character-name.ts'
 import { COINS } from '../play/inventory.ts'
 import type { CharacterEntity, RosterRecord } from './record.ts'
 
-// Player text goes in table cells: a pipe or a line break would end the cell.
-const cell = (s: string) => s.replace(/\|/g, '\\|').replace(/\r?\n/g, ' ')
+// Player text goes in table cells: a pipe or a line break would end the cell,
+// and a backslash would escape the pipe after it, so backslashes are escaped
+// first (#43).
+export const cell = (s: string) => s.replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ')
 
 function table(head: string[], rows: string[][]): string[] {
   return [`| ${head.join(' | ')} |`, `| ${head.map(() => '---').join(' | ')} |`, ...rows.map((r) => `| ${r.map(cell).join(' | ')} |`)]
