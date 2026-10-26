@@ -631,7 +631,7 @@ export type Subclass = {
   text?: string
   features: Feature[]
   /**
-   * Spells the subclass always has prepared, by class level (Domain Spells, Circle Spells, Oath Spells).
+   * Spells the subclass always has prepared, by class level (Domain Spells, Circle Spells, Oath Spells). Added 2026-10-26: choice, where a group comes only with one pick of one of the subclass's choices, names the choice's id and the value (Circle of the Land Spells, SRD p.46: a land's table only while that land is chosen).
    */
   spells?: {
     level: number
@@ -639,6 +639,13 @@ export type Subclass = {
      * Items: A record id. kebab-case, permanent: saved characters reference it. A replaced record keeps its id with supersededBy.
      */
     spells: string[]
+    choice?: {
+      /**
+       * A record id. kebab-case, permanent: saved characters reference it. A replaced record keeps its id with supersededBy.
+       */
+      id: string
+      value: string
+    }
   }[]
   source: Source
   /**
