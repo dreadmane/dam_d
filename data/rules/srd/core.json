@@ -467,6 +467,12 @@
       "id": "primordial",
       "name": "Primordial",
       "kind": "rare",
+      "dialects": [
+        "Aquan",
+        "Auran",
+        "Ignan",
+        "Terran"
+      ],
       "source": {
         "ref": "srd-5.2.1",
         "section": "Character Creation > Step 2: Character Origin > Choose Languages",
