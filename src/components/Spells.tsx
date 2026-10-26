@@ -10,6 +10,7 @@ import {
   casterFor,
   characterSpells,
   endConcentration,
+  keptSpells,
   classMaxSpellLevel,
   markPact,
   markSlot,
@@ -51,10 +52,10 @@ export function SpellsSection({ rules, entity, sheet, update }: { rules: Rules; 
   const [changing, setChanging] = useState<Spellcaster | null>(null)
   const slots = slotLevels(sheet, entity)
   const pact = pactSlots(sheet, entity)
-  if (!rows.length && !sheet.spellcasting.length) return null
-  const levels = [...new Set(rows.map((r) => r.spell.level))].sort((a, b) => a - b)
   // Spells the rules lack (an import's, spec §4.2): kept, and listed by name.
-  const kept = entity.spells.filter((s) => !rules.spells.has(s.spellId))
+  const kept = keptSpells(rules, entity, sheet)
+  if (!rows.length && !sheet.spellcasting.length && !kept.length) return null
+  const levels = [...new Set(rows.map((r) => r.spell.level))].sort((a, b) => a - b)
   const concentrating = entity.concentration && rules.spells.get(entity.concentration.spellId)
   return (
     <SheetSection id="spells" count={String(rows.filter((r) => r.ready).length)}>
@@ -66,8 +67,9 @@ export function SpellsSection({ rules, entity, sheet, update }: { rules: Rules; 
               <b>{c.name}</b> · save DC <b>{c.saveDc.total}</b> · attack <b>{signed(c.attack.total)}</b>
               <br />
               <span className="meta">
-                {c.prepared !== undefined && `Prepared ${count.prepared} of ${c.prepared}`}
-                {c.cantrips !== undefined && ` · Cantrips ${count.cantrips} of ${c.cantrips}`}
+                {c.prepared !== undefined && <span className={count.over.prepared ? 'owed' : undefined}>Prepared {count.prepared} of {c.prepared}</span>}
+                {c.prepared !== undefined && c.cantrips !== undefined && ' · '}
+                {c.cantrips !== undefined && <span className={count.over.cantrips ? 'owed' : undefined}>Cantrips {count.cantrips} of {c.cantrips}</span>}
               </span>
             </p>
             <button type="button" className="secondary" aria-haspopup="dialog" onClick={() => setChanging(c)}>
@@ -114,7 +116,8 @@ export function SpellsSection({ rules, entity, sheet, update }: { rules: Rules; 
       {kept.length > 0 && (
         <div className="skill-group">
           <h3 className="skill-group-name">Kept by name</h3>
-          <p className="meta">{kept.map((s) => unresolved(s.spellId)).join(', ')}</p>
+          <p>{kept.map((id) => unresolved(id)).join(', ')}</p>
+          <p className="meta">The rules data on this device doesn’t have {kept.length === 1 ? 'this spell' : 'these spells'}, so {kept.length === 1 ? 'it is' : 'they are'} kept by name and can’t be cast here.</p>
         </div>
       )}
       {open && <SpellWindow rules={rules} entity={entity} sheet={sheet} row={open} update={update} onClose={() => setOpen(null)} />}

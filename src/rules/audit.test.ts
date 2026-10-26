@@ -5,7 +5,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { deriveSheet } from './derive.ts'
-import { cast, castOptions, casterFor, characterSpells, preparedCount } from '../play/spells.ts'
+import { cast, castOptions, casterFor, characterSpells, keptSpells, preparedCount } from '../play/spells.ts'
 import { catalogueItem, setCountsAs, weaponSets } from '../play/kit.ts'
 import { damageFormula, featureRule } from '../components/cards.ts'
 import { testRules } from './test-rules.ts'
@@ -477,5 +477,30 @@ describe('a magic item’s spells use the DC and attack it prints (#12)', () => 
   it('keeps the first class’s DC where the item prints none (Boots of Levitation)', () => {
     const { dc, own } = wearing(halvard, 'magic-items:boots-of-levitation', 'levitate')
     expect(dc).toBe(own)
+  })
+})
+
+describe('spells the data doesn’t have, and counts past the number (finding 11, #7)', () => {
+  const dunna = (change: (e: CharacterEntity) => void) => {
+    const record: { entities: unknown[] } = F
+    const e = structuredClone(record.entities[0]) as CharacterEntity
+    change(e)
+    const sheet = deriveSheet(rules, e)
+    return { kept: keptSpells(rules, e, sheet), counted: preparedCount(characterSpells(rules, e, sheet), sheet.spellcasting.find((c) => c.classId === 'druid')!) }
+  }
+
+  it('keeps a misspelt class spell and an unknown feat pick by name, and nothing she has right', () => {
+    expect(dunna(() => {}).kept).toEqual([])
+    const { kept } = dunna((e) => {
+      e.spells.push({ spellId: 'produce-flam', classId: 'druid', source: 'class:druid', prepared: true })
+      e.choices = e.choices.map((c) => (c.choice === 'magic-initiate-cantrips' ? { ...c, values: ['fire-bolt', 'arcane-blast'] } : c))
+    })
+    expect(kept).toEqual(['produce-flam', 'arcane-blast'])
+  })
+
+  it('says a fifth cantrip is past a Druid 5’s four, and nothing when she is at four', () => {
+    expect(dunna(() => {}).counted.over).toEqual({ prepared: false, cantrips: false })
+    const { counted } = dunna((e) => e.spells.push({ spellId: 'mending', classId: 'druid', source: 'class:druid', prepared: true }))
+    expect(counted).toMatchObject({ cantrips: 5, over: { cantrips: true, prepared: false } })
   })
 })

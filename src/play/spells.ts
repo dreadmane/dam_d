@@ -114,10 +114,20 @@ export function characterSpells(rules: Rules, entity: CharacterEntity, sheet: Sh
 // column and a feature's extra one, which is counted.
 export function preparedCount(rows: SpellRow[], caster: Spellcaster) {
   const mine = rows.filter((r) => r.classId === caster.classId && !r.always)
-  return {
-    prepared: mine.filter((r) => r.spell.level > 0 && r.ready).length,
-    cantrips: rows.filter((r) => r.classId === caster.classId && r.spell.level === 0 && (!r.always || r.extraCantrip)).length,
-  }
+  const prepared = mine.filter((r) => r.spell.level > 0 && r.ready).length
+  const cantrips = rows.filter((r) => r.classId === caster.classId && r.spell.level === 0 && (!r.always || r.extraCantrip)).length
+  // Past the class's number: more chosen than the table allows (the rules
+  // audit's finding 11), which the sheet says rather than takes silently.
+  return { prepared, cantrips, over: { prepared: caster.prepared !== undefined && prepared > caster.prepared, cantrips: caster.cantrips !== undefined && cantrips > caster.cantrips } }
+}
+
+// The spells a character holds that the rules data on this device doesn't
+// have (a typo'd id, a books-only spell, an import's name, spec §4.2): a
+// class's spells and the spells picked for a feat or a feature, each id
+// once. They are kept and named, never cast.
+export function keptSpells(rules: Rules, entity: CharacterEntity, sheet: Sheet): string[] {
+  const picked = sheet.choices.filter((c) => c.kind === 'spell').flatMap((c) => c.made?.values ?? [])
+  return [...new Set([...entity.spells.map((s) => s.spellId), ...picked].map(ref))].filter((id) => !rules.spells.has(id))
 }
 
 export interface SlotLevel {

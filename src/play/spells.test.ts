@@ -34,13 +34,13 @@ describe('a character’s spells', () => {
   it('counts the prepared against the class’s number, the always-prepared not counted', () => {
     const ilsabet = entity(wizard)
     const sheet = deriveSheet(rules, ilsabet)
-    expect(preparedCount(characterSpells(rules, ilsabet, sheet), sheet.spellcasting[0])).toEqual({ prepared: 9, cantrips: 4 })
+    expect(preparedCount(characterSpells(rules, ilsabet, sheet), sheet.spellcasting[0])).toMatchObject({ prepared: 9, cantrips: 4 })
   })
 
   it('makes the Cleric example a full caster: 9 of 9 prepared and 4 of 4 cantrips, the domain spells apart', () => {
     const halvard = entity(cleric)
     const sheet = deriveSheet(rules, halvard)
-    expect(preparedCount(characterSpells(rules, halvard, sheet), sheet.spellcasting[0])).toEqual({ prepared: 9, cantrips: 4 })
+    expect(preparedCount(characterSpells(rules, halvard, sheet), sheet.spellcasting[0])).toMatchObject({ prepared: 9, cantrips: 4 })
   })
 
   it('prepares and unprepares a class spell, and adds one to the spellbook', () => {
