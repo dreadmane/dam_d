@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { notePressed, originFrom, outside, recentOpener } from './dialog.ts'
+import { describe, expect, it, vi } from 'vitest'
+import { notePressed, openAtTop, originFrom, outside, recentOpener } from './dialog.ts'
 
 // The window's own box, as a 390 px phone centres it.
 const WINDOW = { x: 10, y: 150, width: 370, height: 400 }
@@ -13,6 +13,25 @@ describe('a window grows from the control that opened it', () => {
   it('reaches outside the window’s box when the control is outside it', () => {
     // The Health Bar in the band, above the window.
     expect(originFrom({ x: 80, y: 40, width: 260, height: 44 }, WINDOW)).toBe('200px -88px')
+  })
+})
+
+describe('a window opens at its top (#48)', () => {
+  const box = (scrollTop: number) => ({ scrollTop, tabIndex: 0, focus: vi.fn() })
+
+  it('takes focus itself and goes back to its top when its first control was below the fold', () => {
+    const d = box(1243)
+    openAtTop(d)
+    expect(d.scrollTop).toBe(0)
+    expect(d.tabIndex).toBe(-1)
+    expect(d.focus).toHaveBeenCalledWith({ preventScroll: true })
+  })
+
+  it('leaves a window at its top as the browser made it, focus on its first control', () => {
+    const d = box(0)
+    openAtTop(d)
+    expect(d.focus).not.toHaveBeenCalled()
+    expect(d.tabIndex).toBe(0)
   })
 })
 
