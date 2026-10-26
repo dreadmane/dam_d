@@ -10,7 +10,7 @@ import type { Attack, Sheet } from '../rules/derive.ts'
 import type { Rules } from '../rules/load.ts'
 import type { CharacterEntity, RosterRecord } from '../save/types.ts'
 import { DamageWindow } from './Attacks.tsx'
-import { damageFormula } from './cards.ts'
+import { damageFormula, featureDc } from './cards.ts'
 import { useHudDialog } from './dialog.ts'
 import { ProficiencyMark } from './ProficiencyMark.tsx'
 import { QuickRoll } from './QuickRoll.tsx'
@@ -291,10 +291,11 @@ function TurnRowView({ rules, entity, sheet, row, onOpen }: { rules: Rules; enti
       const toggle = row.kind === 'feature' ? row.toggle : undefined
       const chip = toggle ? (toggle.on ? 'On' : 'Off') : res ? `${left} of ${res.max}` : 'Use'
       const from = row.kind === 'feature' ? row.from : row.resource.from
+      const dc = row.kind === 'feature' ? featureDc(sheet, row.feature.id) : undefined
       return (
         <li className="turn-row" data-spent={(left === 0 && !toggle?.on) || undefined}>
           <button type="button" className="turn-row-main" aria-haspopup="dialog" onClick={() => onOpen({ kind: 'use', row, group: pip })}>
-            <RowText name={name} detail={from} />
+            <RowText name={name} detail={dc ? `${from} · DC ${dc.total}` : from} />
             <span className="turn-chip">{chip}</span>
           </button>
         </li>
@@ -343,6 +344,7 @@ function UseWindow({ sheet, entity, row, update, onUsed, onClose }: { sheet: She
   const res = row.kind === 'resource' ? row.resource : row.cost ? sheet.resources.find((r) => r.key === row.cost!.key) : undefined
   const toggle = row.kind === 'feature' ? row.toggle : undefined
   const feature = row.kind === 'feature' ? row.feature : null
+  const dc = feature ? featureDc(sheet, feature.id) : undefined
   const left = res ? res.max - res.used : 0
   return (
     <Window dialog={dialog} className="slot-dialog" labelledBy="use-heading">
@@ -411,6 +413,8 @@ function UseWindow({ sheet, entity, row, update, onUsed, onClose }: { sheet: She
           {paragraphs(feature.text).map((t, i) => (
             <p key={i}>{t}</p>
           ))}
+          {dc && <p>{dc.line}</p>}
+          {dc?.ruled && <p className="meta">{dc.ruled}</p>}
           <p className="meta">
             {feature.source.ref === 'srd-5.2.1' ? 'From the SRD 5.2.1, under CC-BY-4.0. ' : ''}p.{feature.source.page}
           </p>

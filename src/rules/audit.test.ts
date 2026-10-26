@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest'
 import { deriveSheet } from './derive.ts'
 import { casterFor, characterSpells, preparedCount } from '../play/spells.ts'
 import { catalogueItem } from '../play/kit.ts'
+import { featureRule } from '../components/cards.ts'
 import { testRules } from './test-rules.ts'
 import type { CharacterEntity } from '../save/types.ts'
 import halvard from '../save/examples/cleric-fighter.json'
@@ -329,4 +330,25 @@ describe('a class’s extra cantrip from Magician or Thaumaturge (finding 10)', 
     }
     expect(cantrips(halvard, 'cleric', thaumaturge)).toEqual({ of: 5, chosen: 5 })
   })
+})
+
+describe('Open Hand Technique’s save DC (#54, ruled in #9)', () => {
+  const sefa = sheetOf(A)
+  const card = (id: string) => featureRule({ feature: sefa.features.find((g) => g.feature.id === id)!.feature }, sefa)
+
+  it('works Monk’s Focus and Open Hand Technique at DC 14 for a Monk 6 with Wisdom 16: 8 + 3 + 3 (p.50)', () => {
+    expect(sefa.featureDcs.map((d) => [d.id, d.dc.total])).toEqual([
+      ['monks-focus', 14],
+      ['open-hand-technique', 14],
+    ])
+  })
+
+  it('says the DC on both cards, and on Open Hand Technique’s that it is a house ruling (p.52)', () => {
+    expect(card('monks-focus').text).toContain('Save DC 14: 8 + WIS modifier + Proficiency Bonus')
+    expect(card('monks-focus').notes).not.toContainEqual(expect.stringContaining('house ruling'))
+    expect(card('open-hand-technique').text).toContain('Save DC 14: 8 + WIS modifier + Proficiency Bonus')
+    expect(card('open-hand-technique').notes).toContainEqual(expect.stringContaining('house ruling'))
+  })
+
+  it('gives a Fighter 11 no feature DC', () => expect(sheetOf(D).featureDcs).toEqual([]))
 })

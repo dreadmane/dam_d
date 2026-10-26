@@ -1299,7 +1299,7 @@ export interface EffAttackOption {
     | 'worn'
 }
 /**
- * Added 2026-10-18: a feature's own save DC, '8 plus your Wisdom modifier and Proficiency Bonus' (Monk's Focus, SRD p.50; Cunning Strike, p.62). id names it so the feature's text can be shown beside the number.
+ * Added 2026-10-18: a feature's own save DC, '8 plus your Wisdom modifier and Proficiency Bonus' (Monk's Focus, SRD p.50; Cunning Strike, p.62). id names it so the feature's text can be shown beside the number. Added 2026-10-26: ruling, where the feature prints no DC and the user ruled which it uses, names that ambiguity, so the sheet can say so beside the number (Open Hand Technique, p.52; classes.json ambiguity open-hand-technique-save-dc).
  */
 export interface EffSaveDc {
   type: 'saveDc'
@@ -1311,6 +1311,10 @@ export interface EffSaveDc {
    * The six abilities (SRD 5.2.1 p.5).
    */
   ability: 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha'
+  /**
+   * A reference to a record in this or another data file, written <file>:<id>, e.g. spells:fireball, feats:alert, classes:fighter. The cross-file check resolves every one.
+   */
+  ruling?: string
 }
 /**
  * Added 2026-10-18: an ability score becomes value while this applies, and does nothing if the score is already that high ('Your Constitution is 19 while you wear this amulet', Amulet of Health, SRD p.209; Thunderous Greatclub, p.249).

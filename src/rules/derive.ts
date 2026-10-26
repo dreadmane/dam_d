@@ -108,6 +108,10 @@ export interface Sheet {
   // as a class's are (SRD p.104) with the same bonuses to spell DCs and
   // attacks.
   castingBy: Record<Ability, Pick<Spellcaster, 'saveDc' | 'attack'>>
+  // A feature's own save DC, by the feature's id (Monk's Focus, SRD p.50).
+  // ruling names the user's ruling where the feature prints no DC and uses
+  // this one (Open Hand Technique, p.52).
+  featureDcs: { id: string; ability: Ability; dc: Total; ruling?: string }[]
   // Slots by slot level, index 0 is level 1 (the Multiclass Spellcaster
   // table, or the one caster's own); Pact Magic apart.
   slots: number[]
@@ -417,6 +421,15 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     }),
   ) as Sheet['castingBy']
 
+  // A feature's own save DC, 8 + the ability's modifier + Proficiency
+  // Bonus, as the saveDc effect is defined (common.schema.json effSaveDc;
+  // Monk's Focus, SRD p.50).
+  const featureDcs: Sheet['featureDcs'] = of('saveDc').map(({ effect }) => {
+    const mod = abilities[effect.ability].modifier
+    const dc = total([{ label: 'Base', value: 8 }, { label: `${effect.ability.toUpperCase()} modifier`, value: mod }, { label: 'Proficiency', value: pb }], [], pb)
+    return { id: effect.id, ability: effect.ability, dc, ruling: effect.ruling }
+  })
+
   // Slots: one caster's own table, or the Multiclass Spellcaster table by
   // the multiclass caster level (SRD p.25). Pact Magic is apart.
   const casters = ordered.filter((e) => {
@@ -605,6 +618,7 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     size,
     spellcasting,
     castingBy,
+    featureDcs,
     slots,
     pact,
     resources,
