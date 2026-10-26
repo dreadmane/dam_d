@@ -9,7 +9,7 @@
 
 import type { Attack, Resource, Sheet } from '../rules/derive.ts'
 import { activeEffects, gainedFeatures } from '../rules/effects.ts'
-import { equipmentId } from '../rules/equipped.ts'
+import { bondable, equipmentId } from '../rules/equipped.ts'
 import { characterChoices } from '../rules/level.ts'
 import type { MagicItem, Rules } from '../rules/load.ts'
 import type { Feature } from '../rules/types.ts'
@@ -261,27 +261,35 @@ export const setWorn = (entity: CharacterEntity, itemId: string, on: boolean): C
 
 // The sets of weapons the character's features name (Martial Arts' Monk
 // weapons) that this weapon isn't in by the rules: the DM may rule it in for
-// this character, saved as the item's countsAs. Each set's id and name, and
-// what grants it.
-export function weaponSets(rules: Rules, entity: CharacterEntity, item: Item): { id: string; name: string; from: string }[] {
+// this character, saved as the item's countsAs. A set the player bonds a
+// weapon to (Pact of the Blade's pact weapon, SRD p.74) is offered only for a
+// weapon its bond allows, and bond says so. Each set's id and name, and what
+// grants it.
+export function weaponSets(rules: Rules, entity: CharacterEntity, item: Item): { id: string; name: string; from: string; bond: boolean }[] {
   const weapon = equipmentId(item)
   if (!weapon || !rules.weapons.has(weapon)) return []
   const choices = characterChoices(rules, entity)
-  const sets = new Map<string, { id: string; name: string; from: string }>()
+  const sets = new Map<string, { id: string; name: string; from: string; bond: boolean }>()
   for (const { effect, from } of activeEffects(rules, entity, choices, gainedFeatures(rules, entity, choices))) {
-    if (effect.type === 'attackOption' && effect.id && effect.name && !effect.attacks.includes(weapon)) sets.set(effect.id, { id: effect.id, name: effect.name, from })
+    if (effect.type !== 'attackOption' || !effect.id || !effect.name || effect.attacks.includes(weapon)) continue
+    if (effect.bond && !bondable(rules, effect.bond, item)) continue
+    sets.set(effect.id, { id: effect.id, name: effect.name, from, bond: Boolean(effect.bond) })
   }
   return [...sets.values()]
 }
 
 // The DM's ruling on a weapon, on or off; an item with none keeps no field.
-export function setCountsAs(entity: CharacterEntity, itemId: string, set: string, on: boolean): CharacterEntity {
+// A bond holds one weapon at a time ("Your bond with the weapon ends if you
+// use this feature's Bonus Action again", p.74): bonding one ends the
+// others'.
+export function setCountsAs(entity: CharacterEntity, itemId: string, set: string, on: boolean, bond = false): CharacterEntity {
   return {
     ...entity,
     inventory: entity.inventory.map((i) => {
-      if (i.id !== itemId) return i
+      const here = i.id === itemId
+      if (!here && !(bond && on && i.countsAs?.includes(set))) return i
       const { countsAs = [], ...rest } = i
-      const sets = on ? [...new Set([...countsAs, set])] : countsAs.filter((s) => s !== set)
+      const sets = here && on ? [...new Set([...countsAs, set])] : countsAs.filter((s) => s !== set)
       return sets.length ? { ...rest, countsAs: sets as [string, ...string[]] } : rest
     }),
   }

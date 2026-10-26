@@ -68,7 +68,7 @@ export function ItemKitControls({ rules, entity, item, update }: { rules: Rules;
         {[
           canWear && (weapon ? (on ? 'Equipped: one of your attacks' : 'Not equipped: not among your attacks') : on ? 'Worn or held' : 'Not worn'),
           attune && (item.attuned ? 'Attuned' : 'Needs Attunement: its magic works only while you are attuned'),
-          ...sets.filter((s) => ruledIn(s.id)).map((s) => `A ${s.name} by your DM’s ruling`),
+          ...sets.filter((s) => ruledIn(s.id)).map((s) => (s.bond ? `Your ${s.name}` : `A ${s.name} by your DM’s ruling`)),
         ]
           .filter(Boolean)
           .join(' · ')}
@@ -100,8 +100,8 @@ export function ItemKitControls({ rules, entity, item, update }: { rules: Rules;
           </button>
         )}
         {sets.map((s) => (
-          <button key={s.id} type="button" className="secondary" aria-pressed={ruledIn(s.id)} onClick={() => update((e) => setCountsAs(e, item.id, s.id, !ruledIn(s.id)))}>
-            {ruledIn(s.id) ? `End the ${s.name} ruling` : `Rule it a ${s.name}`}
+          <button key={s.id} type="button" className="secondary" aria-pressed={ruledIn(s.id)} onClick={() => update((e) => setCountsAs(e, item.id, s.id, !ruledIn(s.id), s.bond))}>
+            {s.bond ? (ruledIn(s.id) ? 'End the bond' : `Bond as your ${s.name}`) : ruledIn(s.id) ? `End the ${s.name} ruling` : `Rule it a ${s.name}`}
           </button>
         ))}
       </div>

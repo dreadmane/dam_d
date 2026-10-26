@@ -1270,7 +1270,7 @@ export interface EffCritRange {
   on: string
 }
 /**
- * Added 2026-10-25 for Martial Arts: 'You can roll 1d6 in place of the normal damage of your Unarmed Strike or Monk weapons' and 'You can use your Dexterity modifier instead of your Strength modifier for the attack and damage rolls of your Unarmed Strikes and Monk weapons' (SRD p.50). attacks names the attacks it reaches: unarmed for the Unarmed Strike, and weapon ids. ability is one the player may use in place of the attack's own, for both rolls; die is a die they may roll in place of its damage, as dice or a class column holding them (Martial Arts'). The sheet takes whichever is better, as it does Finesse's choice. wieldingOnly: it holds only while every weapon wielded is one of attacks ('while you are unarmed or wielding only Monk weapons'). id names the set of weapons, so a DM can rule another weapon into it, saved on that item for that character (a roster item's countsAs), and name is what one of them is called (Monk weapon).
+ * Added 2026-10-25 for Martial Arts: 'You can roll 1d6 in place of the normal damage of your Unarmed Strike or Monk weapons' and 'You can use your Dexterity modifier instead of your Strength modifier for the attack and damage rolls of your Unarmed Strikes and Monk weapons' (SRD p.50). attacks names the attacks it reaches: unarmed for the Unarmed Strike, and weapon ids. ability is one the player may use in place of the attack's own, for both rolls; die is a die they may roll in place of its damage, as dice or a class column holding them (Martial Arts'). The sheet takes whichever is better, as it does Finesse's choice. wieldingOnly: it holds only while every weapon wielded is one of attacks ('while you are unarmed or wielding only Monk weapons'). id names the set of weapons, so a DM can rule another weapon into it, saved on that item for that character (a roster item's countsAs), and name is what one of them is called (Monk weapon). Added 2026-10-26 for Pact of the Blade (p.74): bond, where the player bonds one weapon to it rather than the rules naming them, lists what may be bonded (melee: a melee weapon; magic: a magic weapon of any kind). The bonded weapon is saved as that item's countsAs, one at a time, and the character is proficient with it; attacks may then be empty.
  */
 export interface EffAttackOption {
   type: 'attackOption'
@@ -1280,11 +1280,13 @@ export interface EffAttackOption {
   id?: string
   name?: string
   /**
-   * @minItems 1
-   *
    * Items: A record id. kebab-case, permanent: saved characters reference it. A replaced record keeps its id with supersededBy.
    */
-  attacks: [string, ...string[]]
+  attacks: string[]
+  /**
+   * @minItems 1
+   */
+  bond?: ['melee' | 'magic', ...('melee' | 'magic')[]]
   /**
    * The six abilities (SRD 5.2.1 p.5).
    */
