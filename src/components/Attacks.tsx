@@ -55,6 +55,8 @@ export function AttacksSection({ sheet, rules, entity }: { sheet: Sheet; rules: 
               `To hit ${signed(open.toHit.total)}: ${working(open.toHit.parts).join(', ')}.`,
               `Damage ${damageFormula(open)} ${open.damage.type}${open.properties.length ? `. Properties: ${open.properties.join(', ')}` : ''}.`,
               ...open.options.map((o) => `${o.text} (${o.from}).`),
+              ...(open.bonusAction ? [`Also as a Bonus Action (${open.bonusAction}).`] : []),
+              ...(open.grappleDc ? [`Grapple or Shove: save DC ${open.grappleDc.total}: ${working(open.grappleDc.parts).join(', ')}.`] : []),
             ],
             notes: [...open.toHit.notes, ...open.damage.notes].map((n) => `${n.text} (${n.from})`),
           }}

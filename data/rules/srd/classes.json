@@ -5899,6 +5899,10 @@
                 "column": "martial-arts"
               },
               "wieldingOnly": true,
+              "bonusAction": [
+                "unarmed"
+              ],
+              "grappleDc": true,
               "when": "While you are unarmed or wielding only Monk weapons and you aren’t wearing armor or wielding a Shield",
               "requires": "no-armor-no-shield"
             },
