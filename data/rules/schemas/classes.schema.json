@@ -146,9 +146,9 @@
         "text": { "type": "string", "description": "The subclass's one-line identity, if printed." },
         "features": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/feature" } },
         "spells": {
-          "description": "Spells the subclass always has prepared, by class level (Domain Spells, Circle Spells, Oath Spells).",
+          "description": "Spells the subclass always has prepared, by class level (Domain Spells, Circle Spells, Oath Spells). Added 2026-10-26: choice, where a group comes only with one pick of one of the subclass's choices, names the choice's id and the value (Circle of the Land Spells, SRD p.46: a land's table only while that land is chosen).",
           "type": "array",
-          "items": { "type": "object", "required": ["level", "spells"], "additionalProperties": false, "properties": { "level": { "type": "integer" }, "spells": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" } } } }
+          "items": { "type": "object", "required": ["level", "spells"], "additionalProperties": false, "properties": { "level": { "type": "integer" }, "spells": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" } }, "choice": { "type": "object", "required": ["id", "value"], "additionalProperties": false, "properties": { "id": { "$ref": "common.schema.json#/$defs/id" }, "value": { "type": "string" } } } } }
         },
         "source": { "$ref": "common.schema.json#/$defs/source" },
         "confidence": { "$ref": "common.schema.json#/$defs/confidence" },

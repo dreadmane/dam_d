@@ -66,6 +66,11 @@ export function characterSpells(rules: Rules, entity: CharacterEntity, sheet: Sh
     const sub = entry.subclassId ? rules.subclasses.get(entry.subclassId) : undefined
     for (const group of sub?.spells ?? []) {
       if (group.level > entry.level) continue
+      // A group that comes with one pick (a Circle of the Land's land, SRD
+      // p.46) only while that is the pick; outside the class's counts like
+      // every always-prepared spell (the user's ruling, 2026-10-26).
+      const { choice } = group
+      if (choice && !sheet.choices.some((c) => c.classId === entry.classId && c.choice === choice.id && c.made?.values.includes(choice.value))) continue
       for (const id of group.spells) {
         const spell = rules.spells.get(ref(id))
         if (spell) add({ spell, from: sub!.name, classId: entry.classId, ready: true, always: true, preparable: false })

@@ -4517,6 +4517,176 @@
               "confidence": "printed"
             }
           ],
+          "spells": [
+            {
+              "level": 3,
+              "spells": [
+                "blur",
+                "burning-hands",
+                "fire-bolt"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "arid"
+              }
+            },
+            {
+              "level": 5,
+              "spells": [
+                "fireball"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "arid"
+              }
+            },
+            {
+              "level": 7,
+              "spells": [
+                "blight"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "arid"
+              }
+            },
+            {
+              "level": 9,
+              "spells": [
+                "wall-of-stone"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "arid"
+              }
+            },
+            {
+              "level": 3,
+              "spells": [
+                "fog-cloud",
+                "hold-person",
+                "ray-of-frost"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "polar"
+              }
+            },
+            {
+              "level": 5,
+              "spells": [
+                "sleet-storm"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "polar"
+              }
+            },
+            {
+              "level": 7,
+              "spells": [
+                "ice-storm"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "polar"
+              }
+            },
+            {
+              "level": 9,
+              "spells": [
+                "cone-of-cold"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "polar"
+              }
+            },
+            {
+              "level": 3,
+              "spells": [
+                "misty-step",
+                "shocking-grasp",
+                "sleep"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "temperate"
+              }
+            },
+            {
+              "level": 5,
+              "spells": [
+                "lightning-bolt"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "temperate"
+              }
+            },
+            {
+              "level": 7,
+              "spells": [
+                "freedom-of-movement"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "temperate"
+              }
+            },
+            {
+              "level": 9,
+              "spells": [
+                "tree-stride"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "temperate"
+              }
+            },
+            {
+              "level": 3,
+              "spells": [
+                "acid-splash",
+                "ray-of-sickness",
+                "web"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "tropical"
+              }
+            },
+            {
+              "level": 5,
+              "spells": [
+                "stinking-cloud"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "tropical"
+              }
+            },
+            {
+              "level": 7,
+              "spells": [
+                "polymorph"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "tropical"
+              }
+            },
+            {
+              "level": 9,
+              "spells": [
+                "insect-plague"
+              ],
+              "choice": {
+                "id": "land-type",
+                "value": "tropical"
+              }
+            }
+          ],
           "source": {
             "ref": "srd-5.2.1",
             "section": "Classes > Druid > Druid Subclass: Circle of the Land",

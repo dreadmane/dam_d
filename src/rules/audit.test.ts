@@ -352,3 +352,35 @@ describe('Open Hand Technique’s save DC (#54, ruled in #9)', () => {
 
   it('gives a Fighter 11 no feature DC', () => expect(sheetOf(D).featureDcs).toEqual([]))
 })
+
+describe('Circle of the Land’s spells (#53, ruled in #9)', () => {
+  const dunna = (land?: string) => {
+    const record: { entities: unknown[] } = F
+    const e = structuredClone(record.entities[0]) as CharacterEntity
+    e.choices = e.choices.flatMap((c) => (c.choice !== 'land-type' ? [c] : land ? [{ ...c, values: [land] }] : []))
+    const sheet = deriveSheet(rules, e)
+    const rows = characterSpells(rules, e, sheet)
+    const circle = rows.filter((r) => r.from === 'Circle of the Land').map((r) => r.spell.id)
+    return { circle, rows, counted: preparedCount(rows, sheet.spellcasting.find((c) => c.classId === 'druid')!) }
+  }
+
+  it('gives a Temperate Druid 5 Shocking Grasp, Misty Step and Sleep (Druid 3) and Lightning Bolt (Druid 5), always prepared (p.46)', () => {
+    const { circle, rows } = dunna('temperate')
+    expect(circle.toSorted()).toEqual(['lightning-bolt', 'misty-step', 'shocking-grasp', 'sleep'])
+    expect(rows.filter((r) => circle.includes(r.spell.id)).every((r) => r.always && r.ready && r.classId === 'druid')).toBe(true)
+  })
+
+  it('counts none of them against Prepared Spells or Cantrips: the counts are the same with no land', () => {
+    expect(dunna('temperate').counted).toEqual(dunna().counted)
+    expect(dunna().circle).toEqual([])
+  })
+
+  it('changes them when the land does: Arid’s Fire Bolt, Blur, Burning Hands and Fireball', () => {
+    expect(dunna('arid').circle.toSorted()).toEqual(['blur', 'burning-hands', 'fire-bolt', 'fireball'])
+  })
+
+  it('names only spells the rules hold, in every subclass’s table', () => {
+    const missing = [...rules.subclasses.values()].flatMap((s) => (s.spells ?? []).flatMap((g) => g.spells.filter((id) => !rules.spells.get(id)).map((id) => `${s.id}: ${id}`)))
+    expect(missing).toEqual([])
+  })
+})
