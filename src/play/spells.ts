@@ -5,6 +5,7 @@
 // numbers the rules print are read from core.json's playRules.
 
 import type { Sheet, Spellcaster, Total } from '../rules/derive.ts'
+import { spendResource } from './play.ts'
 import type { Ability } from '../rules/expr.ts'
 import type { Rules, Spell } from '../rules/load.ts'
 import type { CharacterEntity } from '../save/types.ts'
@@ -137,17 +138,27 @@ export function markPact(entity: CharacterEntity, max: number, by: 1 | -1): Char
   return { ...entity, pactSlotsExpended: Math.max(0, Math.min(max, entity.pactSlotsExpended + by)) }
 }
 
-export type CastWith = { kind: 'slot'; level: number } | { kind: 'pact'; level: number } | { kind: 'ritual' } | { kind: 'cantrip' }
+// free is a cast with no slot that a trait, feat, feature or item grants
+// (sheet.resources' free-cast uses): key is its use, from what grants it.
+export type CastWith = { kind: 'slot'; level: number } | { kind: 'pact'; level: number } | { kind: 'ritual' } | { kind: 'cantrip' } | { kind: 'free'; key: string; max: number; from: string }
 
 // How a spell can be cast now (SRD p.104, Casting Spells): a cantrip with
-// nothing; a levelled spell with a slot of its level or higher that is left,
-// never lower; Pact Magic's slots where the spell fits under their level;
-// and, for a ritual a class can cast as one, as a ritual with no slot.
+// nothing; a levelled spell first with a free cast that has a use left
+// (Magic Initiate's, a lineage's, Divine Smite's), then with a slot of its
+// level or higher that is left, never lower; Pact Magic's slots where the
+// spell fits under their level; and, for a ritual a class can cast as one,
+// as a ritual with no slot.
 export function castOptions(rules: Rules, sheet: Sheet, entity: CharacterEntity, row: SpellRow): CastWith[] {
   if (row.spell.level === 0) return [{ kind: 'cantrip' }]
-  const out: CastWith[] = slotLevels(sheet, entity)
-    .filter((s) => s.level >= row.spell.level && s.left > 0)
-    .map((s) => ({ kind: 'slot', level: s.level }))
+  const free: CastWith[] = sheet.resources
+    .filter((r) => (r.key === `free-cast:${row.spell.id}` || r.key.endsWith(`:free-cast:${row.spell.id}`)) && r.used < r.max)
+    .map((r) => ({ kind: 'free', key: r.key, max: r.max, from: /\(([^)]*)\)$/.exec(r.name)?.[1] ?? r.from }))
+  const out: CastWith[] = [
+    ...free,
+    ...slotLevels(sheet, entity)
+      .filter((s) => s.level >= row.spell.level && s.left > 0)
+      .map((s): CastWith => ({ kind: 'slot', level: s.level })),
+  ]
   const pact = pactSlots(sheet, entity)
   if (pact && pact.left > 0 && pact.level >= row.spell.level) out.push({ kind: 'pact', level: pact.level })
   const ritualClass = row.classId ? rules.classes.get(row.classId)?.spellcasting?.ritual : false
@@ -166,6 +177,7 @@ export function cast(entity: CharacterEntity, row: SpellRow, how: CastWith): Cha
   let next = entity
   if (how.kind === 'slot') next = { ...next, slotsExpended: { ...next.slotsExpended, [String(how.level)]: (next.slotsExpended[String(how.level)] ?? 0) + 1 } }
   if (how.kind === 'pact') next = { ...next, pactSlotsExpended: next.pactSlotsExpended + 1 }
+  if (how.kind === 'free') next = spendResource(next, how.key, how.max, 1)
   if (row.spell.duration.concentration) next = { ...endConcentration(next), concentration: { spellId: row.spell.id } }
   if (hasSheetEffects(row.spell)) next = { ...next, toggles: { ...next.toggles, [row.spell.id]: true } }
   return next

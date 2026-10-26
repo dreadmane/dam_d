@@ -5,7 +5,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { deriveSheet } from './derive.ts'
-import { casterFor, characterSpells, preparedCount } from '../play/spells.ts'
+import { cast, castOptions, casterFor, characterSpells, preparedCount } from '../play/spells.ts'
 import { catalogueItem } from '../play/kit.ts'
 import { featureRule } from '../components/cards.ts'
 import { testRules } from './test-rules.ts'
@@ -382,5 +382,31 @@ describe('Circle of the Land’s spells (#53, ruled in #9)', () => {
   it('names only spells the rules hold, in every subclass’s table', () => {
     const missing = [...rules.subclasses.values()].flatMap((s) => (s.spells ?? []).flatMap((g) => g.spells.filter((id) => !rules.spells.get(id)).map((id) => `${s.id}: ${id}`)))
     expect(missing).toEqual([])
+  })
+})
+
+describe('a free cast on its spell’s own row (#49)', () => {
+  const options = (record: { entities: unknown[] }, spellId: string, change?: (e: CharacterEntity) => void) => {
+    const e = structuredClone(record.entities[0]) as CharacterEntity
+    change?.(e)
+    const sheet = deriveSheet(rules, e)
+    const row = characterSpells(rules, e, sheet).find((r) => r.spell.id === spellId)!
+    return { e, row, options: castOptions(rules, sheet, e, row) }
+  }
+
+  it('offers a Wood Elf Monk’s Longstrider without a slot, the Monk having none (p.84)', () => {
+    expect(options(A, 'longstrider').options).toEqual([{ kind: 'free', key: 'free-cast:longstrider', max: 1, from: 'Wood Elf' }])
+  })
+
+  it('spends the free cast’s use when cast that way, and then offers nothing', () => {
+    const { e, row, options: [free] } = options(A, 'longstrider')
+    const after = cast(e, row, free)
+    expect(after.resourcesUsed['free-cast:longstrider']).toBe(1)
+    expect(options(A, 'longstrider', (x) => (x.resourcesUsed = after.resourcesUsed)).options).toEqual([])
+  })
+
+  it('offers a Paladin 8’s Divine Smite free first, then the slots (p.54)', () => {
+    const kinds = options(E, 'divine-smite').options.map((o) => (o.kind === 'free' ? `free (${o.from})` : o.kind === 'slot' ? `slot ${o.level}` : o.kind))
+    expect(kinds).toEqual(['free (Paladin’s Smite)', 'slot 1', 'slot 2'])
   })
 })
