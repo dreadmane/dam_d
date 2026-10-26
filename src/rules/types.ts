@@ -15618,6 +15618,12 @@ export interface CoreData {
     name: string
     kind: 'standard' | 'rare'
     origin?: string
+    /**
+     * Added 2026-10-26: the dialects the language includes, by the names printed (Primordial's Aquan, Auran, Ignan and Terran, SRD p.20's footnote), so a dialect named elsewhere, as D&D Beyond names Aquan, can be read as its language.
+     *
+     * @minItems 1
+     */
+    dialects?: [string, ...string[]]
     source: Source
     /**
      * printed: stated directly in the source. derived: computed from printed text. inferred: our reading of ambiguous or unextractable text, needs confirmation. house: our own ruling filling a gap, with the user's dated sign-off. Anything other than printed carries a note; the schemas enforce it.

@@ -207,11 +207,24 @@ describe('the player’s own words, and what is left out', () => {
     expect(entity.details.alignment).toBe('Lawful Good')
   })
 
+  it('takes Aquan, one of Primordial’s dialects (SRD p.20), as Primordial, and says so (#14)', () => {
+    expect(entity.details.languages).toEqual(['common', 'primordial'])
+    expect(entity.notes).not.toContain('Languages from D&D Beyond')
+    expect(report.cameIn).toContain('Aquan as Primordial: it is one of Primordial’s dialects')
+    expect(report.leftOut.some((l) => l.includes('Aquan'))).toBe(false)
+  })
+
   it('keeps a language the rules don’t name in the notes, not as an id the language choices would count', () => {
-    expect(entity.details.languages).toContain('common')
-    expect(entity.details.languages).not.toContain('aquan')
-    expect(entity.notes.endsWith('Languages from D&D Beyond\nAquan')).toBe(true)
-    expect(report.leftOut).toContain('Aquan: a language the rules don’t name, kept in the notes')
+    const more = { ...ddb, proficiencies: { ...ddb.proficiencies, languages: [...ddb.proficiencies.languages, 'Sahuagin'] } }
+    const { entity: e, report: r } = sheetToCharacter(rules, more, () => `more-${++n}`)
+    expect(e.details.languages).toEqual(['common', 'primordial'])
+    expect(e.notes.endsWith('Languages from D&D Beyond\nSahuagin')).toBe(true)
+    expect(r.leftOut).toContain('Sahuagin: a language the rules don’t name, kept in the notes')
+  })
+
+  it('takes a dialect once, beside its language: Primordial and Aquan are one Primordial', () => {
+    const both = { ...ddb, proficiencies: { ...ddb.proficiencies, languages: ['Common', 'Primordial', 'Aquan'] } }
+    expect(sheetToCharacter(rules, both, () => `both-${++n}`).entity.details.languages).toEqual(['common', 'primordial'])
   })
 
   it('says what it leaves out', () => {

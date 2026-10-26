@@ -411,15 +411,21 @@ export function sheetToCharacter(rules: Rules, ddb: DdbSheet, newId: () => strin
   const held = inventory.filter((i) => isWeapon(rules, i) && i.worn).map((i) => i.name)
   if (held.length) report.cameIn.push(`Equipped: ${held.join(', ')}, as the sheet’s attack lines show`)
 
-  // Languages the rules have. One they don't name can't be kept as an id,
-  // since the language choices count the ids saved, so it is kept in the
-  // notes, in words.
+  // Languages the rules have. A dialect the rules print under its language
+  // (Primordial's Aquan, SRD p.20) comes in as that language, once, and the
+  // report says so. One they don't name can't be kept as an id, since the
+  // language choices count the ids saved, so it is kept in the notes, in
+  // words.
   const languages: string[] = []
   const otherLanguages: string[] = []
+  const dialectOf = (name: string) => rules.data.core.languages.find((l) => l.dialects?.some((d) => norm(d) === norm(name)))
   for (const name of ddb.proficiencies.languages) {
     const id = lookup(rules, 'language', name)
-    if (id) languages.push(id)
-    else otherLanguages.push(name)
+    const language = id ? undefined : dialectOf(name)
+    const got = id ?? language?.id
+    if (got && !languages.includes(got)) languages.push(got)
+    if (language) report.cameIn.push(`${name} as ${language.name}: it is one of ${language.name}’s dialects`)
+    else if (!got) otherLanguages.push(name)
   }
   if (otherLanguages.length) report.leftOut.push(`${otherLanguages.join(', ')}: ${otherLanguages.length === 1 ? 'a language' : 'languages'} the rules don’t name, kept in the notes`)
 
