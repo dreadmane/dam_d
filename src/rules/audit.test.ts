@@ -9,6 +9,7 @@ import { cast, castOptions, casterFor, characterSpells, keptSpells, preparedCoun
 import { catalogueItem, setCountsAs, weaponSets } from '../play/kit.ts'
 import { damageFormula, featureRule } from '../components/cards.ts'
 import { testRules } from './test-rules.ts'
+import { turnRows } from '../play/turn.ts'
 import type { CharacterEntity } from '../save/types.ts'
 import halvard from '../save/examples/cleric-fighter.json'
 import A from './audit/A.json'
@@ -502,5 +503,32 @@ describe('spells the data doesn’t have, and counts past the number (finding 11
     expect(dunna(() => {}).counted.over).toEqual({ prepared: false, cantrips: false })
     const { counted } = dunna((e) => e.spells.push({ spellId: 'mending', classId: 'druid', source: 'class:druid', prepared: true }))
     expect(counted).toMatchObject({ cantrips: 5, over: { cantrips: true, prepared: false } })
+  })
+})
+
+describe('Martial Arts’ Bonus Unarmed Strike and Grapple and Shove DC (#11)', () => {
+  const unarmed = (record: { entities: unknown[] }, change?: (e: CharacterEntity) => void) => {
+    const e = structuredClone(record.entities[0]) as CharacterEntity
+    change?.(e)
+    const sheet = deriveSheet(rules, e)
+    const a = sheet.attacks.find((x) => x.id === 'unarmed')!
+    return { bonus: a.bonusAction, dc: a.grappleDc?.total, dcWith: a.grappleDc?.parts[1].label, bonusRows: turnRows(rules, e, sheet).bonus.filter((r) => r.kind === 'attack').map((r) => r.key) }
+  }
+
+  it('lets a Monk 6 make an Unarmed Strike as a Bonus Action, on the turn under Bonus Action (p.50)', () => {
+    expect(unarmed(A)).toMatchObject({ bonus: 'Monk 1: Martial Arts', bonusRows: ['bonus-attack:unarmed'] })
+  })
+
+  it('works her Grapple and Shove DC with Dexterity: 8 + 3 + 3 = 14, not 11 with Strength (pp.50, 190)', () => {
+    expect(unarmed(A)).toMatchObject({ dc: 14, dcWith: 'DEX modifier' })
+  })
+
+  it('takes both away in armor, as the rest of Martial Arts: Strength’s DC 11, no Bonus Action', () => {
+    const armored = unarmed(A, (e) => e.inventory.push({ ...catalogueItem(rules, 'equipment:leather-armor', undefined, 'test-armor')!, worn: true }))
+    expect(armored).toMatchObject({ bonus: undefined, dc: 11, dcWith: 'STR modifier', bonusRows: [] })
+  })
+
+  it('gives a Fighter 11 Strength’s DC, 8 + 5 + 4 = 17, and no Bonus Action strike (p.190)', () => {
+    expect(unarmed(D)).toMatchObject({ bonus: undefined, dc: 17, dcWith: 'STR modifier', bonusRows: [] })
   })
 })

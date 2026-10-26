@@ -62,6 +62,11 @@ export interface Attack {
   // What an attackOption put in place of the attack's own ability or die
   // (Martial Arts: "1d8 in place of 1d6, DEX in place of STR").
   options: Note[]
+  // What lets it also be made as a Bonus Action (Martial Arts' Bonus
+  // Unarmed Strike, SRD p.50).
+  bonusAction?: string
+  // An Unarmed Strike's Grapple and Shove save DC (p.190).
+  grappleDc?: Total
 }
 
 export interface Resource {
@@ -501,14 +506,24 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     const m = dice.match(/^(\d*)d(\d+)$/)
     return m ? ((Number(m[1]) || 1) * (Number(m[2]) + 1)) / 2 : Number(dice) || 0
   }
+  // While one holds, it may also let the attack be made as a Bonus Action
+  // (bonus, what does), and its ability replace Strength in the Unarmed
+  // Strike's Grapple and Shove DC where better (dcAbility; Martial Arts,
+  // p.50).
   const optioned = (id: string, own: Ability, ownDice: string, item?: Item) => {
     let ability = own
     let dice = ownDice
+    let bonus: string | undefined
+    let dcAbility: Ability = 'str'
     const options: Note[] = []
     const lapsed: Note[] = []
     for (const a of of('attackOption')) {
       const e = a.effect
       if (!inSet(e, id, item)) continue
+      const others = e.wieldingOnly ? wielded.filter((w) => !inSet(e, equipmentOf(w)!, w)) : []
+      const now = holds(e) && !others.length
+      if (now && e.bonusAction?.includes(id)) bonus = a.from
+      if (now && e.grappleDc && e.ability && abilities[e.ability].modifier > abilities[dcAbility].modifier) dcAbility = e.ability
       const from = ruled(e, item) && !e.attacks.includes(id) ? (e.bond ? `${a.from}; your ${e.name}` : `${a.from}; a ${e.name} by your DM’s ruling`) : a.from
       const die = typeof e.die === 'string' ? e.die : e.die && String(evaluate(e.die, { ...baseContext(pb), self: a.classId }))
       const better = {
@@ -517,14 +532,13 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
       }
       const said = [better.die && `${better.die} in place of ${dice}`, better.ability && `${better.ability.toUpperCase()} in place of ${ability.toUpperCase()}`].filter(Boolean).join(', ')
       if (!said) continue
-      const others = e.wieldingOnly ? wielded.filter((w) => !inSet(e, equipmentOf(w)!, w)) : []
-      if (holds(e) && !others.length) {
+      if (now) {
         dice = better.die ?? dice
         ability = better.ability ?? ability
         options.push({ text: said, from })
       } else lapsed.push({ text: [said, lapsedBy(e, others) ?? midLine(e.when)].filter(Boolean).join(', '), from })
     }
-    return { ability, dice, options, lapsed }
+    return { ability, dice, options, lapsed, bonus, dcAbility }
   }
   // Why an attackOption lapses, naming what breaks it (the design system's
   // "a why names its cause"): the armor worn, the Shield, each weapon held
@@ -581,6 +595,10 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
   const unarmedToHit = total([unarmedMod, { label: 'Proficiency', value: computeOf('unarmed-strike-attack-bonus', baseContext(pb)) - abilities.str.modifier }], ['attack:all', 'attack:unarmed', 'd20:all'], pb)
   const unarmedDamage = total(rolled ? [unarmedMod] : [{ label: 'Unarmed Strike', value: flat + unarmedMod.value }], ['damage:unarmed'], pb, undefined, unarmed.ability)
   unarmedDamage.notes.push(...unarmed.lapsed)
+  // The Grapple and Shove DC (SRD p.190), with Dexterity where Martial Arts
+  // allows it and it is better.
+  const grappleBase = computeOf('unarmed-strike-save-dc', baseContext(pb)) - abilities.str.modifier - pb
+  const grappleDc = total([{ label: 'Base', value: grappleBase }, { label: `${unarmed.dcAbility.toUpperCase()} modifier`, value: abilities[unarmed.dcAbility].modifier }, { label: 'Proficiency', value: pb }], [], pb)
   attacks.push({
     id: 'unarmed',
     name: 'Unarmed Strike',
@@ -591,6 +609,8 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     properties: [],
     melee: true,
     options: unarmed.options,
+    grappleDc,
+    ...(unarmed.bonus ? { bonusAction: unarmed.bonus } : {}),
   })
 
   // Carrying: Strength × the size's multiplier (Rules Glossary, Carrying

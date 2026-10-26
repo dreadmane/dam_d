@@ -19,7 +19,7 @@ import { castOptions, characterSpells, type SpellRow } from './spells.ts'
 export type TurnGroup = 'action' | 'bonus' | 'reaction' | 'also'
 
 export type TurnRow =
-  | { kind: 'attack'; key: string; attack: Attack }
+  | { kind: 'attack'; key: string; attack: Attack; bonus?: true }
   | { kind: 'spell'; key: string; row: SpellRow }
   | { kind: 'feature'; key: string; feature: Feature; from: string; cost?: Toggle['cost']; toggle?: Toggle }
   | { kind: 'resource'; key: string; resource: Resource }
@@ -53,6 +53,7 @@ export const spellGroup = (row: SpellRow): TurnGroup | null => SPELL_GROUP[row.s
 export function rowGroup(row: TurnRow): Exclude<TurnGroup, 'also'> | null {
   switch (row.kind) {
     case 'attack':
+      return row.bonus ? 'bonus' : 'action'
     case 'actions':
       return 'action'
     case 'opportunity':
@@ -92,6 +93,9 @@ export function turnRows(rules: Rules, entity: CharacterEntity, sheet: Sheet): T
   const turn: Turn = { action: [], bonus: [], reaction: [], also: [] }
 
   for (const a of sheet.attacks) turn.action.push({ kind: 'attack', key: `attack:${a.id}`, attack: a })
+  // An attack a feature lets be made as a Bonus Action too (Martial Arts'
+  // Bonus Unarmed Strike, SRD p.50).
+  for (const a of sheet.attacks) if (a.bonusAction) turn.bonus.push({ kind: 'attack', key: `bonus-attack:${a.id}`, attack: a, bonus: true })
 
   for (const row of characterSpells(rules, entity, sheet)) {
     const g = spellGroup(row)
