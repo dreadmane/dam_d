@@ -109,6 +109,24 @@ describe('describing a roll', () => {
     expect(describeCheck('Dagger, to hit', { flat: 5, dice: ['d20'] }, 'disadvantage', { faces: [9, 1], kept: 1, total: 6 }, 'attack').natural).toEqual({ face: 1, words: 'Natural 1 · the attack misses' })
   })
 
+  // A Champion's Improved Critical (SRD p.49): a Critical Hit on 19 or 20,
+  // as the sheet's crit range says (#13). Words only: the die shows a 19, so
+  // it gets no natural 20's mark.
+  it('calls an attack roll in the crit range a Critical Hit, without marking the die', () => {
+    const roll = (faces: number[], kept: number, critMin?: number, kind: 'attack' | 'other' = 'attack') => describeCheck('Longsword, to hit', { flat: 7, dice: ['d20'] }, faces.length > 1 ? 'advantage' : 'normal', { faces, kept, total: kept + 7 }, kind, critMin)
+    const nineteen = roll([19], 19, 19)
+    expect(nineteen.natural).toEqual({ face: 19, words: 'Natural 19 · Critical Hit' })
+    expect(nineteen.dice[0].natural).toBeUndefined()
+    expect(roll([18], 18, 18).natural).toEqual({ face: 18, words: 'Natural 18 · Critical Hit' })
+    expect(roll([20], 20, 19).natural).toEqual({ face: 20, words: 'Natural 20 · Critical Hit' })
+    expect(roll([18], 18, 19).natural).toBeUndefined()
+    // Without a crit range, or on a roll that isn't an attack, a 19 is a 19.
+    expect(roll([19], 19).natural).toBeUndefined()
+    expect(roll([19], 19, 19, 'other').natural).toBeUndefined()
+    // Under Advantage, the d20 that counts decides it.
+    expect(roll([19, 4], 19, 19).natural).toEqual({ face: 19, words: 'Natural 19 · Critical Hit' })
+  })
+
   it('marks a death saving throw’s single d20 when its kind is given, and a field’s die never', () => {
     const save = describeRoll('Death saving throw', '1d20', { faces: [20], total: 20 }, 'death-save')
     expect(save.dice[0].natural).toBe(20)

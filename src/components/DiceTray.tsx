@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type Ref } from 'react'
 import { trayStore, useTray, type Host } from '../dice/app-tray.ts'
-import { sealOf, type Natural, type SealTotal } from '../dice/describe.ts'
+import { isNatural, sealOf, type Natural, type SealTotal } from '../dice/describe.ts'
 import { layoutDice, rowsBudget, type DiceLayout } from '../dice/layout.ts'
 import { decoysFor, delayOf, landsAfter, seeded } from '../dice/plan.ts'
 import type { Shown } from '../dice/store.ts'
@@ -292,8 +292,9 @@ export function TrayView({
           ))}
         </div>
       )}
-      {/* Keyed by the roll, so a roll replacing another presses its own seal. */}
-      {seal && <TraySeal key={`seal-${roll.id}`} total={seal} natural={moment?.face} />}
+      {/* Keyed by the roll, so a roll replacing another presses its own seal.
+          Only a 20 or a 1 marks it: a Critical Hit on a 19 is words alone. */}
+      {seal && <TraySeal key={`seal-${roll.id}`} total={seal} natural={isNatural(moment?.face) ? moment?.face : undefined} />}
       {moment && (
         <p key={`natural-${roll.id}`} className="tray-natural">
           {moment.words}

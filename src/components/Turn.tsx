@@ -73,7 +73,7 @@ export function TurnSection({ rosterId, rules, entity, sheet, update }: { roster
       </div>
       {combat ? <Combat rules={rules} entity={entity} sheet={sheet} turn={turn} change={change} onOpen={setOpen} /> : <Explore rules={rules} entity={entity} sheet={sheet} onOpen={setOpen} />}
 
-      {open?.kind === 'hit' && <QuickRoll rules={rules} entity={entity} name={`${open.attack.name}, ${open.reaction ? 'Opportunity Attack' : 'to hit'}`} total={open.attack.toHit} attack onClose={close} onRolled={spend(open.group)} />}
+      {open?.kind === 'hit' && <QuickRoll rules={rules} entity={entity} name={`${open.attack.name}, ${open.reaction ? 'Opportunity Attack' : 'to hit'}`} total={open.attack.toHit} attack critMin={sheet.critMin} onClose={close} onRolled={spend(open.group)} />}
       {open?.kind === 'damage' && <DamageWindow entity={entity} attack={open.attack} onClose={close} />}
       {open?.kind === 'spell' && (
         <SpellWindow rules={rules} entity={entity} sheet={sheet} row={open.row} update={update} onClose={close} onCast={(how: CastWith) => how.kind !== 'ritual' && spend(open.group)()} />

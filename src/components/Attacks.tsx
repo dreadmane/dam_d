@@ -61,7 +61,7 @@ export function AttacksSection({ sheet, rules, entity }: { sheet: Sheet; rules: 
           onClose={() => setOpen(null)}
         />
       )}
-      {hit && <QuickRoll rules={rules} entity={entity} name={`${hit.name}, to hit`} total={hit.toHit} attack onClose={() => setHit(null)} />}
+      {hit && <QuickRoll rules={rules} entity={entity} name={`${hit.name}, to hit`} total={hit.toHit} attack critMin={sheet.critMin} onClose={() => setHit(null)} />}
       {damage && <DamageWindow entity={entity} attack={damage} onClose={() => setDamage(null)} />}
     </SheetSection>
   )

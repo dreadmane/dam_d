@@ -32,6 +32,7 @@ export function formatEvaluated({ flat, dice }: Evaluated): string {
 }
 
 export type Natural = 20 | 1
+export const isNatural = (face: number | undefined): face is Natural => face === 20 || face === 1
 
 export interface TrayDie {
   sides: Sides
@@ -54,8 +55,10 @@ export interface DescribedRoll {
   line: string
   // The part of the line set in bold: the total.
   bold: string | null
-  // A natural 20 or 1 on the d20 that counts, and the tray's words for it.
-  natural?: { face: Natural; words: string }
+  // A natural 20 or 1 on the d20 that counts, and the tray's words for it;
+  // or, on an attack roll, a lower face in the crit range (Improved
+  // Critical's 19), with its words.
+  natural?: { face: number; words: string }
 }
 
 // What a d20 is rolled for, which picks the words for a natural: the two
@@ -78,12 +81,17 @@ export function naturalWords(kind: RollKind, face: Natural): string {
 }
 
 // The roll with its d20 that counts, the die at `at`, marked where it shows a
-// 20 or a 1, and the words for it. A dropped die is never marked.
-function withNatural(roll: DescribedRoll, at: number, kind: RollKind): DescribedRoll {
+// 20 or a 1, and the words for it. A dropped die is never marked. On an
+// attack roll, a face from critMin up is a Critical Hit too (the sheet's
+// crit range: Improved Critical, SRD p.49), said in words with no mark, as
+// the die shows no 20.
+function withNatural(roll: DescribedRoll, at: number, kind: RollKind, critMin = 20): DescribedRoll {
   const die = roll.dice[at]
   const face = die?.face
-  if (!die || die.dropped || die.sides !== 20 || (face !== 20 && face !== 1)) return roll
-  return { ...roll, dice: roll.dice.map((d, i) => (i === at ? { ...d, natural: face } : d)), natural: { face, words: naturalWords(kind, face) } }
+  if (!die || die.dropped || die.sides !== 20) return roll
+  if (face === 20 || face === 1) return { ...roll, dice: roll.dice.map((d, i) => (i === at ? { ...d, natural: face } : d)), natural: { face, words: naturalWords(kind, face) } }
+  if (kind === 'attack' && face >= critMin) return { ...roll, natural: { face, words: `Natural ${face} · Critical Hit` } }
+  return roll
 }
 
 export type Mode = 'normal' | 'advantage' | 'disadvantage'
@@ -118,8 +126,9 @@ export function checkFormula(check: Evaluated, mode: Mode): string {
   return `2 × ${formula}, ${mode === 'advantage' ? 'Advantage' : 'Disadvantage'}`
 }
 
-// kind: what the d20 is rolled for, which words a natural on it takes.
-export function describeCheck(name: string, check: Evaluated, mode: Mode, r: CheckRoll, kind: RollKind = 'other'): DescribedRoll {
+// kind: what the d20 is rolled for, which words a natural on it takes;
+// critMin: an attack's crit range, where it starts below 20.
+export function describeCheck(name: string, check: Evaluated, mode: Mode, r: CheckRoll, kind: RollKind = 'other', critMin = 20): DescribedRoll {
   const sides = sidesOf(check.dice[0] ?? 'd20') ?? 20
   // With two equal faces the first is kept.
   const counts = r.faces.length > 1 ? r.faces.indexOf(r.kept) : 0
@@ -132,7 +141,7 @@ export function describeCheck(name: string, check: Evaluated, mode: Mode, r: Che
       ...(pair && i !== counts ? { dropped: true } : {}),
     }),
   )
-  return withNatural({ name, formula: checkFormula(check, mode), dice, line: checkLine(r), bold: String(r.total) }, counts, kind)
+  return withNatural({ name, formula: checkFormula(check, mode), dice, line: checkLine(r), bold: String(r.total) }, counts, kind, critMin)
 }
 
 // Every die of a formula in order, "2d8" as two d8s, each with its face: the
@@ -185,10 +194,10 @@ export function describeDice(name: string, formula: string, dice: TrayDie[], lin
 export const typedCheckLine = (face: number, die: string, total: number): string => `${face} on the ${die}: ${total}.`
 
 // The d20 typed is the one that counts, so a 20 or a 1 on it is a natural.
-export function describeTypedCheck(name: string, check: Evaluated, mode: Mode, face: number, kind: RollKind = 'other'): DescribedRoll {
+export function describeTypedCheck(name: string, check: Evaluated, mode: Mode, face: number, kind: RollKind = 'other', critMin = 20): DescribedRoll {
   const die = check.dice[0] ?? 'd20'
   const total = face + check.flat
-  return withNatural({ name, formula: checkFormula(check, mode), dice: [{ sides: sidesOf(die) ?? 20, face }], line: typedCheckLine(face, die, total), bold: String(total) }, 0, kind)
+  return withNatural({ name, formula: checkFormula(check, mode), dice: [{ sides: sidesOf(die) ?? 20, face }], line: typedCheckLine(face, die, total), bold: String(total) }, 0, kind, critMin)
 }
 
 // The sides of every die of a formula, in order: "2d8" as two 8s.

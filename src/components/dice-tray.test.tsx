@@ -77,6 +77,14 @@ describe('the moment', () => {
     expect(html).toContain('<p class="tray-natural">Natural 20 · Critical Hit</p>')
   })
 
+  it('says a Critical Hit on a 19 in a Champion’s crit range, with no natural 20’s mark on the die (#13)', () => {
+    const html = draw(shown(describeCheck('Dagger, to hit', dagger, 'normal', { faces: [19], kept: 19, total: 24 }, 'attack', 19)))
+    expect(tray(html)).toContain('data-moment="19"')
+    expect(html).not.toContain('data-natural=')
+    expect(html).not.toContain('tray-crack')
+    expect(html).toContain('<p class="tray-natural">Natural 19 · Critical Hit</p>')
+  })
+
   it('cracks the seal on a natural 1, the crack drawn under the numeral', () => {
     const html = draw(shown(describeCheck('Dagger, to hit', dagger, 'normal', { faces: [1], kept: 1, total: 6 }, 'attack')))
     expect(tray(html)).toContain('data-moment="1"')

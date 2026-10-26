@@ -60,7 +60,7 @@ export function ReactionsBand({ rules, entity, sheet, update }: { rules: Rules; 
       {open?.kind === 'opportunity' && <OpportunityWindow reaction={open} onHit={setHit} onDamage={setDamage} onClose={() => setOpen(null)} />}
       {open?.kind === 'spell' && <ReactionSpell rules={rules} entity={entity} sheet={sheet} row={open.row} update={update} onClose={() => setOpen(null)} />}
       {open?.kind === 'feature' && <ReactionFeature feature={open.feature} entity={entity} onClose={() => setOpen(null)} />}
-      {hit && <QuickRoll rules={rules} entity={entity} name={`${hit.name}, Opportunity Attack`} total={hit.toHit} attack onClose={() => setHit(null)} />}
+      {hit && <QuickRoll rules={rules} entity={entity} name={`${hit.name}, Opportunity Attack`} total={hit.toHit} attack critMin={sheet.critMin} onClose={() => setHit(null)} />}
       {damage && <DamageWindow entity={entity} attack={damage} onClose={() => setDamage(null)} />}
     </aside>
   )
