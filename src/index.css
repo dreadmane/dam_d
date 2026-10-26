@@ -2600,6 +2600,62 @@ dialog[data-closing] .dice-tray {
   display: none;
 }
 
+/* Classic's collapsed line: the name, its chevron, then HP and AC at the
+   right before MENU (the play audit's recommendation 6). The name gives way
+   first where the line is short. HP sits over the line's toggle, a full
+   touch target tall inside the line's own padding, as MENU does; AC is
+   read only. Open, the band's own readout holds them. */
+.hud-line-vitals {
+  display: none;
+}
+
+.hud[data-collapsed] .hud-line-vitals:not(dialog *) {
+  order: 2;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  margin: calc(-1 * var(--space-1)) 0 calc(-1 * var(--space-1)) auto;
+  white-space: nowrap;
+}
+
+.hud[data-collapsed] .hud-line-vitals .readout-button {
+  position: relative;
+  z-index: 1;
+  min-height: var(--size-touch);
+}
+
+.hud[data-collapsed] .hud-identity:not(dialog *):has(.hud-line-vitals) > div:last-child {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.hud[data-collapsed] .hud-identity:not(dialog *):has(.hud-line-vitals) h1 {
+  flex: 0 3 auto;
+  min-width: 3rem;
+}
+
+.hud[data-collapsed] .hud-identity:not(dialog *):has(.hud-line-vitals)::after {
+  display: none;
+}
+
+.hud[data-collapsed] .hud-identity:not(dialog *):has(.hud-line-vitals) > div:last-child::after {
+  content: '';
+  order: 1;
+  flex: none;
+  border-inline: 0.3125rem solid transparent;
+  border-top: 0.3125rem solid var(--color-text-muted);
+}
+
+@media (forced-colors: active) {
+  .hud[data-collapsed] .hud-identity:not(dialog *):has(.hud-line-vitals) > div:last-child::after {
+    forced-color-adjust: none;
+    border-top-color: CanvasText;
+  }
+}
+
 .hud:not([data-collapsed]) .hud-toggle {
   top: 100%;
   left: 50%;
