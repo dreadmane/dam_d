@@ -5,10 +5,11 @@
 
 import { describe, expect, it } from 'vitest'
 import { deriveSheet } from './derive.ts'
-import { casterFor, characterSpells } from '../play/spells.ts'
+import { casterFor, characterSpells, preparedCount } from '../play/spells.ts'
 import { catalogueItem } from '../play/kit.ts'
 import { testRules } from './test-rules.ts'
 import type { CharacterEntity } from '../save/types.ts'
+import halvard from '../save/examples/cleric-fighter.json'
 import A from './audit/A.json'
 import B from './audit/B.json'
 import C from './audit/C.json'
@@ -215,5 +216,117 @@ describe('a spell from a feat or a species casts with its own ability (finding 2
     const e = structuredClone(E.entities[0] as unknown) as CharacterEntity
     const row = characterSpells(rules, e, deriveSheet(rules, e)).find((r) => r.spell.id === 'divine-smite')
     expect(row?.classId).toBe('paladin')
+  })
+})
+
+// A copy of a fixture, changed, then worked.
+const changed = (record: { entities: unknown[] }, change: (e: CharacterEntity) => void) => {
+  const e = structuredClone(record.entities[0]) as CharacterEntity
+  change(e)
+  return deriveSheet(rules, e)
+}
+const atLevel = (level: number) => (e: CharacterEntity) => {
+  e.classes[0] = { ...e.classes[0], level, hp: e.classes[0].hp.slice(0, level) }
+}
+
+describe('the Wood Elf’s Speed (finding 5)', () => {
+  it('walks Sefa, a Wood Elf Monk 6, at 35 ft plus Unarmored Movement’s 15: 50 ft (pp.84, 50)', () => {
+    const walk = sheetOf(A).speed.walk
+    expect(walk.total).toBe(50)
+    expect(walk.parts[0]).toEqual({ label: 'Elf: Wood Elf', value: 35 })
+  })
+
+  it('leaves an Elf of another lineage at the Elf’s 30: a Drow Sefa walks 45', () => {
+    const drow = changed(A, (e) => {
+      e.choices = e.choices.map((c) => (c.choice === 'elven-lineage' ? { ...c, values: ['drow'] } : c))
+    })
+    expect(drow.speed.walk.total).toBe(45)
+  })
+})
+
+describe('Jack of All Trades (finding 7)', () => {
+  // Fizzwick, a Bard 6: Proficiency Bonus 3, so half is 1 (p.32).
+  const fizz = sheetOf(G)
+  const totals = (ids: string[]) => ids.map((id) => fizz.skills.find((s) => s.id === id)!.total)
+
+  it('adds half the Proficiency Bonus, +1, to each skill the Bard lacks (p.32)', () => {
+    expect(totals(['acrobatics', 'animal-handling', 'athletics', 'intimidation', 'investigation', 'medicine', 'nature'])).toEqual([3, 2, 0, 5, 1, 2, 1])
+    expect(fizz.skills.find((s) => s.id === 'athletics')!.parts).toContainEqual({ label: 'Bard 2: Jack of All Trades', value: 1 })
+  })
+
+  it('leaves a skill she is proficient in, or has Expertise in, at its own total', () => {
+    expect(totals(['arcana', 'history', 'insight', 'perception', 'performance', 'deception'])).toEqual([3, 3, 4, 4, 7, 10])
+    expect(fizz.passivePerception.total).toBe(14)
+  })
+
+  it('leaves Initiative, a Dexterity check with no skill, at +2', () => {
+    expect(fizz.initiative.total).toBe(2)
+  })
+})
+
+describe('free casts from species, features and items (finding 9)', () => {
+  const free = (sheet: ReturnType<typeof deriveSheet>) => sheet.resources.filter((r) => r.key.includes('free-cast:')).map(({ key, name, max, recharge }) => ({ key, name, max, recharge }))
+
+  it('counts a Wood Elf 6’s Longstrider and Pass without Trace, once each a Long Rest (p.84)', () => {
+    expect(free(sheetOf(A))).toEqual([
+      { key: 'free-cast:longstrider', name: 'Longstrider (Wood Elf)', max: 1, recharge: 'long-rest' },
+      { key: 'free-cast:pass-without-trace', name: 'Pass without Trace (Wood Elf)', max: 1, recharge: 'long-rest' },
+    ])
+  })
+
+  it('counts an Infernal Tiefling 6’s Hellish Rebuke and Darkness (p.86)', () => {
+    expect(free(sheetOf(C)).map((r) => r.name)).toEqual(['Hellish Rebuke (Infernal)', 'Darkness (Infernal)'])
+  })
+
+  it('counts a Paladin 8’s Divine Smite (Paladin’s Smite, p.54) and Find Steed (Faithful Steed, p.55)', () => {
+    expect(free(sheetOf(E))).toEqual([
+      { key: 'paladin:free-cast:divine-smite', name: 'Divine Smite (Paladin’s Smite)', max: 1, recharge: 'long-rest' },
+      { key: 'paladin:free-cast:find-steed', name: 'Find Steed (Faithful Steed)', max: 1, recharge: 'long-rest' },
+    ])
+  })
+
+  it('gives a lineage’s spell its free cast at the character level it comes at: none at 2, Longstrider at 3', () => {
+    expect(free(changed(A, atLevel(2)))).toEqual([])
+    expect(free(changed(A, atLevel(3))).map((r) => r.key)).toEqual(['free-cast:longstrider'])
+  })
+
+  it('keeps what was spent', () => {
+    const spent = changed(A, (e) => {
+      e.resourcesUsed = { ...e.resourcesUsed, 'free-cast:longstrider': 1 }
+    })
+    expect(spent.resources.find((r) => r.key === 'free-cast:longstrider')?.used).toBe(1)
+  })
+
+  it('counts an item’s while it is worn and attuned, under the item’s own key: the Helm of Telepathy’s Detect Thoughts and Suggestion, each a dawn (p.226)', () => {
+    const helm = catalogueItem(rules, 'magic-items:helm-of-telepathy', undefined, 'helm-1')!
+    const wearing = (worn: boolean) => changed(A, (e) => e.inventory.push({ ...helm, worn, attuned: true }))
+    expect(free(wearing(true)).slice(2)).toEqual([
+      { key: 'helm-1:free-cast:detect-thoughts', name: 'Detect Thoughts (Helm of Telepathy)', max: 1, recharge: 'dawn' },
+      { key: 'helm-1:free-cast:suggestion', name: 'Suggestion (Helm of Telepathy)', max: 1, recharge: 'dawn' },
+    ])
+    expect(free(wearing(false)).length).toBe(2)
+  })
+})
+
+describe('a class’s extra cantrip from Magician or Thaumaturge (finding 10)', () => {
+  const cantrips = (record: { entities: unknown[] }, classId: string, change?: (e: CharacterEntity) => void) => {
+    const e = structuredClone(record.entities[0]) as CharacterEntity
+    change?.(e)
+    const sheet = deriveSheet(rules, e)
+    const caster = sheet.spellcasting.find((c) => c.classId === classId)!
+    return { of: caster.cantrips, chosen: preparedCount(characterSpells(rules, e, sheet), caster).cantrips }
+  }
+
+  it('gives a Magician Druid 5 four cantrips, the table’s three and Magician’s, and counts all four (pp.41–42)', () => {
+    expect(cantrips(F, 'druid')).toEqual({ of: 4, chosen: 4 })
+  })
+
+  it('gives a Thaumaturge Cleric 5 five, the table’s four and one more (p.37), and a Protector the table’s four', () => {
+    expect(cantrips(halvard, 'cleric')).toEqual({ of: 4, chosen: 4 })
+    const thaumaturge = (e: CharacterEntity) => {
+      e.choices = e.choices.map((c) => (c.choice === 'divine-order' ? { ...c, values: ['thaumaturge'] } : c))
+      e.choices.push({ source: 'class:cleric:1>option:thaumaturge', choice: 'thaumaturge-cantrip', values: ['spare-the-dying'] })
+    }
+    expect(cantrips(halvard, 'cleric', thaumaturge)).toEqual({ of: 5, chosen: 5 })
   })
 })
