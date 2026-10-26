@@ -1225,6 +1225,14 @@ export interface EffGrantSpell {
    */
   atWill?: boolean
   ability?: ('str' | 'dex' | 'con' | 'int' | 'wis' | 'cha') | 'choice'
+  /**
+   * Added 2026-10-26: the save DC the granting record prints for this spell, in place of the caster's ('cast Web (save DC 13)', Cloak of Arachnida, SRD p.215).
+   */
+  dc?: number
+  /**
+   * Added 2026-10-26: the attack bonus the granting record prints for this spell, in place of the caster's ('Scorching Ray with it (+5 to hit)', Circlet of Blasting, SRD p.215).
+   */
+  attack?: number
   freeCasts?: {
     /**
      * An expression added 2026-10-18 for Forest Gnome: 'a number of times equal to your Proficiency Bonus' (SRD p.85).

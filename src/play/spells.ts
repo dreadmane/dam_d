@@ -30,6 +30,9 @@ export interface SpellRow {
   extraCantrip?: boolean
   // A class spell the player can prepare or unprepare.
   preparable: boolean
+  // The save DC and attack bonus the granting item prints for it, in place
+  // of the caster's ("cast Web (save DC 13)", Cloak of Arachnida, SRD p.215).
+  printed?: { dc?: number; attack?: number }
 }
 
 const ref = (r: string) => r.replace(/^spells:/, '')
@@ -54,6 +57,8 @@ export function characterSpells(rules: Rules, entity: CharacterEntity, sheet: Sh
       ready: held.ready || row.ready,
       always,
       preparable: !always && (held.preparable || row.preparable),
+      // A class's spell is cast as the class's, whatever an item prints.
+      printed: held.classId ?? row.classId ? undefined : (held.printed ?? row.printed),
       ...(held.extraCantrip || row.extraCantrip ? { extraCantrip: true } : {}),
     })
   }
@@ -87,7 +92,8 @@ export function characterSpells(rules: Rules, entity: CharacterEntity, sheet: Sh
     const spell = rules.spells.get(ref(a.effect.spell))
     // A class feature's spell (Faithful Steed, an Oath's) is its class's.
     const ability = a.effect.ability === 'choice' ? chosenAbility(a.source) : a.effect.ability
-    if (spell) add({ spell, from: a.from.replace(/^[^:]*: /, ''), ...(ability ? { ability } : a.classId ? { classId: a.classId } : {}), ready: true, always: Boolean(a.effect.alwaysPrepared) || spell.level === 0, preparable: false })
+    const printed = a.effect.dc !== undefined || a.effect.attack !== undefined ? { dc: a.effect.dc, attack: a.effect.attack } : undefined
+    if (spell) add({ spell, from: a.from.replace(/^[^:]*: /, ''), ...(ability ? { ability } : a.classId ? { classId: a.classId } : {}), ready: true, always: Boolean(a.effect.alwaysPrepared) || spell.level === 0, preparable: false, ...(printed ? { printed } : {}) })
   }
   for (const c of sheet.choices) {
     if (c.kind !== 'spell' || !/spell|cantrip/.test(c.grants ?? '') || c.grants === 'spellbook') continue
@@ -231,11 +237,17 @@ export function scaledDice(spell: Spell, dice: string, castLevel: number, charac
 // The save DC and attack a spell row casts with: its class's; else its own
 // ability's, from a feat or trait; else, with neither known, the first
 // class's.
-export function casterFor(sheet: Sheet, row: SpellRow): Pick<Spellcaster, 'saveDc' | 'attack'> | undefined {
+export function casterFor(sheet: Sheet, row: SpellRow): Partial<Pick<Spellcaster, 'saveDc' | 'attack'>> | undefined {
   const own = row.classId ? sheet.spellcasting.find((c) => c.classId === row.classId) : undefined
   if (own) return own
   if (row.ability) return sheet.castingBy[row.ability]
-  return sheet.spellcasting[0]
+  const first = sheet.spellcasting[0]
+  if (!row.printed) return first
+  // What the item prints, and the first class's for what it doesn't, if
+  // there is a class to cast with.
+  const fixed = (value: number): Total => ({ total: value, parts: [{ label: `${row.from}, as printed`, value }], notes: [], advantage: [], disadvantage: [] })
+  const { dc, attack } = row.printed
+  return { saveDc: dc !== undefined ? fixed(dc) : first?.saveDc, attack: attack !== undefined ? fixed(attack) : first?.attack }
 }
 
 // Preparing and the spellbook (§3.3): a class spell prepared or not; one

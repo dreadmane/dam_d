@@ -204,7 +204,7 @@ export function SpellWindow({ rules, entity, sheet, row, update, onClose, onCast
         {s.castingTime.text} · {s.range.text} · {s.duration.text}
         {row.always && ` · ${row.from}, always prepared`}
       </p>
-      {s.attack && caster && (
+      {s.attack && caster?.attack && (
         <p>
           Spell attack <b>{signed(caster.attack.total)}</b>{' '}
           <button type="button" className="secondary" aria-haspopup="dialog" onClick={() => setAttacking(true)}>
@@ -212,7 +212,7 @@ export function SpellWindow({ rules, entity, sheet, row, update, onClose, onCast
           </button>
         </p>
       )}
-      {s.save && caster && (
+      {s.save && caster?.saveDc && (
         <p>
           {rules.data.core.abilities.find((a) => a.id === s.save)?.name} save, DC <b>{caster.saveDc.total}</b>
         </p>
@@ -246,7 +246,7 @@ export function SpellWindow({ rules, entity, sheet, row, update, onClose, onCast
       ))}
       {s.higherLevels && <p className="meta">{String(s.higherLevels)}</p>}
       <p className="meta">From the SRD 5.2.1, under CC-BY-4.0.</p>
-      {attacking && caster && <QuickRoll rules={rules} entity={entity} name={`${s.name}, spell attack`} total={caster.attack} attack onClose={() => setAttacking(false)} />}
+      {attacking && caster?.attack && <QuickRoll rules={rules} entity={entity} name={`${s.name}, spell attack`} total={caster.attack} attack onClose={() => setAttacking(false)} />}
     </Window>
   )
 }

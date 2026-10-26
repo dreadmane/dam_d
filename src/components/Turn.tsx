@@ -265,8 +265,8 @@ function TurnRowView({ rules, entity, sheet, row, onOpen }: { rules: Rules; enti
     case 'spell': {
       const s = row.row.spell
       const caster = casterFor(sheet, row.row)
-      const save = s.save && caster ? `${s.save.toUpperCase()} ${caster.saveDc.total}` : null
-      const hit = s.attack && caster ? signed(caster.attack.total) : null
+      const save = s.save && caster?.saveDc ? `${s.save.toUpperCase()} ${caster.saveDc.total}` : null
+      const hit = s.attack && caster?.attack ? signed(caster.attack.total) : null
       const dmg = (s.damage as { dice: string; type?: string }[] | undefined)?.[0]
       const dice = dmg ? `${scaledDice(s, dmg.dice.replace(/\+.*$/, ''), s.level, sheet.level)}${dmg.dice.includes('+') ? dmg.dice.slice(dmg.dice.indexOf('+')) : ''}${dmg.type ? ` ${dmg.type}` : ''}` : null
       const empty = outOfSlots(rules, sheet, entity, row.row)

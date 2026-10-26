@@ -189,7 +189,7 @@ describe('a spell from a feat or a species casts with its own ability (finding 2
     const sheet = deriveSheet(rules, e)
     const row = characterSpells(rules, e, sheet).find((r) => r.spell.id === spellId)!
     const caster = casterFor(sheet, row)
-    return { dc: caster?.saveDc.total, attack: caster?.attack.total }
+    return { dc: caster?.saveDc?.total, attack: caster?.attack?.total }
   }
 
   it('gives Magic Initiate (Wizard) on Int its own DC 12 and +4, beside the Druid’s 15 and +7 (p.87)', () => {
@@ -447,5 +447,35 @@ describe('Pact of the Blade (finding 8, #4)', () => {
     expect(sets(id(e, 'Longsword'))).toEqual(['pact-weapon (bond)'])
     expect(sets('test-bow')).toEqual([])
     expect(sets('test-magic-bow')).toEqual(['pact-weapon (bond)'])
+  })
+})
+
+describe('a magic item’s spells use the DC and attack it prints (#12)', () => {
+  const wearing = (record: { entities: unknown[] }, itemRef: string, spellId: string) => {
+    const e = structuredClone(record.entities[0]) as CharacterEntity
+    e.inventory.push({ ...catalogueItem(rules, itemRef, undefined, 'test-item')!, worn: true, attuned: true })
+    const sheet = deriveSheet(rules, e)
+    const row = characterSpells(rules, e, sheet).find((r) => r.spell.id === spellId)!
+    const caster = casterFor(sheet, row)
+    return { dc: caster?.saveDc?.total, attack: caster?.attack?.total, own: sheet.spellcasting[0]?.saveDc.total }
+  }
+
+  it('casts a Cloak of Arachnida’s Web at DC 13 for a Fighter, who has no spellcasting of his own (p.215)', () => {
+    expect(wearing(D, 'magic-items:cloak-of-arachnida', 'web')).toEqual({ dc: 13, attack: undefined, own: undefined })
+  })
+
+  it('casts it at DC 13 for a Cleric too, not at her own DC', () => {
+    const { dc, own } = wearing(halvard, 'magic-items:cloak-of-arachnida', 'web')
+    expect(dc).toBe(13)
+    expect(own).not.toBe(13)
+  })
+
+  it('casts a Circlet of Blasting’s Scorching Ray at +5 to hit (p.215)', () => {
+    expect(wearing(halvard, 'magic-items:circlet-of-blasting', 'scorching-ray').attack).toBe(5)
+  })
+
+  it('keeps the first class’s DC where the item prints none (Boots of Levitation)', () => {
+    const { dc, own } = wearing(halvard, 'magic-items:boots-of-levitation', 'levitate')
+    expect(dc).toBe(own)
   })
 })
