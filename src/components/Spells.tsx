@@ -161,7 +161,7 @@ function SpellList({ rows, onOpen }: { rows: SpellRow[]; onOpen: (r: SpellRow) =
   )
 }
 
-const castLabel = (c: CastWith) => (c.kind === 'cantrip' ? 'Cast' : c.kind === 'ritual' ? 'As a ritual' : c.kind === 'pact' ? `Pact slot, level ${c.level}` : `Level ${c.level} slot`)
+const castLabel = (c: CastWith) => (c.kind === 'cantrip' ? 'Cast' : c.kind === 'ritual' ? 'As a ritual' : c.kind === 'free' ? `Without a slot (${c.from})` : c.kind === 'pact' ? `Pact slot, level ${c.level}` : `Level ${c.level} slot`)
 const castLevelOf = (row: SpellRow, c: CastWith) => (c.kind === 'slot' || c.kind === 'pact' ? c.level : row.spell.level)
 
 // onCast is told what a cast spent (the Journal's turn spends its pip).
@@ -181,7 +181,7 @@ export function SpellWindow({ rules, entity, sheet, row, update, onClose, onCast
     update((e) => cast(e, row, how))
     setCast(how)
     onCast?.(how)
-    setSaid(`Cast ${s.name}${how.kind === 'slot' || how.kind === 'pact' ? ` with a level ${how.level} slot` : how.kind === 'ritual' ? ' as a ritual' : ''}.`)
+    setSaid(`Cast ${s.name}${how.kind === 'slot' || how.kind === 'pact' ? ` with a level ${how.level} slot` : how.kind === 'ritual' ? ' as a ritual' : how.kind === 'free' ? ` without a slot (${how.from})` : ''}.`)
   }
   const rollDamage = (d: { dice: string; type: string }) => {
     const dice = scaledDice(s, d.dice.replace(/\+.*$/, ''), level, sheet.level)
