@@ -959,7 +959,7 @@ export interface ExprFloorDiv {
 export interface EffBonus {
   type: 'bonus'
   /**
-   * What an effect changes. ability:<a>, save:<a>|save:all, save:vs-<condition>, death-save, skill:<s>|check:<a>|check:all, attack:<kind>, damage:<kind>, speed:<mode>, ac, hp-max, initiative, spell-dc, spell-attack, passive:<skill>, d20:all (every d20 Test). attack:this and damage:this, added 2026-10-18, mean rolls made with the item that carries the effect ('+1 bonus to attack rolls and damage rolls made with this magic weapon', Weapon, +1, +2, or +3, SRD p.253). proficiency-bonus added 2026-10-18 for the Ioun Stone of Mastery (SRD p.227). death-save added 2026-10-18 for Beacon of Hope and Survivor (SRD p.112, p.49); save:vs-<condition> for Protection from Poison ('saving throws to avoid or end the Poisoned condition', p.157).
+   * What an effect changes. ability:<a>, save:<a>|save:all, save:vs-<condition>, death-save, skill:<s>|check:<a>|check:all, attack:<kind>, damage:<kind>, speed:<mode>, ac, hp-max, initiative, spell-dc, spell-attack, passive:<skill>, d20:all (every d20 Test). attack:this and damage:this, added 2026-10-18, mean rolls made with the item that carries the effect ('+1 bonus to attack rolls and damage rolls made with this magic weapon', Weapon, +1, +2, or +3, SRD p.253). proficiency-bonus added 2026-10-18 for the Ioun Stone of Mastery (SRD p.227). death-save added 2026-10-18 for Beacon of Hope and Survivor (SRD p.112, p.49); save:vs-<condition> for Protection from Poison ('saving throws to avoid or end the Poisoned condition', p.157). attunement added 2026-10-27: the number of magic items you can attune to at once (Use Magic Device, 'up to four', p.64).
    */
   target: string
   value: number | Expression
@@ -1123,7 +1123,7 @@ export interface EffAdvantage {
   type: 'advantage'
   mode: 'advantage' | 'disadvantage'
   /**
-   * What an effect changes. ability:<a>, save:<a>|save:all, save:vs-<condition>, death-save, skill:<s>|check:<a>|check:all, attack:<kind>, damage:<kind>, speed:<mode>, ac, hp-max, initiative, spell-dc, spell-attack, passive:<skill>, d20:all (every d20 Test). attack:this and damage:this, added 2026-10-18, mean rolls made with the item that carries the effect ('+1 bonus to attack rolls and damage rolls made with this magic weapon', Weapon, +1, +2, or +3, SRD p.253). proficiency-bonus added 2026-10-18 for the Ioun Stone of Mastery (SRD p.227). death-save added 2026-10-18 for Beacon of Hope and Survivor (SRD p.112, p.49); save:vs-<condition> for Protection from Poison ('saving throws to avoid or end the Poisoned condition', p.157).
+   * What an effect changes. ability:<a>, save:<a>|save:all, save:vs-<condition>, death-save, skill:<s>|check:<a>|check:all, attack:<kind>, damage:<kind>, speed:<mode>, ac, hp-max, initiative, spell-dc, spell-attack, passive:<skill>, d20:all (every d20 Test). attack:this and damage:this, added 2026-10-18, mean rolls made with the item that carries the effect ('+1 bonus to attack rolls and damage rolls made with this magic weapon', Weapon, +1, +2, or +3, SRD p.253). proficiency-bonus added 2026-10-18 for the Ioun Stone of Mastery (SRD p.227). death-save added 2026-10-18 for Beacon of Hope and Survivor (SRD p.112, p.49); save:vs-<condition> for Protection from Poison ('saving throws to avoid or end the Poisoned condition', p.157). attunement added 2026-10-27: the number of magic items you can attune to at once (Use Magic Device, 'up to four', p.64).
    */
   on: string
   /**
@@ -1323,11 +1323,12 @@ export interface EffAbilityIncrease {
   patterns?: number[][]
 }
 /**
- * Added 2026-10-18: Extra Attack, 'You can attack twice instead of once whenever you take the Attack action' (SRD p.48). count is the attacks per Attack action; the highest applies, since Extra Attack doesn't stack (SRD p.25).
+ * Added 2026-10-18: Extra Attack, 'You can attack twice instead of once whenever you take the Attack action' (SRD p.48). count is the attacks per Attack action; the highest applies, since Extra Attack doesn't stack (SRD p.25). Added 2026-10-27: pactWeapon, only with the pact weapon ('you can attack twice with your pact weapon', Thirsting Blade, p.74), counted apart.
  */
 export interface EffAttackCount {
   type: 'attackCount'
   count: number
+  pactWeapon?: true
 }
 /**
  * Added 2026-10-18: Improved Critical, 'score a Critical Hit on a roll of 19 or 20' (SRD p.49). min is the lowest d20 that crits; on names the rolls.
@@ -1336,7 +1337,7 @@ export interface EffCritRange {
   type: 'critRange'
   min: number
   /**
-   * What an effect changes. ability:<a>, save:<a>|save:all, save:vs-<condition>, death-save, skill:<s>|check:<a>|check:all, attack:<kind>, damage:<kind>, speed:<mode>, ac, hp-max, initiative, spell-dc, spell-attack, passive:<skill>, d20:all (every d20 Test). attack:this and damage:this, added 2026-10-18, mean rolls made with the item that carries the effect ('+1 bonus to attack rolls and damage rolls made with this magic weapon', Weapon, +1, +2, or +3, SRD p.253). proficiency-bonus added 2026-10-18 for the Ioun Stone of Mastery (SRD p.227). death-save added 2026-10-18 for Beacon of Hope and Survivor (SRD p.112, p.49); save:vs-<condition> for Protection from Poison ('saving throws to avoid or end the Poisoned condition', p.157).
+   * What an effect changes. ability:<a>, save:<a>|save:all, save:vs-<condition>, death-save, skill:<s>|check:<a>|check:all, attack:<kind>, damage:<kind>, speed:<mode>, ac, hp-max, initiative, spell-dc, spell-attack, passive:<skill>, d20:all (every d20 Test). attack:this and damage:this, added 2026-10-18, mean rolls made with the item that carries the effect ('+1 bonus to attack rolls and damage rolls made with this magic weapon', Weapon, +1, +2, or +3, SRD p.253). proficiency-bonus added 2026-10-18 for the Ioun Stone of Mastery (SRD p.227). death-save added 2026-10-18 for Beacon of Hope and Survivor (SRD p.112, p.49); save:vs-<condition> for Protection from Poison ('saving throws to avoid or end the Poisoned condition', p.157). attunement added 2026-10-27: the number of magic items you can attune to at once (Use Magic Device, 'up to four', p.64).
    */
   on: string
 }

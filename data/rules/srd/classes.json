@@ -859,8 +859,16 @@
               "text": "You have Immunity to the Charmed and Frightened conditions while your Rage is active. If you’re Charmed or Frightened when you enter your Rage, the condition ends on you.",
               "effects": [
                 {
+                  "type": "conditionImmunity",
+                  "conditions": [
+                    "charmed",
+                    "frightened"
+                  ],
+                  "when": "While your Rage is active"
+                },
+                {
                   "type": "text",
-                  "summary": "Immunity to the Charmed and Frightened conditions while your Rage is active; entering Rage ends either condition."
+                  "summary": "Entering Rage ends the Charmed or Frightened condition on you."
                 }
               ],
               "source": {
@@ -905,8 +913,13 @@
                   "rechargePartial": "Expend a use of Rage (no action required) to restore the use"
                 },
                 {
+                  "type": "saveDc",
+                  "id": "intimidating-presence-dc",
+                  "ability": "str"
+                },
+                {
                   "type": "text",
-                  "summary": "Wisdom save DC 8 + Strength modifier + Proficiency Bonus, or Frightened for 1 minute (repeat save at end of each turn)."
+                  "summary": "A Wisdom save against the DC, or Frightened for 1 minute (repeat save at end of each turn)."
                 }
               ],
               "source": {
@@ -5516,8 +5529,13 @@
               "text": "You attain the pinnacle of resilience in battle, giving you these benefits.\n\n**Defy Death.** You have Advantage on Death Saving Throws. Moreover, when you roll 18–20 on a Death Saving Throw, you gain the benefit of rolling a 20 on it.\n\n**Heroic Rally.** At the start of each of your turns, you regain Hit Points equal to 5 plus your Constitution modifier if you are Bloodied and have at least 1 Hit Point.",
               "effects": [
                 {
+                  "type": "advantage",
+                  "mode": "advantage",
+                  "on": "death-save"
+                },
+                {
                   "type": "text",
-                  "summary": "Advantage on Death Saving Throws, and a roll of 18–20 on one counts as a 20."
+                  "summary": "A Death Saving Throw roll of 18–20 counts as a 20."
                 },
                 {
                   "type": "text",
@@ -9199,8 +9217,9 @@
               "summary": "When you deal Sneak Attack damage, forgo Sneak Attack dice to add one Cunning Strike effect (Poison 1d6, Trip 1d6, Withdraw 1d6)."
             },
             {
-              "type": "text",
-              "summary": "Cunning Strike save DC = 8 + Dexterity modifier + Proficiency Bonus."
+              "type": "saveDc",
+              "id": "cunning-strike",
+              "ability": "dex"
             }
           ],
           "source": {
@@ -9467,8 +9486,9 @@
               "text": "You’ve learned how to maximize use of magic items, granting you the following benefits.\n\n**Attunement.** You can attune to up to four magic items at once.\n\n**Charges.** Whenever you use a magic item property that expends charges, roll 1d6. On a roll of 6, you use the property without expending the charges.\n\n**Scrolls.** You can use any Spell Scroll, using Intelligence as your spellcasting ability for the spell. If the spell is a cantrip or a level 1 spell, you can cast it reliably. If the scroll contains a higher-level spell, you must first succeed on an Intelligence (Arcana) check (DC 10 plus the spell’s level). On a successful check, you cast the spell from the scroll. On a failed check, the scroll disintegrates.",
               "effects": [
                 {
-                  "type": "text",
-                  "summary": "You can attune to up to four magic items at once."
+                  "type": "bonus",
+                  "target": "attunement",
+                  "value": 1
                 },
                 {
                   "type": "text",
@@ -11558,8 +11578,9 @@
               "text": "The Extra Attack of your Thirsting Blade invocation confers two extra attacks rather than one.",
               "effects": [
                 {
-                  "type": "text",
-                  "summary": "Thirsting Blade’s Extra Attack confers two extra attacks rather than one."
+                  "type": "attackCount",
+                  "count": 3,
+                  "pactWeapon": true
                 }
               ],
               "prerequisite": {
@@ -12090,8 +12111,9 @@
               "text": "You gain the Extra Attack feature for your pact weapon only. With that feature, you can attack twice with the weapon instead of once when you take the Attack action on your turn.",
               "effects": [
                 {
-                  "type": "text",
-                  "summary": "Extra Attack with your pact weapon only: attack twice when you take the Attack action."
+                  "type": "attackCount",
+                  "count": 2,
+                  "pactWeapon": true
                 }
               ],
               "prerequisite": {
