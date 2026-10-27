@@ -20,9 +20,11 @@ import {
   scaledDice,
   setPrepared,
   slotLevels,
+  spellDamage,
   type CastWith,
   type SpellRow,
 } from '../play/spells.ts'
+import { formulaOf } from './cards.ts'
 import { signed } from '../play/vitals.ts'
 import { useRecordRoll } from '../rolls/app-rolls.ts'
 import type { Sheet, Spellcaster } from '../rules/derive.ts'
@@ -186,10 +188,16 @@ export function SpellWindow({ rules, entity, sheet, row, update, onClose, onCast
     onCast?.(how)
     setSaid(`Cast ${s.name}${how.kind === 'slot' || how.kind === 'pact' ? ` with a level ${how.level} slot` : how.kind === 'ritual' ? ' as a ritual' : how.kind === 'free' ? ` without a slot (${how.from})` : ''}.`)
   }
-  const rollDamage = (d: { dice: string; type: string }) => {
-    const dice = scaledDice(s, d.dice.replace(/\+.*$/, ''), level, sheet.level)
-    const r = rollFaces(dice)
-    const described = describePool(`${s.name}, damage`, dice, [dice], r, `${r.total} ${d.type}`)
+  // Each damage entry's dice at the level cast, and its flat parts: the
+  // spell's own and each bonus that reaches it (spellDamage).
+  const worked = damage.map((d) => {
+    const w = spellDamage(sheet, row, d)
+    return { ...d, ...w, dice: scaledDice(s, w.dice, level, sheet.level), modifier: w.parts.reduce((n, p) => n + p.value, 0) }
+  })
+  const rollDamage = (d: (typeof worked)[number]) => {
+    const r = rollFaces(d.dice)
+    const total = Math.max(0, r.total + d.modifier)
+    const described = describePool(`${s.name}, damage`, formulaOf(d.dice, d.parts, true), [d.dice], { faces: r.faces, total }, `${total} ${d.type}`)
     showDice(described, { say: true, alone: true })
     record(entity, described)
   }
@@ -220,13 +228,25 @@ export function SpellWindow({ rules, entity, sheet, row, update, onClose, onCast
           {rules.data.core.abilities.find((a) => a.id === s.save)?.name} save, DC <b>{caster.saveDc.total}</b>
         </p>
       )}
-      {damage.map((d) => (
+      {worked.map((d) => (
         <p key={d.dice + d.type + (d.note ?? '')}>
           <button type="button" className="secondary" onClick={() => rollDamage(d)}>
-            {scaledDice(s, d.dice.replace(/\+.*$/, ''), level, sheet.level)}
-            {d.dice.includes('+') ? d.dice.slice(d.dice.indexOf('+')) : ''} {d.type}
+            {formulaOf(d.dice, d.parts)} {d.type}
           </button>
           {d.note && <span className="meta"> {d.note}</span>}
+          {d.parts.slice(d.parts[0]?.label === s.name ? 1 : 0).map((p) => (
+            <span key={p.label} className="meta">
+              {' '}
+              {signed(p.value)} {p.label}
+              {d.oneRoll.includes(p.label) ? ', on one damage roll a casting' : ''}.
+            </span>
+          ))}
+          {d.notes.map((n) => (
+            <span key={n.from + n.text} className="meta">
+              {' '}
+              For the table: {n.text} ({n.from}).
+            </span>
+          ))}
         </p>
       ))}
       {s.healing && <p className="meta">Healing: {String(s.healing)}</p>}

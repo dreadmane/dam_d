@@ -169,11 +169,12 @@ function feats(rules: Rules, entity: CharacterEntity, sheet: Sheet, rest: string
 
 // The data's spell queries, read word by word: a class or "any-class", the
 // list a sibling choice picked ("chosen-list"), "cantrip(s)" or "level-N" or
-// "max-level-N", a school, "ritual", "action", and "spellbook" (the spells
-// the character's Wizard has recorded).
+// "max-level-N", a school, "ritual", "action", "damage" (one that deals
+// damage: Agonizing Blast's cantrip), and "spellbook" (the spells the
+// character's Wizard has recorded).
 function spells(rules: Rules, entity: CharacterEntity, owed: OwedChoice, rest: string): Option[] | null {
   const words = rest.split('-')
-  let list = rules.data.spells.spells as { id: string; name: string; level: number; school: string; classes: string[]; castingTime: { unit?: string; ritual?: boolean } }[]
+  let list = rules.data.spells.spells as { id: string; name: string; level: number; school: string; classes: string[]; castingTime: { unit?: string; ritual?: boolean }; damage?: unknown[] }[]
   const has = (w: string) => words.includes(w)
   if (has('spellbook')) {
     const book = new Set(entity.spells.filter((s) => s.classId === 'wizard').map((s) => s.spellId))
@@ -206,5 +207,6 @@ function spells(rules: Rules, entity: CharacterEntity, owed: OwedChoice, rest: s
   if (has('available') && has('slot')) list = list.filter((s) => s.level >= 1)
   if (has('ritual')) list = list.filter((s) => s.castingTime.ritual)
   if (has('action')) list = list.filter((s) => s.castingTime.unit === 'action')
+  if (has('damage')) list = list.filter((s) => s.damage?.length)
   return list.map((s) => ({ id: s.id, name: s.name, detail: s.level === 0 ? 'Cantrip' : `Level ${s.level}` })).sort(byName)
 }
