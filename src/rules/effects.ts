@@ -28,6 +28,9 @@ export interface Active {
   // background:acolyte>feat:magic-initiate), so an effect can read a pick
   // made beside it: a granted spell's spellcasting ability.
   source?: string
+  // The feature, trait, feat or option it is on, by id: a save DC is shown
+  // on its feature's card (Breath Weapon's).
+  feature?: string
 }
 
 export interface GainedFeature {
@@ -120,8 +123,8 @@ function pickEffects(rules: Rules, owed: OwedChoice): Effect[] {
 
 export function activeEffects(rules: Rules, entity: CharacterEntity, choices: OwedChoice[], features: GainedFeature[]): Active[] {
   const out: Active[] = []
-  const push = (effects: readonly Effect[] | undefined, from: string, classId?: string, toggle?: string, item?: string, source?: string) => {
-    for (const effect of effects ?? []) if (effect.type !== 'choice') out.push({ effect, from, classId, toggle, item, ...(source ? { source } : {}) })
+  const push = (effects: readonly Effect[] | undefined, from: string, classId?: string, toggle?: string, item?: string, source?: string, feature?: string) => {
+    for (const effect of effects ?? []) if (effect.type !== 'choice') out.push({ effect, from, classId, toggle, item, ...(source ? { source } : {}), ...(feature ? { feature } : {}) })
   }
 
   // The first class's proficiencies, then each later class's multiclass
@@ -141,7 +144,7 @@ export function activeEffects(rules: Rules, entity: CharacterEntity, choices: Ow
 
   for (const g of features) {
     const label = g.level ? `${g.group} ${g.level}: ${g.feature.name}` : `${g.group}: ${g.feature.name}`
-    push(g.feature.effects, label, g.classId, g.feature.toggle ? g.feature.id : undefined, undefined, g.source)
+    push(g.feature.effects, label, g.classId, g.feature.toggle ? g.feature.id : undefined, undefined, g.source, g.feature.id)
   }
 
   if (entity.background) {

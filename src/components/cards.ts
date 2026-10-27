@@ -44,7 +44,7 @@ export function featureRule(g: Pick<GainedFeature, 'feature'>, sheet?: Pick<Shee
 // prints no DC for the feature and the user ruled this one (Open Hand
 // Technique, p.52).
 export function featureDc(sheet: Pick<Sheet, 'featureDcs'>, featureId: string): { total: number; line: string; ruled?: string } | undefined {
-  const d = sheet.featureDcs.find((x) => x.id === featureId)
+  const d = sheet.featureDcs.find((x) => x.id === featureId) ?? sheet.featureDcs.find((x) => x.feature === featureId)
   if (!d) return undefined
   return {
     total: d.dc.total,

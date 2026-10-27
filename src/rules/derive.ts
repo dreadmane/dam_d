@@ -125,10 +125,10 @@ export interface Sheet {
   // as a class's are (SRD p.104) with the same bonuses to spell DCs and
   // attacks.
   castingBy: Record<Ability, Pick<Spellcaster, 'saveDc' | 'attack'>>
-  // A feature's own save DC, by the feature's id (Monk's Focus, SRD p.50).
-  // ruling names the user's ruling where the feature prints no DC and uses
-  // this one (Open Hand Technique, p.52).
-  featureDcs: { id: string; ability: Ability; dc: Total; ruling?: string }[]
+  // A feature's own save DC, by its id and the id of the feature it is on
+  // (Monk's Focus, SRD p.50). ruling names the user's ruling where the
+  // feature prints no DC and uses this one (Open Hand Technique, p.52).
+  featureDcs: { id: string; feature?: string; ability: Ability; dc: Total; ruling?: string }[]
   // Every bonus to spell damage, with which spells it reaches resolved
   // (common.schema.json spellFilter): castAs as the class, chosen as the
   // spells picked. when: a condition the app can't decide, so a note.
@@ -144,6 +144,14 @@ export interface Sheet {
   proficiencies: { armor: string[]; weapons: string[]; tools: string[]; languages: string[] }
   weaponMasteries: string[]
   attackCount: number
+  // The attacks an Attack action makes with the pact weapon, where more
+  // than attackCount (Thirsting Blade, SRD p.74); else absent.
+  pactAttackCount?: number
+  // A death saving throw's bonuses and Advantage (Survivor, p.49).
+  deathSave: Total
+  // How many magic items can be attuned at once: three (p.102), and more
+  // with Use Magic Device (p.64).
+  attunementMax: number
   critMin: number
   attacks: Attack[]
   // carried includes the coins, which coins also gives alone; pounds.
@@ -445,10 +453,10 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
   // A feature's own save DC, 8 + the ability's modifier + Proficiency
   // Bonus, as the saveDc effect is defined (common.schema.json effSaveDc;
   // Monk's Focus, SRD p.50).
-  const featureDcs: Sheet['featureDcs'] = of('saveDc').map(({ effect }) => {
+  const featureDcs: Sheet['featureDcs'] = of('saveDc').map(({ effect, feature }) => {
     const mod = abilities[effect.ability].modifier
     const dc = total([{ label: 'Base', value: 8 }, { label: `${effect.ability.toUpperCase()} modifier`, value: mod }, { label: 'Proficiency', value: pb }], [], pb)
-    return { id: effect.id, ability: effect.ability, dc, ruling: effect.ruling }
+    return { id: effect.id, ...(feature ? { feature } : {}), ability: effect.ability, dc, ruling: effect.ruling }
   })
 
   // Bonuses to spell damage, each with the spells it reaches: a choice it
@@ -662,6 +670,11 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
 
   const untrained = Boolean(armorRecord && !profs.armor.has(armorRecord.category))
 
+  // Extra Attack: the highest applies (SRD p.25); one that is only with the
+  // pact weapon is counted apart (Thirsting Blade, p.74).
+  const attackCount = Math.max(1, ...of('attackCount').filter((a) => !a.effect.pactWeapon).map((a) => a.effect.count))
+  const pactAttackCount = Math.max(1, ...of('attackCount').filter((a) => a.effect.pactWeapon).map((a) => a.effect.count))
+
   return {
     level,
     classes: ordered.map((e) => ({ classId: e.classId, name: rules.classes.get(e.classId)?.name ?? unresolved(e.classId), level: e.level, subclass: e.subclassId ? (rules.subclasses.get(e.subclassId)?.name ?? unresolved(e.subclassId)) : undefined })),
@@ -689,7 +702,10 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     conditionImmunities: of('conditionImmunity').map(({ effect, from }) => ({ conditions: effect.conditions, from, when: effect.when })),
     proficiencies: { armor: [...profs.armor], weapons: [...profs.weapon], tools: [...profs.tool], languages: [...profs.language] },
     weaponMasteries: masteries,
-    attackCount: Math.max(1, ...of('attackCount').map((a) => a.effect.count)),
+    attackCount,
+    ...(pactAttackCount > attackCount ? { pactAttackCount } : {}),
+    deathSave: total([], ['death-save'], pb),
+    attunementMax: total([{ label: 'Attunement', value: rules.data.core.playRules!.attunement.maxItems }], ['attunement'], pb).total,
     critMin: Math.min(20, ...of('critRange').filter((a) => holds(a.effect)).map((a) => a.effect.min)),
     attacks,
     carrying: { capacity: score('str') * multiplier, carried, coins: coinWeight },

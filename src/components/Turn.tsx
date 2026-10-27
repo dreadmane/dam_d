@@ -41,7 +41,7 @@ const PIP_WORD: Record<Pip, string> = { action: 'Action', bonus: 'Bonus', reacti
 // What the Action heading says of attacks: Extra Attack's count and a crit
 // range below 20, which the Journal shows only here (its Attacks card is a
 // menu).
-const actionNote = (sheet: Sheet) => [sheet.attackCount > 1 && `The Attack action makes ${sheet.attackCount} attacks`, sheet.critMin < 20 && `Critical Hit on ${sheet.critMin}–20`].filter(Boolean).join(' · ')
+const actionNote = (sheet: Sheet) => [sheet.attackCount > 1 && `The Attack action makes ${sheet.attackCount} attacks`, sheet.pactAttackCount && `${sheet.pactAttackCount} attacks with your pact weapon`, sheet.critMin < 20 && `Critical Hit on ${sheet.critMin}–20`].filter(Boolean).join(' · ')
 
 type Open =
   | { kind: 'hit'; attack: Attack; group: Pip | null; reaction?: boolean }

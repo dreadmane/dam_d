@@ -232,8 +232,10 @@ export const needsAttunement = (rules: Rules, item: Item): boolean => Boolean(ma
 // magic item, or anything that carries effects.
 export const wearable = (rules: Rules, item: Item): boolean => Boolean(item.effects?.length || magicRecord(rules, item) || rules.armor.has((item.baseItemId ?? item.itemId ?? '').replace(/^equipment:/, '')))
 
-export function attunement(rules: Rules, entity: CharacterEntity): { items: Item[]; max: number } {
-  return { items: entity.inventory.filter((i) => i.attuned), max: rules.data.core.playRules!.attunement.maxItems }
+// max: the sheet's (Sheet.attunementMax: three, four with Use Magic
+// Device); the rule's three where no sheet is to hand.
+export function attunement(rules: Rules, entity: CharacterEntity, max = rules.data.core.playRules!.attunement.maxItems): { items: Item[]; max: number } {
+  return { items: entity.inventory.filter((i) => i.attuned), max }
 }
 
 const listed = (names: string[]) => (names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`)
@@ -242,16 +244,17 @@ export type Changed = { ok: true; entity: CharacterEntity } | { ok: false; error
 
 const withItem = (entity: CharacterEntity, id: string, patch: Partial<Item>): CharacterEntity => ({ ...entity, inventory: entity.inventory.map((i) => (i.id === id ? { ...i, ...patch } : i)) })
 
-// Attuning (SRD p.102): no more than three items, and one copy of an item.
-// A fourth refuses, naming the three.
-export function setAttuned(rules: Rules, entity: CharacterEntity, itemId: string, on: boolean): Changed {
+// Attuning (SRD p.102): no more than three items (max, four with Use Magic
+// Device, p.64), and one copy of an item. One past the limit refuses,
+// naming those attuned.
+export function setAttuned(rules: Rules, entity: CharacterEntity, itemId: string, on: boolean, max = rules.data.core.playRules!.attunement.maxItems): Changed {
   const item = entity.inventory.find((i) => i.id === itemId)
   if (!item) return { ok: false, error: 'That item is no longer in the inventory.' }
   if (!on) return { ok: true, entity: withItem(entity, itemId, { attuned: false }) }
   const r = rules.data.core.playRules!.attunement
-  const { items } = attunement(rules, entity)
+  const { items } = attunement(rules, entity, max)
   const others = items.filter((i) => i.id !== itemId)
-  if (others.length >= r.maxItems) return { ok: false, error: `You're attuned to ${others.length} items already: ${listed(others.map((i) => i.name || 'Unnamed item'))}. End one first.` }
+  if (others.length >= max) return { ok: false, error: `You're attuned to ${others.length} items already: ${listed(others.map((i) => i.name || 'Unnamed item'))}. End one first.` }
   const copy = r.oneCopy && item.itemId ? others.find((i) => i.itemId === item.itemId) : undefined
   if (copy) return { ok: false, error: `You're already attuned to a copy of ${copy.name}; only one copy of an item can be attuned.` }
   return { ok: true, entity: withItem(entity, itemId, { attuned: true }) }

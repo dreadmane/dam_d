@@ -3,7 +3,7 @@ import { useCharacterNotify } from '../notify/owner.ts'
 import { addedLines, KICKER } from '../notify/lines.ts'
 import { addItem } from '../play/inventory.ts'
 import { attunement, baseOptions, CATALOGUE_KINDS, carryingLine, catalogueItem, findInCatalogue, needsAttunement, setAttuned, setCountsAs, setWorn, weaponSets, wearable, type CatalogueEntry, type CatalogueKind } from '../play/kit.ts'
-import type { Sheet } from '../rules/derive.ts'
+import { deriveSheet, type Sheet } from '../rules/derive.ts'
 import { equipped, isWeapon } from '../rules/equipped.ts'
 import type { Rules } from '../rules/load.ts'
 import type { CharacterEntity, Item, RosterRecord } from '../save/types.ts'
@@ -18,7 +18,7 @@ import { Window, WindowHeader } from './Window.tsx'
 type Update = (change: (entity: CharacterEntity) => CharacterEntity) => RosterRecord | null
 
 export function KitLines({ rules, entity, sheet }: { rules: Rules; entity: CharacterEntity; sheet: Sheet }) {
-  const { items, max } = attunement(rules, entity)
+  const { items, max } = attunement(rules, entity, sheet.attunementMax)
   const over = sheet.carrying.carried > sheet.carrying.capacity
   return (
     <div className="inventory-kit">
@@ -90,7 +90,7 @@ export function ItemKitControls({ rules, entity, item, update }: { rules: Rules;
             className="secondary"
             aria-pressed={Boolean(item.attuned)}
             onClick={() => {
-              const r = setAttuned(rules, entity, item.id, !item.attuned)
+              const r = setAttuned(rules, entity, item.id, !item.attuned, deriveSheet(rules, entity).attunementMax)
               if (!r.ok) return setError(r.error)
               setError('')
               update(() => r.entity)

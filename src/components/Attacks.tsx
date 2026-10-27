@@ -25,7 +25,7 @@ export function AttacksSection({ sheet, rules, entity }: { sheet: Sheet; rules: 
   const [open, setOpen] = useState<Attack | null>(null)
   const [hit, setHit] = useState<Attack | null>(null)
   const [damage, setDamage] = useState<Attack | null>(null)
-  const notes = [sheet.attackCount > 1 && `The Attack action makes ${sheet.attackCount} attacks.`, sheet.critMin < 20 && `A Critical Hit on ${sheet.critMin}–20.`].filter(Boolean)
+  const notes = [sheet.attackCount > 1 && `The Attack action makes ${sheet.attackCount} attacks.`, sheet.pactAttackCount && `With your pact weapon, the Attack action makes ${sheet.pactAttackCount} attacks.`, sheet.critMin < 20 && `A Critical Hit on ${sheet.critMin}–20.`].filter(Boolean)
   return (
     <SheetSection id="attacks" count={String(sheet.attacks.length)}>
       {notes.length > 0 && <p className="meta">{notes.join(' ')}</p>}
