@@ -18,6 +18,7 @@ import type { CharacterEntity } from '../save/types.ts'
 import halvard from '../save/examples/cleric-fighter.json'
 import ilsabet from '../save/examples/wizard.json'
 import unga from '../save/examples/barbarian.json'
+import ungaRecord from '../save/examples/barbarian.json'
 import A from './audit/A.json'
 import B from './audit/B.json'
 import C from './audit/C.json'
@@ -817,5 +818,61 @@ describe('the words the book tier’s feats need: raised, or, medium-armor, no-s
         e.inventory.push({ id: 'test-shield', name: 'Shield', description: '', quantity: 1, tags: [], itemId: 'equipment:shield', worn: true })
       }).attacks.find((a) => a.id === 'unarmed')?.damage.dice,
     ).not.toBe('1d12')
+  })
+})
+
+describe('a subclass’s own option lists (#73)', () => {
+  // An invented subclass for the test: the books' own (the Path of the Wild
+  // Heart's) never enter this repo, and are checked locally.
+  const path = {
+    id: 'test-path',
+    classId: 'barbarian',
+    name: 'Test Path',
+    features: [
+      {
+        id: 'test-aspect',
+        name: 'Test Aspect',
+        level: 3,
+        text: 'Invented for a test.',
+        effects: [{ type: 'choice', id: 'test-aspect', label: 'Aspect', count: 1, kind: 'option', options: ['test-owl', 'test-otter'] }],
+        source: { ref: 'srd-5.2.1', section: 'Test', page: 1 },
+        confidence: 'printed',
+      },
+    ],
+    optionLists: [
+      {
+        id: 'test-aspect',
+        name: 'Test Aspect',
+        options: [
+          { id: 'test-owl', name: 'Owl, for the test', text: 'Invented.', effects: [{ type: 'sense', sense: 'darkvision', feet: 30, extends: true }], source: { ref: 'srd-5.2.1', section: 'Test', page: 1 }, confidence: 'printed' },
+          { id: 'test-otter', name: 'Otter, for the test', text: 'Invented.', effects: [{ type: 'speed', mode: 'swim', equalsWalk: true }], source: { ref: 'srd-5.2.1', section: 'Test', page: 1 }, confidence: 'printed' },
+        ],
+      },
+    ],
+    source: { ref: 'srd-5.2.1', section: 'Test', page: 1 },
+    confidence: 'printed',
+  }
+  const data = structuredClone(rules.data)
+  ;(data.classes as unknown as { subclasses?: unknown[] }).subclasses = [path]
+  const withPath = indexRules(data)
+  const unga = (pick: string) => {
+    const e = structuredClone(ungaRecord.entities[0]) as unknown as CharacterEntity
+    e.classes = [{ ...e.classes[0], subclassId: 'test-path' }]
+    e.choices.push({ source: 'class:barbarian:3', choice: 'test-aspect', values: [pick] })
+    return deriveSheet(withPath, e)
+  }
+
+  it('applies the picked option’s effects: the otter’s Swim Speed, and not the owl’s Darkvision', () => {
+    const sheet = unga('test-otter')
+    expect(sheet.speed.other).toContainEqual(expect.objectContaining({ mode: 'swim', feet: sheet.speed.walk.total }))
+    expect(sheet.features.map((g) => g.feature.name)).toContain('Otter, for the test')
+    expect(sheet.features.map((g) => g.feature.name)).not.toContain('Owl, for the test')
+  })
+
+  it('names the options by their own records in the picker', () => {
+    const e = structuredClone(ungaRecord.entities[0]) as unknown as CharacterEntity
+    e.classes = [{ ...e.classes[0], subclassId: 'test-path' }]
+    const owed = characterChoices(withPath, e).find((c) => c.choice === 'test-aspect')!
+    expect(optionsFor(withPath, e, deriveSheet(withPath, e), owed)!.map((o) => o.name)).toEqual(['Owl, for the test', 'Otter, for the test'])
   })
 })

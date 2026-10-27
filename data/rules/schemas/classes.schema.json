@@ -149,6 +149,11 @@
           "$ref": "#/$defs/spellcasting",
           "description": "Added 2026-10-27: a subclass that casts spells where its class doesn't (the PHB's Eldritch Knight and Arcane Trickster), read as a class's spellcasting is, its columns from spellTable. Its progression and multiclassRounding say how the class's levels count toward the Multiclass Spellcaster table."
         },
+        "optionLists": {
+          "description": "Added 2026-10-27: lists a subclass feature chooses from, as a class's optionLists, each option a feature with its own effects (the PHB's Path of the Wild Heart: Rage of the Wilds' Bear, Eagle and Wolf). A pick of one applies its effects. An option's id is unique among its class's and its class's subclasses' options.",
+          "type": "array",
+          "items": { "type": "object", "required": ["id", "name", "options"], "additionalProperties": false, "properties": { "id": { "$ref": "common.schema.json#/$defs/id" }, "name": { "type": "string" }, "options": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/feature" } } } }
+        },
         "spellTable": {
           "description": "Added 2026-10-27: the subclass's own spellcasting table, by class level, for the columns its spellcasting names; a level not listed has none.",
           "type": "object", "required": ["columns", "rows"], "additionalProperties": false,
