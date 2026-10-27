@@ -343,7 +343,21 @@
         "type": { "const": "bonus" }, "target": { "$ref": "#/$defs/target" },
         "value": { "anyOf": [ { "type": "number" }, { "$ref": "#/$defs/expression" } ] },
         "dice": { "$ref": "#/$defs/dice", "description": "A die added rather than a flat number (Bless's 1d4)." },
-        "when": { "type": "string" }, "requires": { "$ref": "#/$defs/requires" }
+        "when": { "type": "string" }, "requires": { "$ref": "#/$defs/requires" },
+        "spells": { "$ref": "#/$defs/spellFilter" }
+      }
+    },
+    "spellFilter": {
+      "description": "Added 2026-10-27 for damage:spell: which spells a bonus reaches, each field narrowing it, so the sheet adds it to those spells' damage and no others ('Add your Wisdom modifier to the damage you deal with any Cleric cantrip', Potent Spellcasting, SRD p.38). castAs self: cast with the spellcasting of the class whose feature it is. cantrip: level 0 only. school: one school. chosen: the spell picked in the named choice beside it (Agonizing Blast's cantrip, p.72). damageTypes: only a damage entry of these types, or damageTypeChosen: of the type picked in the named choice (Elemental Affinity, p.70). oneRoll: it goes on one damage roll of a casting, not every one ('one damage roll of that spell', Empowered Evocation, p.82), which the sheet says beside it. A condition the filter can't decide stays in when, and the bonus shows as a note on those spells.",
+      "type": "object", "additionalProperties": false, "minProperties": 1,
+      "properties": {
+        "castAs": { "const": "self" },
+        "cantrip": { "const": true },
+        "school": { "enum": ["abjuration", "conjuration", "divination", "enchantment", "evocation", "illusion", "necromancy", "transmutation"] },
+        "chosen": { "$ref": "#/$defs/id" },
+        "damageTypes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/damageType" } },
+        "damageTypeChosen": { "$ref": "#/$defs/id" },
+        "oneRoll": { "const": true }
       }
     },
     "effAcFormula": {

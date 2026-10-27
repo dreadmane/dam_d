@@ -2939,7 +2939,10 @@
                     "type": "abilityMod",
                     "ability": "wis"
                   },
-                  "when": "Cleric cantrips"
+                  "spells": {
+                    "castAs": "self",
+                    "cantrip": true
+                  }
                 }
               ],
               "source": {
@@ -4224,7 +4227,10 @@
                     "type": "abilityMod",
                     "ability": "wis"
                   },
-                  "when": "Druid cantrips"
+                  "spells": {
+                    "castAs": "self",
+                    "cantrip": true
+                  }
                 }
               ],
               "source": {
@@ -10704,8 +10710,16 @@
                   "grants": "resistance"
                 },
                 {
-                  "type": "text",
-                  "summary": "Add your Charisma modifier to one damage roll of a spell that deals the chosen damage type."
+                  "type": "bonus",
+                  "target": "damage:spell",
+                  "value": {
+                    "type": "abilityMod",
+                    "ability": "cha"
+                  },
+                  "spells": {
+                    "damageTypeChosen": "elemental-affinity",
+                    "oneRoll": true
+                  }
                 }
               ],
               "source": {
@@ -11434,8 +11448,27 @@
               "text": "Choose one of your known Warlock cantrips that deals damage. You can add your Charisma modifier to that spell’s damage rolls.\n\n**Repeatable.** You can gain this invocation more than once. Each time you do so, choose a different eligible cantrip.",
               "effects": [
                 {
+                  "type": "choice",
+                  "id": "agonizing-blast",
+                  "label": "A Warlock cantrip you know that deals damage",
+                  "count": 1,
+                  "kind": "spell",
+                  "from": "spells:warlock-cantrip-damage"
+                },
+                {
+                  "type": "bonus",
+                  "target": "damage:spell",
+                  "value": {
+                    "type": "abilityMod",
+                    "ability": "cha"
+                  },
+                  "spells": {
+                    "chosen": "agonizing-blast"
+                  }
+                },
+                {
                   "type": "text",
-                  "summary": "Add your Charisma modifier to the damage rolls of one chosen damaging Warlock cantrip. Repeatable for a different cantrip."
+                  "summary": "Repeatable: each time, choose a different eligible cantrip."
                 }
               ],
               "prerequisite": {
@@ -13474,8 +13507,17 @@
               "text": "Whenever you cast a Wizard spell from the Evocation school, you can add your Intelligence modifier to one damage roll of that spell.",
               "effects": [
                 {
-                  "type": "text",
-                  "summary": "Add your Intelligence modifier to one damage roll of a Wizard Evocation spell."
+                  "type": "bonus",
+                  "target": "damage:spell",
+                  "value": {
+                    "type": "abilityMod",
+                    "ability": "int"
+                  },
+                  "spells": {
+                    "castAs": "self",
+                    "school": "evocation",
+                    "oneRoll": true
+                  }
                 }
               ],
               "source": {
