@@ -212,6 +212,10 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
         return !wearingArmor
       case 'no-armor-no-shield':
         return !wearingArmor && !shield
+      case 'medium-armor':
+        return armorRecord?.category === 'medium'
+      case 'no-shield':
+        return !shield
       case 'no-heavy-armor':
         return armorRecord?.category !== 'heavy'
       case 'not-incapacitated':
@@ -229,6 +233,13 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
 
   const effects = activeEffects(rules, entity, choices, features)
   const of = <T extends Effect['type']>(type: T) => effects.filter((a): a is Active & { effect: Extract<Effect, { type: T }> } => a.effect.type === type)
+  // "The ability this feat raised" (common.schema.json raised: Resilient's
+  // save, Telekinetic's DC): the one placed in the feat's own increase,
+  // saved beside it under the same source; none while unplaced.
+  const raisedBy = (a: Active): Ability | undefined => {
+    const owed = choices.find((c) => c.source === a.source && c.increase)
+    return owed ? (Object.keys(placedIncrease(owed))[0] as Ability | undefined) : undefined
+  }
 
   // Ability scores: base, the background's increases (none above 20), the
   // increases the player placed, the fixed ones, then any score an item sets.
@@ -309,7 +320,12 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
 
   // Proficiencies, from every proficiency and Expertise effect.
   const profs = { save: new Set<string>(), skill: new Set<string>(), tool: new Set<string>(), armor: new Set<string>(), weapon: new Set<string>(), language: new Set<string>(entity.details.languages) }
-  for (const { effect } of of('proficiency')) for (const id of effect.ids) profs[effect.category].add(id)
+  for (const a of of('proficiency')) {
+    for (const id of a.effect.ids) {
+      const real = id === 'raised' ? raisedBy(a) : id
+      if (real) profs[a.effect.category].add(real)
+    }
+  }
   const expertise = new Set(of('expertise').flatMap((a) => a.effect.ids))
 
   const saves = {} as Sheet['saves']
@@ -467,10 +483,17 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
   // A feature's own save DC, 8 + the ability's modifier + Proficiency
   // Bonus, as the saveDc effect is defined (common.schema.json effSaveDc;
   // Monk's Focus, SRD p.50).
-  const featureDcs: Sheet['featureDcs'] = of('saveDc').map(({ effect, feature }) => {
-    const mod = abilities[effect.ability].modifier
-    const dc = total([{ label: 'Base', value: 8 }, { label: `${effect.ability.toUpperCase()} modifier`, value: mod }, { label: 'Proficiency', value: pb }], [], pb)
-    return { id: effect.id, ...(feature ? { feature } : {}), ability: effect.ability, dc, ruling: effect.ruling }
+  // raised: the ability the feat raised, none while unplaced. or: abilities
+  // the player may use instead, the better taken (the Battle Master's
+  // Strength or Dexterity).
+  const featureDcs: Sheet['featureDcs'] = of('saveDc').flatMap((a) => {
+    const { effect, feature } = a
+    const first = effect.ability === 'raised' ? raisedBy(a) : effect.ability
+    if (!first) return []
+    const ability = [first, ...(effect.or ?? [])].reduce((best, x) => (abilities[x].modifier > abilities[best].modifier ? x : best))
+    const mod = abilities[ability].modifier
+    const dc = total([{ label: 'Base', value: 8 }, { label: `${ability.toUpperCase()} modifier`, value: mod }, { label: 'Proficiency', value: pb }], [], pb)
+    return [{ id: effect.id, ...(feature ? { feature } : {}), ability, dc, ruling: effect.ruling }]
   })
 
   // Bonuses to spell damage, each with the spells it reaches: a choice it
@@ -618,7 +641,7 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     const armor = wornArmor ?? wornMagicArmor
     const causes = [
       (e.requires === 'no-armor' || e.requires === 'no-armor-no-shield') && armor && `wear the ${armor.name}`,
-      e.requires === 'no-armor-no-shield' && wornShield && `wield the ${wornShield.name}`,
+      (e.requires === 'no-armor-no-shield' || e.requires === 'no-shield') && wornShield && `wield the ${wornShield.name}`,
       others.length && [`wield ${others.map((w) => `the ${w.name}`).join(' and ')}`, e.name && `which ${others.length > 1 ? `aren’t ${e.name}s` : `isn’t a ${e.name}`}`].filter(Boolean).join(', '),
     ].filter(Boolean)
     return causes.length ? `not while you ${causes.join(' or ')}` : undefined
