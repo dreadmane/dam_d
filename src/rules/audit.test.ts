@@ -11,6 +11,7 @@ import { deathSave } from '../play/play.ts'
 import { optionsFor } from '../play/options.ts'
 import { damageFormula, featureDc, featureRule } from '../components/cards.ts'
 import { characterChoices } from './level.ts'
+import { indexRules } from './load.ts'
 import { testRules } from './test-rules.ts'
 import { resourceRow, rowGroup, turnRows } from '../play/turn.ts'
 import type { CharacterEntity } from '../save/types.ts'
@@ -696,5 +697,54 @@ describe('the SRD’s small text-only rules (#65 to #68)', () => {
       expect(r.ok).toBe(true)
       if (r.ok) e = r.entity
     }
+  })
+})
+
+describe('a subclass that casts where its class doesn’t (#69)', () => {
+  // An invented subclass for the test, with made-up numbers: the books'
+  // own (the Eldritch Knight's, the Arcane Trickster's) never enter this
+  // repo, and are checked locally against the book file.
+  const caster = {
+    id: 'test-spellblade',
+    classId: 'fighter',
+    name: 'Test Spellblade',
+    features: [],
+    spellcasting: { ability: 'int', progression: 'third', multiclassRounding: 'down', slotColumns: ['slot-1', 'slot-2'], focus: 'Test Focus', text: 'Invented for a test.' },
+    spellTable: {
+      columns: [
+        { id: 'slot-1', name: 'Slot 1' },
+        { id: 'slot-2', name: 'Slot 2' },
+      ],
+      rows: Array.from({ length: 18 }, (_, i) => ({ level: i + 3, values: { 'slot-1': i + 3 >= 7 ? 3 : 2, 'slot-2': i + 3 >= 7 ? 1 : '—' } })),
+    },
+    source: { ref: 'srd-5.2.1', section: 'Test', page: 1 },
+    confidence: 'printed',
+  }
+  const data = structuredClone(rules.data)
+  ;(data.classes as unknown as { subclasses?: unknown[] }).subclasses = [caster]
+  const withCaster = indexRules(data)
+  const fighter = (classes: CharacterEntity['classes']) => {
+    const e = structuredClone(D.entities[0]) as unknown as CharacterEntity
+    e.classes = classes
+    return deriveSheet(withCaster, e)
+  }
+  const hp = (n: number) => Array.from({ length: n }, (_, i) => ({ level: i + 1, method: i ? ('fixed' as const) : ('max' as const) }))
+
+  it('reads its slots from its own table at the class’s level, and casts with its ability', () => {
+    const sheet = fighter([{ classId: 'fighter', subclassId: 'test-spellblade', level: 7, hp: hp(7) }])
+    expect(sheet.slots.slice(0, 3)).toEqual([3, 1, 0])
+    expect(sheet.spellcasting).toEqual([expect.objectContaining({ classId: 'fighter', name: 'Test Spellblade', ability: 'int' })])
+  })
+
+  it('has no spellcasting before its table starts', () => {
+    expect(fighter([{ classId: 'fighter', subclassId: 'test-spellblade', level: 2, hp: hp(2) }]).spellcasting).toEqual([])
+  })
+
+  it('counts a third of the class’s levels, round down, toward the Multiclass Spellcaster table: Fighter 7 and Wizard 3 as caster level 5, 4/3/2 (the PHB’s rule; the table, SRD p.25)', () => {
+    const sheet = fighter([
+      { classId: 'fighter', subclassId: 'test-spellblade', level: 7, hp: hp(7) },
+      { classId: 'wizard', level: 3, hp: hp(3) },
+    ])
+    expect(sheet.slots.slice(0, 4)).toEqual([4, 3, 2, 0])
   })
 })

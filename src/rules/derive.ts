@@ -414,24 +414,38 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     if (effect.mode !== 'walk' && feet) other.push({ mode: effect.mode, feet, from })
   }
 
+  // A class's spellcasting, or its subclass's where the class has none (the
+  // PHB's Eldritch Knight and Arcane Trickster: classes.schema.json
+  // subclass.spellcasting), with the table its columns are read from: the
+  // class's, or the subclass's spellTable at the class's level.
+  const castingOf = (entry: (typeof ordered)[number]) => {
+    const cls = rules.classes.get(entry.classId)
+    if (!cls) return undefined
+    if (cls.spellcasting) return { cls, sc: cls.spellcasting, name: cls.name, fromSubclass: false, column: (c: string) => columnOf(cls.id, c) }
+    const sub = entry.subclassId ? rules.subclasses.get(entry.subclassId) : undefined
+    const row = sub?.spellTable?.rows.find((r) => r.level === entry.level)
+    if (!sub?.spellcasting || !row) return undefined
+    return { cls, sc: sub.spellcasting, name: sub.name, fromSubclass: true, column: (c: string) => (row.values[c] === '—' ? undefined : row.values[c]) }
+  }
+
   // Spellcasting, per class.
   const spellcasting: Spellcaster[] = []
   for (const entry of ordered) {
-    const cls = rules.classes.get(entry.classId)
-    const sc = cls?.spellcasting
-    if (!cls || !sc) continue
+    const casting = castingOf(entry)
+    if (!casting) continue
+    const { cls, sc, column } = casting
     const ctx: ExprContext = { ...baseContext(pb), self: cls.id, spellcasting: sc.ability }
     const mod = abilities[sc.ability].modifier
     const dcBase = computeOf('spell-save-dc', ctx)
     const attackBase = computeOf('spell-attack-bonus', ctx)
     spellcasting.push({
       classId: cls.id,
-      name: cls.name,
+      name: casting.name,
       ability: sc.ability,
       saveDc: total([{ label: 'Base', value: dcBase - mod - pb }, { label: `${sc.ability.toUpperCase()} modifier`, value: mod }, { label: 'Proficiency', value: pb }], ['spell-dc'], pb),
       attack: total([{ label: `${sc.ability.toUpperCase()} modifier`, value: mod }, { label: 'Proficiency', value: attackBase - mod }], ['spell-attack', 'd20:all'], pb),
-      cantrips: sc.cantripsColumn ? toNumber(columnOf(cls.id, sc.cantripsColumn)) + choices.filter((c) => c.classId === cls.id && c.kind === 'spell' && c.grants === 'cantrip').reduce((n, c) => n + c.count, 0) : undefined,
-      prepared: sc.preparedColumn ? toNumber(columnOf(cls.id, sc.preparedColumn)) : undefined,
+      cantrips: sc.cantripsColumn ? toNumber(column(sc.cantripsColumn)) + choices.filter((c) => c.classId === cls.id && c.kind === 'spell' && c.grants === 'cantrip').reduce((n, c) => n + c.count, 0) : undefined,
+      prepared: sc.preparedColumn ? toNumber(column(sc.preparedColumn)) : undefined,
     })
   }
   const castingBy = Object.fromEntries(
@@ -483,16 +497,26 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
 
   // Slots: one caster's own table, or the Multiclass Spellcaster table by
   // the multiclass caster level (SRD p.25). Pact Magic is apart.
-  const casters = ordered.filter((e) => {
-    const p = rules.classes.get(e.classId)?.spellcasting?.progression
-    return p && p !== 'pact'
+  // A subclass's caster levels aren't in the SRD's sum (p.25), so each is
+  // added by its own progression and rounding: a third of the class's
+  // levels, round down, for the Eldritch Knight and Arcane Trickster (PHB).
+  const casters = ordered.flatMap((e) => {
+    const casting = castingOf(e)
+    return casting && casting.sc.progression !== 'pact' ? [{ entry: e, casting }] : []
   })
   let slots = Array.from({ length: 9 }, () => 0)
   if (casters.length === 1) {
-    const cls = rules.classes.get(casters[0].classId)!
-    slots = slots.map((_, i) => toNumber(columnOf(cls.id, cls.spellcasting?.slotColumns?.[i] ?? '')))
+    const { sc, column } = casters[0].casting
+    slots = slots.map((_, i) => toNumber(column(sc.slotColumns?.[i] ?? '')))
   } else if (casters.length > 1) {
-    const casterLevel = computeOf('multiclass-spellcaster-level', baseContext(pb))
+    const share = { full: 1, half: 2, third: 3 } as const
+    const fromSubclasses = casters
+      .filter((c) => c.casting.fromSubclass && c.casting.sc.progression !== 'pact')
+      .reduce((n, { entry, casting }) => {
+        const by = share[casting.sc.progression as keyof typeof share]
+        return n + (casting.sc.multiclassRounding === 'up' ? Math.ceil(entry.level / by) : Math.floor(entry.level / by))
+      }, 0)
+    const casterLevel = computeOf('multiclass-spellcaster-level', baseContext(pb)) + fromSubclasses
     const row = rules.data.spellcasting.multiclassSlots.rows.find((r) => r.casterLevel === casterLevel)
     if (row) slots = [...row.slots]
   }

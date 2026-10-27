@@ -630,6 +630,36 @@ export type Subclass = {
    */
   text?: string
   features: Feature[]
+  spellcasting?: Spellcasting1
+  /**
+   * Added 2026-10-27: the subclass's own spellcasting table, by class level, for the columns its spellcasting names; a level not listed has none.
+   */
+  spellTable?: {
+    columns: {
+      /**
+       * A record id. kebab-case, permanent: saved characters reference it. A replaced record keeps its id with supersededBy.
+       */
+      id: string
+      name: string
+    }[]
+    /**
+     * @minItems 1
+     */
+    rows: [
+      {
+        level: number
+        values: {
+          [k: string]: number | string
+        }
+      },
+      ...{
+        level: number
+        values: {
+          [k: string]: number | string
+        }
+      }[]
+    ]
+  }
   /**
    * Spells the subclass always has prepared, by class level (Domain Spells, Circle Spells, Oath Spells). Added 2026-10-26: choice, where a group comes only with one pick of one of the subclass's choices, names the choice's id and the value (Circle of the Land Spells, SRD p.46: a land's table only while that land is chosen).
    */
@@ -1510,6 +1540,47 @@ export interface Prerequisite {
    * Refs or ids of features, options or proficiencies needed (an invocation requiring another; Spellcasting or Pact Magic).
    */
   requires?: string[]
+}
+/**
+ * Added 2026-10-27: a subclass that casts spells where its class doesn't (the PHB's Eldritch Knight and Arcane Trickster), read as a class's spellcasting is, its columns from spellTable. Its progression and multiclassRounding say how the class's levels count toward the Multiclass Spellcaster table.
+ */
+export interface Spellcasting1 {
+  /**
+   * The six abilities (SRD 5.2.1 p.5).
+   */
+  ability: 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha'
+  /**
+   * How the class counts toward the Multiclass Spellcaster table (pact: not at all; Pact Magic is apart).
+   */
+  progression: 'full' | 'half' | 'third' | 'pact'
+  /**
+   * How a half or third caster's levels round in the multiclass caster level, as printed.
+   */
+  multiclassRounding?: 'down' | 'up'
+  /**
+   * A record id. kebab-case, permanent: saved characters reference it. A replaced record keeps its id with supersededBy.
+   */
+  preparedColumn?: string
+  /**
+   * A record id. kebab-case, permanent: saved characters reference it. A replaced record keeps its id with supersededBy.
+   */
+  cantripsColumn?: string
+  /**
+   * The table columns for slot levels 1 to 9, in order; for pact, the Spell Slots and Slot Level columns.
+   *
+   * Items: A record id. kebab-case, permanent: saved characters reference it. A replaced record keeps its id with supersededBy.
+   */
+  slotColumns?: string[]
+  /**
+   * When the class may change its prepared list.
+   */
+  changesPrepared?: 'long-rest' | 'level-up' | 'special'
+  ritual?: boolean
+  focus: string
+  /**
+   * The rule's words, as markdown. In data/srd/ this is the SRD 5.2.1's own text, which CC-BY-4.0 permits with the attribution (d-amp-d spec §8, D1). In data/books/ it is a short restatement, never the book's prose: meta.textPolicy says which, and the validator holds books/ to restated.
+   */
+  text: string
 }
 /**
  * Each condition's rule text and what the sheet applies of it, in the effect vocabulary. Exhaustion carries its cumulative levels. Other states the Rules Glossary defines (Bloodied, Concentration, Heroic Inspiration) are rules in core.json, not conditions.
