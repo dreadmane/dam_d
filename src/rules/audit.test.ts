@@ -748,3 +748,74 @@ describe('a subclass that casts where its class doesn’t (#69)', () => {
     expect(sheet.slots.slice(0, 4)).toEqual([4, 3, 2, 0])
   })
 })
+
+describe('the words the book tier’s feats need: raised, or, medium-armor, no-shield (#70 to #74)', () => {
+  // An invented feat for the test, using each word: the books' own feats
+  // (Resilient, Medium Armor Master, Unarmed Fighting, Telekinetic, the
+  // Battle Master's DC) never enter this repo, and are checked locally
+  // against the book file.
+  const feat = {
+    id: 'test-feat',
+    name: 'Test Feat',
+    category: 'origin',
+    repeatable: { allowed: false },
+    text: 'Invented for a test.',
+    effects: [
+      { type: 'abilityIncrease', abilities: ['str', 'dex', 'con', 'int', 'wis', 'cha'], amount: 1, choose: 1, max: 20 },
+      { type: 'proficiency', category: 'save', ids: ['raised'] },
+      { type: 'saveDc', id: 'test-raised-dc', ability: 'raised' },
+      { type: 'saveDc', id: 'test-better-dc', ability: 'int', or: ['str'] },
+      { type: 'bonus', target: 'ac', value: 1, requires: 'medium-armor', when: 'In Medium armor' },
+      { type: 'attackOption', id: 'test-fists', name: 'Test fists', attacks: ['unarmed'], die: '1d12', wieldingOnly: true, requires: 'no-shield', when: 'With empty hands' },
+    ],
+    source: { ref: 'srd-5.2.1', section: 'Test', page: 1 },
+    confidence: 'printed',
+  }
+  const data = structuredClone(rules.data)
+  ;(data.feats.feats as unknown[]).push(feat)
+  const withFeat = indexRules(data)
+  // Brakka, a Fighter 11, takes it at Fighter 4 in place of his Ability
+  // Score Improvement, its ability pick saved beside it.
+  const brakka = (change: (e: CharacterEntity) => void = () => {}, increase: Record<string, number> = { wis: 1 }) => {
+    const e = structuredClone(D.entities[0]) as unknown as CharacterEntity
+    e.choices = e.choices.filter((c) => !(c.source === 'class:fighter:4' && c.choice === 'ability-score-improvement') && c.source !== 'class:fighter:4>feat:ability-score-improvement')
+    e.choices.push({ source: 'class:fighter:4', choice: 'ability-score-improvement', values: ['test-feat'] })
+    e.choices.push({ source: 'class:fighter:4>feat:test-feat', choice: 'ability-increase', values: [], increases: increase })
+    change(e)
+    return deriveSheet(withFeat, e)
+  }
+
+  it('reads raised as the ability the feat raised: a proficient save and a DC on it', () => {
+    const sheet = brakka()
+    expect(sheet.saves.wis.proficient).toBe(true)
+    expect(sheet.featureDcs.find((d) => d.id === 'test-raised-dc')).toMatchObject({ ability: 'wis', dc: { total: 8 + sheet.abilities.wis.modifier + sheet.proficiencyBonus } })
+  })
+
+  it('reads nothing for raised while the pick is unplaced', () => {
+    const sheet = brakka(() => {}, {})
+    expect(sheet.featureDcs.find((d) => d.id === 'test-raised-dc')).toBeUndefined()
+  })
+
+  it('takes the better of a DC’s abilities: Strength over Intelligence for a Fighter', () => {
+    expect(brakka().featureDcs.find((d) => d.id === 'test-better-dc')?.ability).toBe('str')
+  })
+
+  it('holds medium-armor only in Medium armor, and no-shield only without a Shield', () => {
+    const inArmor = (id: string) => (e: CharacterEntity) => {
+      e.inventory = e.inventory.filter((i) => !withFeat.armor.has(i.itemId?.replace(/^equipment:/, '') ?? ''))
+      e.inventory.push({ id: 'test-armor', name: id, description: '', quantity: 1, tags: [], itemId: `equipment:${id}`, worn: true })
+    }
+    expect(brakka(inArmor('half-plate-armor')).ac.parts).toContainEqual({ label: 'Feats 4: Test Feat', value: 1 })
+    expect(brakka(inArmor('chain-mail')).ac.parts.map((p) => p.label)).not.toContain('Feats 4: Test Feat')
+    const emptyHanded = (e: CharacterEntity) => {
+      e.inventory = e.inventory.filter((i) => !withFeat.weapons.has(i.itemId?.replace(/^equipment:/, '') ?? '') && !withFeat.armor.has(i.itemId?.replace(/^equipment:/, '') ?? ''))
+    }
+    expect(brakka(emptyHanded).attacks.find((a) => a.id === 'unarmed')?.damage.dice).toBe('1d12')
+    expect(
+      brakka((e) => {
+        emptyHanded(e)
+        e.inventory.push({ id: 'test-shield', name: 'Shield', description: '', quantity: 1, tags: [], itemId: 'equipment:shield', worn: true })
+      }).attacks.find((a) => a.id === 'unarmed')?.damage.dice,
+    ).not.toBe('1d12')
+  })
+})

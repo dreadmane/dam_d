@@ -333,8 +333,8 @@
       ]
     },
     "requires": {
-      "description": "Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). The when stays for display.",
-      "enum": ["armor", "no-armor", "no-armor-no-shield", "no-heavy-armor", "not-incapacitated", "skill-not-proficient", "strength-attack", "worn"]
+      "description": "Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). medium-armor and no-shield, added 2026-10-27 for the PHB's Medium Armor Master ('while wearing Medium armor') and Unarmed Fighting ('if you aren't holding any weapons or a Shield', with wieldingOnly for the weapons). The when stays for display.",
+      "enum": ["armor", "medium-armor", "no-armor", "no-armor-no-shield", "no-heavy-armor", "no-shield", "not-incapacitated", "skill-not-proficient", "strength-attack", "worn"]
     },
     "effBonus": {
       "description": "Adds a number to a target. value is a number or an expression. Negative for a penalty.",
@@ -375,7 +375,7 @@
       "properties": { "type": { "const": "speed" }, "mode": { "enum": ["walk", "fly", "swim", "climb", "burrow"] }, "feet": { "type": "integer" }, "equalsWalk": { "type": "boolean" }, "minimum": { "type": "integer", "description": "Added 2026-10-18: the Speed is at least this (Boots of Striding and Springing, SRD p.214)." }, "multiplier": { "type": "number", "description": "Added 2026-10-18 for Haste: 'the target's Speed is doubled' (SRD p.139)." }, "when": { "type": "string" }, "requires": { "$ref": "#/$defs/requires" } }
     },
     "effProficiency": {
-      "description": "Grants proficiency. ids are skills, abilities (saves), tool or item ids, armor categories (light, medium, heavy, shields), weapon categories (simple, martial) or weapon ids, or languages.",
+      "description": "Grants proficiency. ids are skills, abilities (saves), tool or item ids, armor categories (light, medium, heavy, shields), weapon categories (simple, martial) or weapon ids, or languages. Added 2026-10-27: raised, for a save, is the ability the feat carrying it raised (Resilient, PHB: 'saving throws of the ability this feat increased').",
       "type": "object", "required": ["type", "category", "ids"], "additionalProperties": false,
       "properties": { "type": { "const": "proficiency" }, "category": { "enum": ["save", "skill", "tool", "armor", "weapon", "language"] }, "ids": { "type": "array", "minItems": 1, "items": { "type": "string" } } }
     },
@@ -435,7 +435,12 @@
     "effSaveDc": {
       "description": "Added 2026-10-18: a feature's own save DC, '8 plus your Wisdom modifier and Proficiency Bonus' (Monk's Focus, SRD p.50; Cunning Strike, p.62). id names it so the feature's text can be shown beside the number. Added 2026-10-26: ruling, where the feature prints no DC and the user ruled which it uses, names that ambiguity, so the sheet can say so beside the number (Open Hand Technique, p.52; classes.json ambiguity open-hand-technique-save-dc).",
       "type": "object", "required": ["type", "id", "ability"], "additionalProperties": false,
-      "properties": { "type": { "const": "saveDc" }, "id": { "$ref": "#/$defs/id" }, "ability": { "$ref": "#/$defs/ability" }, "ruling": { "$ref": "#/$defs/ref" } }
+      "properties": {
+        "type": { "const": "saveDc" }, "id": { "$ref": "#/$defs/id" },
+        "ability": { "anyOf": [ { "$ref": "#/$defs/ability" }, { "const": "raised", "description": "Added 2026-10-27: the ability the feat carrying it raised (Telekinetic's shove, Poisoner's poison, PHB)." } ] },
+        "or": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/ability" }, "description": "Added 2026-10-27: other abilities the player may use instead, so the better is shown ('Strength or Dexterity modifier (your choice)', the Battle Master's maneuvers, PHB)." },
+        "ruling": { "$ref": "#/$defs/ref" }
+      }
     },
     "effResource": {
       "description": "A limited use this grants, tracked by the sheet: its maximum and when it comes back.",

@@ -999,13 +999,15 @@ export interface EffBonus {
   dice?: string
   when?: string
   /**
-   * Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). The when stays for display.
+   * Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). medium-armor and no-shield, added 2026-10-27 for the PHB's Medium Armor Master ('while wearing Medium armor') and Unarmed Fighting ('if you aren't holding any weapons or a Shield', with wieldingOnly for the weapons). The when stays for display.
    */
   requires?:
     | 'armor'
+    | 'medium-armor'
     | 'no-armor'
     | 'no-armor-no-shield'
     | 'no-heavy-armor'
+    | 'no-shield'
     | 'not-incapacitated'
     | 'skill-not-proficient'
     | 'strength-attack'
@@ -1092,13 +1094,15 @@ export interface EffAcFormula {
   allowsShield?: boolean
   when?: string
   /**
-   * Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). The when stays for display.
+   * Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). medium-armor and no-shield, added 2026-10-27 for the PHB's Medium Armor Master ('while wearing Medium armor') and Unarmed Fighting ('if you aren't holding any weapons or a Shield', with wieldingOnly for the weapons). The when stays for display.
    */
   requires?:
     | 'armor'
+    | 'medium-armor'
     | 'no-armor'
     | 'no-armor-no-shield'
     | 'no-heavy-armor'
+    | 'no-shield'
     | 'not-incapacitated'
     | 'skill-not-proficient'
     | 'strength-attack'
@@ -1122,20 +1126,22 @@ export interface EffSpeed {
   multiplier?: number
   when?: string
   /**
-   * Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). The when stays for display.
+   * Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). medium-armor and no-shield, added 2026-10-27 for the PHB's Medium Armor Master ('while wearing Medium armor') and Unarmed Fighting ('if you aren't holding any weapons or a Shield', with wieldingOnly for the weapons). The when stays for display.
    */
   requires?:
     | 'armor'
+    | 'medium-armor'
     | 'no-armor'
     | 'no-armor-no-shield'
     | 'no-heavy-armor'
+    | 'no-shield'
     | 'not-incapacitated'
     | 'skill-not-proficient'
     | 'strength-attack'
     | 'worn'
 }
 /**
- * Grants proficiency. ids are skills, abilities (saves), tool or item ids, armor categories (light, medium, heavy, shields), weapon categories (simple, martial) or weapon ids, or languages.
+ * Grants proficiency. ids are skills, abilities (saves), tool or item ids, armor categories (light, medium, heavy, shields), weapon categories (simple, martial) or weapon ids, or languages. Added 2026-10-27: raised, for a save, is the ability the feat carrying it raised (Resilient, PHB: 'saving throws of the ability this feat increased').
  */
 export interface EffProficiency {
   type: 'proficiency'
@@ -1162,13 +1168,15 @@ export interface EffAdvantage {
   who?: 'self' | 'attackers'
   when?: string
   /**
-   * Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). The when stays for display.
+   * Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). medium-armor and no-shield, added 2026-10-27 for the PHB's Medium Armor Master ('while wearing Medium armor') and Unarmed Fighting ('if you aren't holding any weapons or a Shield', with wieldingOnly for the weapons). The when stays for display.
    */
   requires?:
     | 'armor'
+    | 'medium-armor'
     | 'no-armor'
     | 'no-armor-no-shield'
     | 'no-heavy-armor'
+    | 'no-shield'
     | 'not-incapacitated'
     | 'skill-not-proficient'
     | 'strength-attack'
@@ -1220,13 +1228,15 @@ export interface EffDefense {
   ]
   when?: string
   /**
-   * Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). The when stays for display.
+   * Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). medium-armor and no-shield, added 2026-10-27 for the PHB's Medium Armor Master ('while wearing Medium armor') and Unarmed Fighting ('if you aren't holding any weapons or a Shield', with wieldingOnly for the weapons). The when stays for display.
    */
   requires?:
     | 'armor'
+    | 'medium-armor'
     | 'no-armor'
     | 'no-armor-no-shield'
     | 'no-heavy-armor'
+    | 'no-shield'
     | 'not-incapacitated'
     | 'skill-not-proficient'
     | 'strength-attack'
@@ -1404,13 +1414,15 @@ export interface EffAttackOption {
   wieldingOnly?: boolean
   when?: string
   /**
-   * Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). The when stays for display.
+   * Added 2026-10-19: the part of a when that the app can decide from the character itself, so the effect applies while it holds and not otherwise. armor: wearing Light, Medium or Heavy armor (Defense, SRD p.88). no-armor: not wearing armor (Barbarian Unarmored Defense, p.29; Draconic Resilience, p.67). no-armor-no-shield: neither armor nor a Shield (Monk Unarmored Defense and Unarmored Movement, p.50). no-heavy-armor (Fast Movement, p.30; Roving, p.58). not-incapacitated: without the Incapacitated condition (Aura of Protection, p.55; Danger Sense, p.29). worn, added 2026-10-19 for magic items: the item carrying the effect is worn or held (Armor, +1, 'while wearing this armor', p.210). strength-attack, added 2026-10-22: the attack it is added to uses Strength, decided per attack (Rage Damage, 'When you make an attack using Strength—with either a weapon or an Unarmed Strike', p.28). skill-not-proficient, added 2026-10-26: the check it is added to uses a skill the character lacks proficiency in, so adds no Proficiency Bonus of its own, decided per skill (Jack of All Trades, 'any ability check you make that uses a skill proficiency you lack and that doesn’t otherwise use your Proficiency Bonus', p.32). medium-armor and no-shield, added 2026-10-27 for the PHB's Medium Armor Master ('while wearing Medium armor') and Unarmed Fighting ('if you aren't holding any weapons or a Shield', with wieldingOnly for the weapons). The when stays for display.
    */
   requires?:
     | 'armor'
+    | 'medium-armor'
     | 'no-armor'
     | 'no-armor-no-shield'
     | 'no-heavy-armor'
+    | 'no-shield'
     | 'not-incapacitated'
     | 'skill-not-proficient'
     | 'strength-attack'
@@ -1425,10 +1437,18 @@ export interface EffSaveDc {
    * A record id. kebab-case, permanent: saved characters reference it. A replaced record keeps its id with supersededBy.
    */
   id: string
+  ability: ('str' | 'dex' | 'con' | 'int' | 'wis' | 'cha') | 'raised'
   /**
-   * The six abilities (SRD 5.2.1 p.5).
+   * Added 2026-10-27: other abilities the player may use instead, so the better is shown ('Strength or Dexterity modifier (your choice)', the Battle Master's maneuvers, PHB).
+   *
+   * @minItems 1
+   *
+   * Items: The six abilities (SRD 5.2.1 p.5).
    */
-  ability: 'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha'
+  or?: [
+    'str' | 'dex' | 'con' | 'int' | 'wis' | 'cha',
+    ...('str' | 'dex' | 'con' | 'int' | 'wis' | 'cha')[]
+  ]
   /**
    * A reference to a record in this or another data file, written <file>:<id>, e.g. spells:fireball, feats:alert, classes:fighter. The cross-file check resolves every one.
    */
