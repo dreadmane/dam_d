@@ -632,6 +632,17 @@ export type Subclass = {
   features: Feature[]
   spellcasting?: Spellcasting1
   /**
+   * Added 2026-10-27: lists a subclass feature chooses from, as a class's optionLists, each option a feature with its own effects (the PHB's Path of the Wild Heart: Rage of the Wilds' Bear, Eagle and Wolf). A pick of one applies its effects. An option's id is unique among its class's and its class's subclasses' options.
+   */
+  optionLists?: {
+    /**
+     * A record id. kebab-case, permanent: saved characters reference it. A replaced record keeps its id with supersededBy.
+     */
+    id: string
+    name: string
+    options: Feature[]
+  }[]
+  /**
    * Added 2026-10-27: the subclass's own spellcasting table, by class level, for the columns its spellcasting names; a level not listed has none.
    */
   spellTable?: {

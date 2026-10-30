@@ -229,9 +229,12 @@ function nestedChoices(rules: Rules, made: OwedChoice): OwedChoice[] {
 }
 
 // A class option by id (a Metamagic option, an Eldritch Invocation, a
-// Divine Order), from the class's option lists.
+// Divine Order), from the class's option lists, then its subclasses'
+// (classes.schema.json subclass.optionLists: the PHB's Path of the Wild
+// Heart).
 export function findOption(rules: Rules, classId: string, optionId: string): Feature | undefined {
-  for (const list of rules.classes.get(classId)?.optionLists ?? []) {
+  const lists = [...(rules.classes.get(classId)?.optionLists ?? []), ...[...rules.subclasses.values()].filter((s) => s.classId === classId).flatMap((s) => s.optionLists ?? [])]
+  for (const list of lists) {
     const found = list.options.find((o) => o.id === optionId)
     if (found) return found
   }
