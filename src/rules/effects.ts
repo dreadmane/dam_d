@@ -33,6 +33,10 @@ export interface Active {
   feature?: string
 }
 
+// What an effect from a feature says it is from: "Barbarian 1: Rage",
+// "Orc: Darkvision". A row naming its source finds its feature by it.
+export const featureLabel = (g: GainedFeature) => (g.level ? `${g.group} ${g.level}: ${g.feature.name}` : `${g.group}: ${g.feature.name}`)
+
 export interface GainedFeature {
   feature: Feature
   group: string
@@ -142,10 +146,7 @@ export function activeEffects(rules: Rules, entity: CharacterEntity, choices: Ow
     }
   })
 
-  for (const g of features) {
-    const label = g.level ? `${g.group} ${g.level}: ${g.feature.name}` : `${g.group}: ${g.feature.name}`
-    push(g.feature.effects, label, g.classId, g.feature.toggle ? g.feature.id : undefined, undefined, g.source, g.feature.id)
-  }
+  for (const g of features) push(g.feature.effects, featureLabel(g), g.classId, g.feature.toggle ? g.feature.id : undefined, undefined, g.source, g.feature.id)
 
   if (entity.background) {
     const background = rules.backgrounds.get(entity.background.backgroundId)
