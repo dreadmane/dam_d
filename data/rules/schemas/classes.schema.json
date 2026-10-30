@@ -145,6 +145,21 @@
         "name": { "type": "string" },
         "text": { "type": "string", "description": "The subclass's one-line identity, if printed." },
         "features": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/feature" } },
+        "spellcasting": {
+          "$ref": "#/$defs/spellcasting",
+          "description": "Added 2026-10-27: a subclass that casts spells where its class doesn't (the PHB's Eldritch Knight and Arcane Trickster), read as a class's spellcasting is, its columns from spellTable. Its progression and multiclassRounding say how the class's levels count toward the Multiclass Spellcaster table."
+        },
+        "spellTable": {
+          "description": "Added 2026-10-27: the subclass's own spellcasting table, by class level, for the columns its spellcasting names; a level not listed has none.",
+          "type": "object", "required": ["columns", "rows"], "additionalProperties": false,
+          "properties": {
+            "columns": { "type": "array", "items": { "type": "object", "required": ["id", "name"], "additionalProperties": false, "properties": { "id": { "$ref": "common.schema.json#/$defs/id" }, "name": { "type": "string" } } } },
+            "rows": {
+              "type": "array", "minItems": 1,
+              "items": { "type": "object", "required": ["level", "values"], "additionalProperties": false, "properties": { "level": { "type": "integer", "minimum": 1, "maximum": 20 }, "values": { "type": "object", "additionalProperties": { "type": ["integer", "string"] } } } }
+            }
+          }
+        },
         "spells": {
           "description": "Spells the subclass always has prepared, by class level (Domain Spells, Circle Spells, Oath Spells). Added 2026-10-26: choice, where a group comes only with one pick of one of the subclass's choices, names the choice's id and the value (Circle of the Land Spells, SRD p.46: a land's table only while that land is chosen).",
           "type": "array",
