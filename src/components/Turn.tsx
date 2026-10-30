@@ -2,7 +2,7 @@ import { Fragment, useState, type ReactNode } from 'react'
 import { activeToggles, switchToggle, toggleChoices } from '../play/kit.ts'
 import { spendResource } from '../play/play.ts'
 import { paragraphs } from '../play/rule-text.ts'
-import { casterFor, pactSlots, scaledDice, slotLevels, type CastWith, type SpellRow } from '../play/spells.ts'
+import { casterFor, pactSlots, scaledDice, slotLevels, spellDamage, type CastWith, type SpellRow } from '../play/spells.ts'
 import { feetLeft, movementSteps, newTurn, setMode, spendPip, tapStep, togglePip, type Pip, type TurnState } from '../play/tracker.ts'
 import { exploring, groupNames, outOfSlots, rowGroup, turnRows, TURN_GROUPS, type TurnGroup, type TurnRow } from '../play/turn.ts'
 import { signed } from '../play/vitals.ts'
@@ -10,7 +10,7 @@ import type { Attack, Sheet } from '../rules/derive.ts'
 import type { Rules } from '../rules/load.ts'
 import type { CharacterEntity, RosterRecord } from '../save/types.ts'
 import { DamageWindow } from './Attacks.tsx'
-import { damageFormula, featureDc } from './cards.ts'
+import { damageFormula, featureDc, formulaOf } from './cards.ts'
 import { useHudDialog } from './dialog.ts'
 import { ProficiencyMark } from './ProficiencyMark.tsx'
 import { QuickRoll } from './QuickRoll.tsx'
@@ -267,8 +267,9 @@ function TurnRowView({ rules, entity, sheet, row, onOpen }: { rules: Rules; enti
       const caster = casterFor(sheet, row.row)
       const save = s.save && caster?.saveDc ? `${s.save.toUpperCase()} ${caster.saveDc.total}` : null
       const hit = s.attack && caster?.attack ? signed(caster.attack.total) : null
-      const dmg = (s.damage as { dice: string; type?: string }[] | undefined)?.[0]
-      const dice = dmg ? `${scaledDice(s, dmg.dice.replace(/\+.*$/, ''), s.level, sheet.level)}${dmg.dice.includes('+') ? dmg.dice.slice(dmg.dice.indexOf('+')) : ''}${dmg.type ? ` ${dmg.type}` : ''}` : null
+      const dmg = (s.damage as { dice: string; type: string }[] | undefined)?.[0]
+      const worked = dmg && spellDamage(sheet, row.row, dmg)
+      const dice = dmg && worked ? `${formulaOf(scaledDice(s, worked.dice, s.level, sheet.level), worked.parts)} ${dmg.type}` : null
       const empty = outOfSlots(rules, sheet, entity, row.row)
       const detail = [LEVEL(s.level), s.castingTime.unit === 'reaction' ? s.castingTime.reactionTrigger : s.range.text, s.duration.concentration && 'Concentration', empty && 'no slot left'].filter(Boolean).join(' · ')
       return (

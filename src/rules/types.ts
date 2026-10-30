@@ -980,6 +980,69 @@ export interface EffBonus {
     | 'skill-not-proficient'
     | 'strength-attack'
     | 'worn'
+  spells?: SpellFilter
+}
+/**
+ * Added 2026-10-27 for damage:spell: which spells a bonus reaches, each field narrowing it, so the sheet adds it to those spells' damage and no others ('Add your Wisdom modifier to the damage you deal with any Cleric cantrip', Potent Spellcasting, SRD p.38). castAs self: cast with the spellcasting of the class whose feature it is. cantrip: level 0 only. school: one school. chosen: the spell picked in the named choice beside it (Agonizing Blast's cantrip, p.72). damageTypes: only a damage entry of these types, or damageTypeChosen: of the type picked in the named choice (Elemental Affinity, p.70). oneRoll: it goes on one damage roll of a casting, not every one ('one damage roll of that spell', Empowered Evocation, p.82), which the sheet says beside it. A condition the filter can't decide stays in when, and the bonus shows as a note on those spells.
+ */
+export interface SpellFilter {
+  castAs?: 'self'
+  cantrip?: true
+  school?:
+    | 'abjuration'
+    | 'conjuration'
+    | 'divination'
+    | 'enchantment'
+    | 'evocation'
+    | 'illusion'
+    | 'necromancy'
+    | 'transmutation'
+  /**
+   * A record id. kebab-case, permanent: saved characters reference it. A replaced record keeps its id with supersededBy.
+   */
+  chosen?: string
+  /**
+   * @minItems 1
+   *
+   * Items: The 13 damage types (SRD 5.2.1 p.16-17).
+   */
+  damageTypes?: [
+    (
+      | 'acid'
+      | 'bludgeoning'
+      | 'cold'
+      | 'fire'
+      | 'force'
+      | 'lightning'
+      | 'necrotic'
+      | 'piercing'
+      | 'poison'
+      | 'psychic'
+      | 'radiant'
+      | 'slashing'
+      | 'thunder'
+    ),
+    ...(
+      | 'acid'
+      | 'bludgeoning'
+      | 'cold'
+      | 'fire'
+      | 'force'
+      | 'lightning'
+      | 'necrotic'
+      | 'piercing'
+      | 'poison'
+      | 'psychic'
+      | 'radiant'
+      | 'slashing'
+      | 'thunder'
+    )[]
+  ]
+  /**
+   * A record id. kebab-case, permanent: saved characters reference it. A replaced record keeps its id with supersededBy.
+   */
+  damageTypeChosen?: string
+  oneRoll?: true
 }
 /**
  * An alternative way to compute Armor Class; the character uses the highest available (SRD p.177, Armor Class). base plus the listed abilities' modifiers, dex capped by maxDex.

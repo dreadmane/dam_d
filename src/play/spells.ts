@@ -4,7 +4,7 @@
 // React. The spells' own data (spells.json) says what each does; the
 // numbers the rules print are read from core.json's playRules.
 
-import type { Sheet, Spellcaster, Total } from '../rules/derive.ts'
+import type { Note, Part, Sheet, Spellcaster, Total } from '../rules/derive.ts'
 import { spendResource } from './play.ts'
 import type { Ability } from '../rules/expr.ts'
 import type { Rules, Spell } from '../rules/load.ts'
@@ -240,6 +240,32 @@ export function scaledDice(spell: Spell, dice: string, castLevel: number, charac
   const above = castLevel - spell.level
   if (!extra || !base || above <= 0 || extra[2] !== base[2]) return dice
   return `${(Number(base[1]) || 1) + (Number(extra[1]) || 1) * above}d${base[2]}`
+}
+
+// One damage entry's flat parts: what the spell prints after its dice
+// (Disintegrate's "10d6+40"), then each bonus to spell damage that reaches
+// it (Sheet.spellDamage): those the app can decide added in, the rest as
+// notes for the table. oneRoll names the parts that go on one damage roll
+// of a casting (Empowered Evocation), for the window to say so.
+export function spellDamage(sheet: Sheet, row: SpellRow, entry: { dice: string; type: string }): { dice: string; parts: Part[]; notes: Note[]; oneRoll: string[] } {
+  const s = row.spell
+  const flat = /^(.*?)\+(\d+)$/.exec(entry.dice)
+  const parts: Part[] = flat ? [{ label: s.name, value: Number(flat[2]) }] : []
+  const notes: Note[] = []
+  const oneRoll: string[] = []
+  for (const b of sheet.spellDamage) {
+    if (b.castAs !== undefined && b.castAs !== row.classId) continue
+    if (b.cantrip && s.level !== 0) continue
+    if (b.school && b.school !== s.school) continue
+    if (b.spells && !b.spells.includes(s.id)) continue
+    if (b.damageTypes && !b.damageTypes.includes(entry.type)) continue
+    if (b.when) notes.push({ text: `${b.value < 0 ? '−' : '+'}${Math.abs(b.value)} ${b.when.charAt(0).toLowerCase()}${b.when.slice(1)}`, from: b.from })
+    else if (b.value) {
+      parts.push({ label: b.from, value: b.value })
+      if (b.oneRoll) oneRoll.push(b.from)
+    }
+  }
+  return { dice: flat ? flat[1] : entry.dice, parts, notes, oneRoll }
 }
 
 // Which caster a spell uses: its class's, or for a granted spell the

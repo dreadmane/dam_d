@@ -5,13 +5,16 @@
 
 import { describe, expect, it } from 'vitest'
 import { deriveSheet } from './derive.ts'
-import { cast, castOptions, casterFor, characterSpells, keptSpells, preparedCount } from '../play/spells.ts'
+import { cast, castOptions, casterFor, characterSpells, keptSpells, preparedCount, spellDamage } from '../play/spells.ts'
 import { catalogueItem, setCountsAs, weaponSets } from '../play/kit.ts'
+import { optionsFor } from '../play/options.ts'
 import { damageFormula, featureRule } from '../components/cards.ts'
+import { characterChoices } from './level.ts'
 import { testRules } from './test-rules.ts'
 import { resourceRow, rowGroup, turnRows } from '../play/turn.ts'
 import type { CharacterEntity } from '../save/types.ts'
 import halvard from '../save/examples/cleric-fighter.json'
+import ilsabet from '../save/examples/wizard.json'
 import A from './audit/A.json'
 import B from './audit/B.json'
 import C from './audit/C.json'
@@ -551,5 +554,83 @@ describe('a resource opens its feature’s window (play audit 9, #26)', () => {
 
   it('leaves a lineage’s free cast as the resource alone, with no action type of its own', () => {
     expect(rowOf(A, 'free-cast:longstrider')).toEqual({ kind: 'resource', feature: undefined, group: null })
+  })
+})
+
+describe('a bonus to spell damage (#64)', () => {
+  const at = (record: { entities: unknown[] }, change: (e: CharacterEntity) => void = () => {}) => {
+    const e = structuredClone(record.entities[0]) as CharacterEntity
+    change(e)
+    return e
+  }
+  const levelTo = (e: CharacterEntity, classId: string, level: number) => {
+    const c = e.classes.find((x) => x.classId === classId)!
+    c.hp = Array.from({ length: level }, (_, i) => c.hp[i] ?? { level: i + 1, method: 'fixed' })
+    c.level = level
+  }
+  const damageOf = (e: CharacterEntity, spellId: string) => {
+    const sheet = deriveSheet(rules, e)
+    const row = characterSpells(rules, e, sheet).find((r) => r.spell.id === spellId)!
+    const w = spellDamage(sheet, row, (row.spell.damage as { dice: string; type: string }[])[0])
+    return { dice: w.dice, parts: w.parts.map((p) => [p.label, p.value]), notes: w.notes.map((n) => n.text) }
+  }
+
+  it('adds Agonizing Blast’s Charisma to the cantrip picked for it: Vex’s Eldritch Blast, 1d10 + 3 a beam (p.72)', () => {
+    expect(damageOf(at(C), 'eldritch-blast')).toEqual({ dice: '1d10', parts: [[expect.stringContaining('Agonizing Blast'), 3]], notes: [] })
+  })
+
+  it('leaves Vex’s other cantrips alone: Chill Touch, a Warlock cantrip not picked, and her Tiefling Fire Bolt', () => {
+    expect(damageOf(at(C), 'chill-touch').parts).toEqual([])
+    expect(damageOf(at(C), 'fire-bolt').parts).toEqual([])
+  })
+
+  it('adds Potent Spellcasting’s Wisdom to a Cleric cantrip, not a levelled spell: Halvard at Cleric 7, Sacred Flame + 4 and Guiding Bolt + 0 (p.38)', () => {
+    const e = at(halvard, (x) => {
+      levelTo(x, 'cleric', 7)
+      x.choices.push({ source: 'class:cleric:7', choice: 'blessed-strikes', values: ['potent-spellcasting'] })
+    })
+    expect(damageOf(e, 'sacred-flame').parts).toEqual([[expect.stringContaining('Potent Spellcasting'), 4]])
+    expect(damageOf(e, 'guiding-bolt').parts).toEqual([])
+  })
+
+  it('adds Empowered Evocation’s Intelligence to a Wizard Evocation spell from Wizard 10: Ilsabet’s Fireball 8d6 + 4 (p.82)', () => {
+    expect(damageOf(at(ilsabet), 'fireball').parts).toEqual([])
+    expect(damageOf(at(ilsabet, (x) => levelTo(x, 'wizard', 10)), 'fireball').parts).toEqual([[expect.stringContaining('Empowered Evocation'), 4]])
+  })
+
+  it('adds Elemental Affinity’s Charisma to a spell of the chosen type, whichever class casts it: Vex as Draconic Sorcerer 6 with Fire, Burning Hands and her Tiefling Fire Bolt + 3, Shocking Grasp + 0 (p.70)', () => {
+    const e = at(C, (x) => {
+      levelTo(x, 'sorcerer', 6)
+      x.choices.push({ source: 'class:sorcerer:6', choice: 'elemental-affinity', values: ['fire'] })
+    })
+    expect(damageOf(e, 'burning-hands').parts).toEqual([[expect.stringContaining('Elemental Affinity'), 3]])
+    expect(damageOf(e, 'fire-bolt').parts).toEqual([[expect.stringContaining('Elemental Affinity'), 3]])
+    expect(damageOf(e, 'shocking-grasp').parts).toEqual([])
+  })
+
+  it('marks Empowered Evocation as one damage roll a casting (p.82), and not Agonizing Blast, which reaches every roll (p.72)', () => {
+    const one = (e: CharacterEntity, spellId: string) => {
+      const sheet = deriveSheet(rules, e)
+      const row = characterSpells(rules, e, sheet).find((r) => r.spell.id === spellId)!
+      return spellDamage(sheet, row, (row.spell.damage as { dice: string; type: string }[])[0]).oneRoll
+    }
+    expect(one(at(ilsabet, (x) => levelTo(x, 'wizard', 10)), 'fireball')).toEqual([expect.stringContaining('Empowered Evocation')])
+    expect(one(at(C), 'eldritch-blast')).toEqual([])
+  })
+
+  it('adds what the spell prints after its dice: Disintegrate, 10d6 + 40 (p.124)', () => {
+    const sheet = deriveSheet(rules, at(ilsabet))
+    const row = { spell: rules.spells.get('disintegrate')!, from: 'Wizard', classId: 'wizard', ready: true, always: false, preparable: true }
+    expect(spellDamage(sheet, row, { dice: '10d6+40', type: 'force' })).toEqual({ dice: '10d6', parts: [{ label: 'Disintegrate', value: 40 }], notes: [], oneRoll: [] })
+  })
+
+  it('offers Agonizing Blast only Warlock cantrips that deal damage', () => {
+    const e = at(C)
+    const sheet = deriveSheet(rules, e)
+    const owed = characterChoices(rules, e).find((c) => c.choice === 'agonizing-blast')!
+    const ids = optionsFor(rules, e, sheet, owed)!.map((o) => o.id)
+    expect(ids).toEqual(expect.arrayContaining(['eldritch-blast', 'chill-touch']))
+    expect(ids).not.toContain('mage-hand')
+    expect(ids).not.toContain('fire-bolt')
   })
 })

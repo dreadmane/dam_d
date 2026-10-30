@@ -1,18 +1,22 @@
 import { paragraphs } from '../play/rule-text.ts'
-import type { Attack, Sheet } from '../rules/derive.ts'
+import type { Attack, Part, Sheet } from '../rules/derive.ts'
 import type { GainedFeature } from '../rules/effects.ts'
 import type { Rule } from './RuleCard.tsx'
 
-// What more than one window shows the same way: an attack's damage formula
-// (Attacks, the quick bar, an Opportunity Attack) and a feature's rule card
-// (Features and traits, the Reactions band).
+// What more than one window shows the same way: an attack's or a spell's
+// damage formula (Attacks, the quick bar, an Opportunity Attack, a spell's
+// window) and a feature's rule card (Features and traits, the Reactions band).
 
 // The dice, then each part of the modifier on its own, so a bonus shows
 // where it comes in: "1d8 + 4 + 2" while raging. named labels each part, for
 // the roll log: "1d8 + 4 STR + 2 Rage". dice replaces the attack's own (a
 // Critical Hit's doubled dice).
 export function damageFormula(a: Attack, { named = false, dice = a.damage.dice }: { named?: boolean; dice?: string } = {}): string {
-  const parts = a.damage.parts.filter((p) => p.value)
+  return formulaOf(dice, a.damage.parts, named)
+}
+
+export function formulaOf(dice: string, all: readonly Part[], named = false): string {
+  const parts = all.filter((p) => p.value)
   if (!dice && !parts.length) return '0'
   const terms = parts.map((p, i) => {
     const name = named ? ` ${partName(p.label)}` : ''

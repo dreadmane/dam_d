@@ -79,6 +79,18 @@ export interface Resource {
   from: string
 }
 
+export interface SpellDamageBonus {
+  from: string
+  value: number
+  when?: string
+  castAs?: string
+  cantrip?: boolean
+  school?: string
+  spells?: string[]
+  damageTypes?: string[]
+  oneRoll?: boolean
+}
+
 export interface Spellcaster {
   classId: string
   name: string
@@ -117,6 +129,10 @@ export interface Sheet {
   // ruling names the user's ruling where the feature prints no DC and uses
   // this one (Open Hand Technique, p.52).
   featureDcs: { id: string; ability: Ability; dc: Total; ruling?: string }[]
+  // Every bonus to spell damage, with which spells it reaches resolved
+  // (common.schema.json spellFilter): castAs as the class, chosen as the
+  // spells picked. when: a condition the app can't decide, so a note.
+  spellDamage: SpellDamageBonus[]
   // Slots by slot level, index 0 is level 1 (the Multiclass Spellcaster
   // table, or the one caster's own); Pact Magic apart.
   slots: number[]
@@ -435,6 +451,28 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     return { id: effect.id, ability: effect.ability, dc, ruling: effect.ruling }
   })
 
+  // Bonuses to spell damage, each with the spells it reaches: a choice it
+  // names read as what was picked there (Agonizing Blast's cantrip,
+  // Elemental Affinity's damage type), nothing while unmade.
+  const picked = (id: string) => choices.filter((c) => c.choice === id).flatMap((c) => c.made?.values ?? [])
+  const spellDamage: SpellDamageBonus[] = []
+  for (const a of effects) {
+    const e = a.effect
+    if (e.type !== 'bonus' || e.target !== 'damage:spell') continue
+    const f = e.spells ?? {}
+    spellDamage.push({
+      from: a.from,
+      value: valueOf(a, e.value, pb),
+      ...(e.when ? { when: e.when } : {}),
+      ...(f.castAs ? { castAs: a.classId ?? '' } : {}),
+      ...(f.cantrip ? { cantrip: true } : {}),
+      ...(f.school ? { school: f.school } : {}),
+      ...(f.chosen ? { spells: picked(f.chosen) } : {}),
+      ...(f.damageTypes || f.damageTypeChosen ? { damageTypes: [...(f.damageTypes ?? []), ...(f.damageTypeChosen ? picked(f.damageTypeChosen) : [])] } : {}),
+      ...(f.oneRoll ? { oneRoll: true } : {}),
+    })
+  }
+
   // Slots: one caster's own table, or the Multiclass Spellcaster table by
   // the multiclass caster level (SRD p.25). Pact Magic is apart.
   const casters = ordered.filter((e) => {
@@ -642,6 +680,7 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     spellcasting,
     castingBy,
     featureDcs,
+    spellDamage,
     slots,
     pact,
     resources,
