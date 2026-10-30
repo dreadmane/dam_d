@@ -48,8 +48,13 @@
               "recharge": "long-rest"
             },
             {
+              "type": "saveDc",
+              "id": "breath-weapon-dc",
+              "ability": "con"
+            },
+            {
               "type": "text",
-              "summary": "Replaces one attack of the Attack action: 15-foot Cone or 30-foot Line (5 ft wide); Dex save, DC 8 + Con modifier + Proficiency Bonus; 1d10 of the ancestry’s damage type (2d10 at character level 5, 3d10 at 11, 4d10 at 17), half on a success."
+              "summary": "Replaces one attack of the Attack action: 15-foot Cone or 30-foot Line (5 ft wide); a Dex save against the DC; 1d10 of the ancestry’s damage type (2d10 at character level 5, 3d10 at 11, 4d10 at 17), half on a success."
             }
           ],
           "source": {

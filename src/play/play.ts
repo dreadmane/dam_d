@@ -113,8 +113,9 @@ export type DeathSaveOutcome = 'success' | 'failure' | 'two failures' | 'regain 
 
 // A death save (SRD p.17): the d20's face against the rule's DC; a 1 is two
 // failures, a 20 regains 1 HP. Three successes and the character is Stable,
-// kept as three successes until HP is regained; three failures, dead.
-export function deathSave(rules: Rules, entity: CharacterEntity, face: number): { entity: CharacterEntity; outcome: DeathSaveOutcome } {
+// kept as three successes until HP is regained; three failures, dead. total
+// is the face with any bonus to death saves, which the DC is held to.
+export function deathSave(rules: Rules, entity: CharacterEntity, face: number, total = face): { entity: CharacterEntity; outcome: DeathSaveOutcome } {
   const r = play(rules).deathSaves
   const ds = entity.deathSaves
   if (face === 20) return { entity: { ...entity, hp: { ...entity.hp, current: r.naturalTwentyHp }, deathSaves: { successes: 0, failures: 0 } }, outcome: 'regain 1 HP' }
@@ -122,7 +123,7 @@ export function deathSave(rules: Rules, entity: CharacterEntity, face: number): 
     const failures = Math.min(r.toDie, ds.failures + r.naturalOneFailures)
     return { entity: { ...entity, deathSaves: { ...ds, failures, ...(failures >= r.toDie ? { dead: true } : {}) } }, outcome: failures >= r.toDie ? 'dead' : 'two failures' }
   }
-  if (face >= r.dc) {
+  if (total >= r.dc) {
     const successes = Math.min(r.toStabilize, ds.successes + 1)
     return { entity: { ...entity, deathSaves: { ...ds, successes } }, outcome: successes >= r.toStabilize ? 'stable' : 'success' }
   }

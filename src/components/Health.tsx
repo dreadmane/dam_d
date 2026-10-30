@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import commonSchema from '../../data/rules/schemas/common.schema.json'
 import { showDice } from '../dice/app-tray.ts'
-import { describeRoll } from '../dice/describe.ts'
-import { rollFaces } from '../dice/roll.ts'
-import { deathSave, gainTemp, heal, isStable, takeDamage } from '../play/play.ts'
+import { describeCheck } from '../dice/describe.ts'
+import { deathSave, gainTemp, heal, isStable, rollD20, rollMode, takeDamage } from '../play/play.ts'
 import { concentrationSave } from '../play/spells.ts'
 import { useRecordRoll } from '../rolls/app-rolls.ts'
 import type { Sheet } from '../rules/derive.ts'
@@ -103,12 +102,16 @@ export function DeathSavesSection({ rules, entity, sheet, update, onHeal }: { ru
   const ds = entity.deathSaves
   const r = rules.data.core.playRules!.deathSaves
   const max = r.toDie
+  // With the sheet's Advantage and bonuses on a death save (Survivor's): two
+  // d20s, the higher kept; a natural 20 or 1 is the kept die's face.
+  const t = sheet.deathSave
   const roll = () => {
-    const rolled = rollFaces('1d20')
-    const described = describeRoll('Death saving throw', '1d20', rolled, 'death-save')
+    const mode = rollMode(t.advantage.length, t.disadvantage.length)
+    const rolled = rollD20(rules, t.total, mode)
+    const described = describeCheck('Death saving throw', { flat: t.total, dice: ['d20'] }, mode, rolled, 'death-save')
     showDice(described, { say: true, alone: true })
     record(entity, described)
-    const out = deathSave(rules, entity, rolled.total)
+    const out = deathSave(rules, entity, rolled.kept, rolled.total)
     update(() => out.entity)
     setSaid(`Rolled ${rolled.total}: ${out.outcome}.`)
   }
@@ -140,6 +143,12 @@ export function DeathSavesSection({ rules, entity, sheet, update, onHeal }: { ru
           <p className="meta">{stableAside(entity.name)}</p>
         </>
       ) : (
+        <>
+        {[...t.advantage.map((n) => `Advantage: ${n.from}`), ...t.disadvantage.map((n) => `Disadvantage: ${n.from}`), ...t.notes.map((n) => `${n.text} (${n.from})`)].map((line) => (
+          <p key={line} className="meta">
+            {line}
+          </p>
+        ))}
         <div className="actions">
           <button type="button" className="primary" onClick={roll}>
             Roll death save
@@ -151,6 +160,7 @@ export function DeathSavesSection({ rules, entity, sheet, update, onHeal }: { ru
             + Failure
           </button>
         </div>
+        </>
       )}
       <div className="actions">
         <button type="button" className="secondary" aria-haspopup="dialog" onClick={onHeal}>

@@ -6,15 +6,17 @@
 import { describe, expect, it } from 'vitest'
 import { deriveSheet } from './derive.ts'
 import { cast, castOptions, casterFor, characterSpells, keptSpells, preparedCount, spellDamage } from '../play/spells.ts'
-import { catalogueItem, setCountsAs, weaponSets } from '../play/kit.ts'
+import { catalogueItem, setAttuned, setCountsAs, weaponSets } from '../play/kit.ts'
+import { deathSave } from '../play/play.ts'
 import { optionsFor } from '../play/options.ts'
-import { damageFormula, featureRule } from '../components/cards.ts'
+import { damageFormula, featureDc, featureRule } from '../components/cards.ts'
 import { characterChoices } from './level.ts'
 import { testRules } from './test-rules.ts'
 import { resourceRow, rowGroup, turnRows } from '../play/turn.ts'
 import type { CharacterEntity } from '../save/types.ts'
 import halvard from '../save/examples/cleric-fighter.json'
 import ilsabet from '../save/examples/wizard.json'
+import unga from '../save/examples/barbarian.json'
 import A from './audit/A.json'
 import B from './audit/B.json'
 import C from './audit/C.json'
@@ -632,5 +634,67 @@ describe('a bonus to spell damage (#64)', () => {
     expect(ids).toEqual(expect.arrayContaining(['eldritch-blast', 'chill-touch']))
     expect(ids).not.toContain('mage-hand')
     expect(ids).not.toContain('fire-bolt')
+  })
+})
+
+describe('the SRD’s small text-only rules (#65 to #68)', () => {
+  const at = (record: { entities: unknown[] }, change: (e: CharacterEntity) => void = () => {}) => {
+    const e = structuredClone(record.entities[0]) as CharacterEntity
+    change(e)
+    return e
+  }
+  const levelTo = (e: CharacterEntity, classId: string, level: number) => {
+    const c = e.classes.find((x) => x.classId === classId)!
+    c.hp = Array.from({ length: level }, (_, i) => c.hp[i] ?? { level: i + 1, method: 'fixed' })
+    c.level = level
+  }
+
+  it('gives a Champion 18 Advantage on death saves, Survivor (p.49), and a Champion 11 none (#65)', () => {
+    expect(deriveSheet(rules, at(D, (x) => levelTo(x, 'fighter', 18))).deathSave.advantage).toEqual([{ text: '', from: 'Champion 18: Survivor' }])
+    expect(deriveSheet(rules, at(D)).deathSave.advantage).toEqual([])
+  })
+
+  it('holds a death save’s total to the DC and its face to the naturals (p.17)', () => {
+    const e = at(D, (x) => (x.hp.current = 0))
+    expect(deathSave(rules, e, 9, 10).outcome).toBe('success')
+    expect(deathSave(rules, e, 9).outcome).toBe('failure')
+  })
+
+  it('shows Cunning Strike’s DC: Pip’s 8 + Dex 4 + PB 3 = 15 (p.63, #66)', () => {
+    expect(featureDc(deriveSheet(rules, at(B)), 'cunning-strike')?.total).toBe(15)
+  })
+
+  it('shows Breath Weapon’s DC on its trait: Kethra’s 8 + Con 2 + PB 3 = 13 (p.84, #66)', () => {
+    expect(featureDc(deriveSheet(rules, at(E)), 'breath-weapon')?.total).toBe(13)
+  })
+
+  it('shows Intimidating Presence’s DC, 8 + Str + PB, and Mindless Rage’s immunity while raging (pp.30, #66)', () => {
+    const sheet = deriveSheet(rules, at(unga, (x) => levelTo(x, 'barbarian', 14)))
+    expect(featureDc(sheet, 'intimidating-presence')?.total).toBe(8 + sheet.abilities.str.modifier + 5)
+    expect(sheet.conditionImmunities).toContainEqual({ conditions: ['charmed', 'frightened'], from: 'Path of the Berserker 6: Mindless Rage', when: 'While your Rage is active' })
+  })
+
+  it('counts Thirsting Blade’s attacks with the pact weapon apart: Vex at Warlock 5, 2, and Devouring Blade at 12, 3 (pp.74, 72, #67)', () => {
+    const blade = (level: number, picks: string[]) =>
+      deriveSheet(rules, at(C, (x) => {
+        levelTo(x, 'warlock', level)
+        x.choices.push({ source: 'class:warlock:5', choice: 'eldritch-invocations', values: picks })
+      }))
+    expect(blade(5, ['thirsting-blade'])).toMatchObject({ attackCount: 1, pactAttackCount: 2 })
+    expect(blade(12, ['thirsting-blade', 'devouring-blade'])).toMatchObject({ attackCount: 1, pactAttackCount: 3 })
+    expect(deriveSheet(rules, at(C)).pactAttackCount).toBeUndefined()
+  })
+
+  it('lets a Thief 13 attune to four items, Use Magic Device (p.64), and a Thief 7 three (#68)', () => {
+    const thief = at(B, (x) => levelTo(x, 'rogue', 13))
+    expect(deriveSheet(rules, thief).attunementMax).toBe(4)
+    expect(deriveSheet(rules, at(B)).attunementMax).toBe(3)
+    for (let i = 0; i < 4; i++) thief.inventory.push({ id: `ring-${i}`, name: `Ring ${i}`, description: '', quantity: 1, tags: [] })
+    let e: CharacterEntity = thief
+    for (let i = 0; i < 4; i++) {
+      const r = setAttuned(rules, e, `ring-${i}`, true, deriveSheet(rules, e).attunementMax)
+      expect(r.ok).toBe(true)
+      if (r.ok) e = r.entity
+    }
   })
 })

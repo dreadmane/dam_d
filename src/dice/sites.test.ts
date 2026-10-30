@@ -55,7 +55,7 @@ describe('what each d20 is rolled for', () => {
   })
 
   it('describes the death saving throw’s d20 as one', () => {
-    expect(sources['../components/Health.tsx']).toMatch(/describeRoll\('Death saving throw', '1d20', rolled, 'death-save'\)/)
+    expect(sources['../components/Health.tsx']).toMatch(/describeCheck\('Death saving throw', \{ flat: t\.total, dice: \['d20'\] \}, mode, rolled, 'death-save'\)/)
   })
 
   it('passes the quick roll’s kind and crit range on to its description', () => {
