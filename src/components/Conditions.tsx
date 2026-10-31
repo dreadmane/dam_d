@@ -1,7 +1,10 @@
 import { useState } from 'react'
 import { paragraphs } from '../play/rule-text.ts'
+import { defenseRows } from '../play/defenses.ts'
 import { activeToggles } from '../play/kit.ts'
 import type { Sheet } from '../rules/derive.ts'
+import type { GainedFeature } from '../rules/effects.ts'
+import { featureRule } from './cards.ts'
 import type { Rules } from '../rules/load.ts'
 import type { CharacterEntity, RosterRecord } from '../save/types.ts'
 import { RuleCard } from './RuleCard.tsx'
@@ -12,7 +15,9 @@ import { SheetSection } from './SheetSection.tsx'
 // (the SRD's text) and removed with ✕; Add a condition from the 15 or the
 // player's own effect with a name and its words; Exhaustion as one entry
 // with a level, whose penalties reach every derived value (rules/effects.ts);
-// and Heroic Inspiration, held or not, one at most (SRD p.8). No Rule of
+// what the character resists, is immune to, senses and moves by besides
+// walking (dam_d#76); and Heroic Inspiration, held or not, one at most
+// (SRD p.8). No Rule of
 // Three (B). The conditions' Advantage and Disadvantage reach the rolls they
 // touch through the sheet.
 
@@ -20,6 +25,8 @@ type Update = (change: (entity: CharacterEntity) => CharacterEntity) => RosterRe
 
 export function ConditionsSection({ rules, entity, sheet, update }: { rules: Rules; entity: CharacterEntity; sheet: Sheet; update: Update }) {
   const [open, setOpen] = useState<string | null>(null)
+  const [feature, setFeature] = useState<GainedFeature | null>(null)
+  const defenses = defenseRows(rules, sheet)
   const [adding, setAdding] = useState('')
   const [customName, setCustomName] = useState('')
   const [customText, setCustomText] = useState('')
@@ -107,6 +114,42 @@ export function ConditionsSection({ rules, entity, sheet, update }: { rules: Rul
           Exhaustion {deathAt}: the character dies (SRD p.{exhaustion?.source.page}).
         </p>
       )}
+      {/* Defenses and senses (dam_d#76, the defenses concept's direction
+          C): each with its kind, what, its source and any printed
+          condition; a row from a feature opens that feature's card. */}
+      {defenses.length > 0 && (
+        <div className="defenses">
+          <h3 className="skill-group-name">Defenses and senses</h3>
+          <ul className="stat-list">
+            {defenses.map((d) => {
+              const body = (
+                <>
+                  <span className="defense-top">
+                    <span className="defense-kind">{d.kind}</span>
+                    <span className="stat-detail">
+                      {d.from}
+                      {d.feature && <>&nbsp;ⓘ</>}
+                    </span>
+                  </span>
+                  <span className="stat-name">{d.what}</span>
+                  {d.when && <span className="stat-detail">{d.when.charAt(0).toUpperCase() + d.when.slice(1)}</span>}
+                </>
+              )
+              return (
+                <li key={d.key}>
+                  {d.feature ? (
+                    <button type="button" className="stat-row defense-row" aria-haspopup="dialog" onClick={() => setFeature(d.feature!)}>
+                      {body}
+                    </button>
+                  ) : (
+                    <span className="stat-row defense-row">{body}</span>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      )}
       <div className="add-condition">
         <label className="field">
           <span>Add</span>
@@ -154,6 +197,7 @@ export function ConditionsSection({ rules, entity, sheet, update }: { rules: Rul
           onClose={() => setOpen(null)}
         />
       )}
+      {feature && <RuleCard rule={featureRule(feature, sheet)} onClose={() => setFeature(null)} />}
     </SheetSection>
   )
 }
