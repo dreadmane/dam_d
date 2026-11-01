@@ -69,6 +69,13 @@ export interface Attack {
   grappleDc?: Total
 }
 
+// A sense's range and each grant that makes it, as a total's parts do:
+// Darkvision 180 ft from an Orc's 120 and the Owl's 60.
+export interface SenseParts {
+  feet: number
+  parts: { feet: number; from: string }[]
+}
+
 export interface Resource {
   // The key resourcesUsed is stored under: classId:id for a class's.
   key: string
@@ -138,7 +145,9 @@ export interface Sheet {
   slots: number[]
   pact: { count: number; level: number } | null
   resources: Resource[]
-  senses: { sense: string; feet: number; from: string }[]
+  // A sense's feet, and what makes them: the longest grant first, then what
+  // extends it.
+  senses: ({ sense: string } & SenseParts)[]
   defenses: { defense: string; damageTypes: string[]; from: string; when?: string }[]
   conditionImmunities: { conditions: string[]; from: string; when?: string }[]
   proficiencies: { armor: string[]; weapons: string[]; tools: string[]; languages: string[] }
@@ -570,13 +579,20 @@ export function deriveSheet(rules: Rules, entity: CharacterEntity): Sheet {
     resources.push({ key, name, max, used: Math.min(max, entity.resourcesUsed[key] ?? 0), recharge: free.recharge, from: a.from })
   }
 
-  // Senses: the longest of each, and an `extends` adds to one already held.
-  const senseMap = new Map<string, { feet: number; from: string }>()
-  for (const { effect, from } of of('sense')) {
-    if (!holds(effect)) continue
+  // Senses: the longest of each, then each `extends` adds to it, whichever
+  // came first; one with nothing to extend grants the sense (Aspect of the
+  // Wilds' Owl). Each part is kept, so the sheet names every source
+  // (dam_d#82).
+  const senseMap = new Map<string, SenseParts>()
+  const senseEffects = of('sense').filter((a) => holds(a.effect))
+  for (const { effect, from } of senseEffects) {
     const held = senseMap.get(effect.sense)
-    const feet = effect.extends && held ? held.feet + effect.feet : effect.feet
-    if (!held || feet > held.feet) senseMap.set(effect.sense, { feet, from })
+    if (!effect.extends && (!held || effect.feet > held.feet)) senseMap.set(effect.sense, { feet: effect.feet, parts: [{ feet: effect.feet, from }] })
+  }
+  for (const { effect, from } of senseEffects) {
+    if (!effect.extends) continue
+    const held = senseMap.get(effect.sense)
+    senseMap.set(effect.sense, { feet: (held?.feet ?? 0) + effect.feet, parts: [...(held?.parts ?? []), { feet: effect.feet, from }] })
   }
 
   // Weapon masteries, attacks and their arithmetic (§3.2 Attack).
