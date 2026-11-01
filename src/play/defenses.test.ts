@@ -2,7 +2,7 @@
 // effects lists, on the repo's own examples.
 
 import { describe, expect, it } from 'vitest'
-import { defenseRows } from './defenses.ts'
+import { defenseRows, immunityNotes } from './defenses.ts'
 import { deriveSheet } from '../rules/derive.ts'
 import { indexRules } from '../rules/load.ts'
 import { testRules } from '../rules/test-rules.ts'
@@ -46,6 +46,32 @@ describe('defenseRows', () => {
 
   it('lists nothing for a character with none: no block', () => {
     expect(rowsOf(maren)).toEqual([])
+  })
+})
+
+describe('immunityNotes: picking a condition the character is immune to (dam_d#83)', () => {
+  const sheetOf = (change: (e: CharacterEntity) => void) => {
+    const e = structuredClone(unga.entities[0]) as unknown as CharacterEntity
+    change(e)
+    return deriveSheet(rules, e)
+  }
+  const berserker6 = sheetOf((e) => {
+    const c = e.classes[0]
+    c.hp = Array.from({ length: 6 }, (_, i) => c.hp[i] ?? { level: i + 1, method: 'fixed' })
+    c.level = 6
+  })
+
+  it('names Mindless Rage and its printed condition for Charmed (SRD p.30)', () => {
+    expect(immunityNotes(rules, berserker6, 'charmed')).toEqual(['Immune to Charmed (Path of the Berserker 6: Mindless Rage), while your Rage is active.'])
+  })
+
+  it('says nothing for a condition nothing makes the character immune to', () => {
+    expect(immunityNotes(rules, berserker6, 'prone')).toEqual([])
+  })
+
+  it('names each source, with no condition where none is printed', () => {
+    const sheet = sheetOf((e) => e.inventory.push({ id: 'periapt', name: 'Test Periapt', description: '', quantity: 1, tags: [], worn: true, effects: [{ type: 'conditionImmunity', conditions: ['poisoned'] }] }))
+    expect(immunityNotes(rules, sheet, 'poisoned')).toEqual(['Immune to Poisoned (Test Periapt).'])
   })
 })
 

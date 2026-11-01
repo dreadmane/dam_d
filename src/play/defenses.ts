@@ -39,3 +39,13 @@ export function defenseRows(rules: Rules, sheet: Sheet): DefenseRow[] {
     ...sheet.conditionImmunities.map((c, i) => row(`condition:${i}`, 'Condition immunity', listed(c.conditions.map((id) => rules.conditions.get(id)?.name ?? titled(id))), c.from, c.when)),
   ]
 }
+
+// What makes the character immune to a condition, said as the player picks
+// it to add (dam_d#83): each immunity with its source, and its printed
+// condition, which only the player can judge. Adding it is still theirs.
+export function immunityNotes(rules: Rules, sheet: Sheet, conditionId: string): string[] {
+  const name = rules.conditions.get(conditionId)?.name ?? titled(conditionId)
+  return sheet.conditionImmunities
+    .filter((c) => c.conditions.includes(conditionId))
+    .map((c) => `Immune to ${name} (${c.from})${c.when ? `, ${c.when.charAt(0).toLowerCase()}${c.when.slice(1)}` : ''}.`)
+}
