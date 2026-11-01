@@ -1,11 +1,15 @@
 import { paragraphs } from '../play/rule-text.ts'
+import { rollNotes, signed, working } from '../play/vitals.ts'
 import type { Attack, Part, Sheet } from '../rules/derive.ts'
 import type { GainedFeature } from '../rules/effects.ts'
+import type { Ability } from '../rules/expr.ts'
+import type { Rules } from '../rules/load.ts'
 import type { Rule } from './RuleCard.tsx'
 
 // What more than one window shows the same way: an attack's or a spell's
 // damage formula (Attacks, the quick bar, an Opportunity Attack, a spell's
-// window) and a feature's rule card (Features and traits, the Reactions band).
+// window) and a feature's rule card (Features and traits, the Reactions band);
+// and an ability's card, kept here so Abilities.tsx exports components only.
 
 // The dice, then each part of the modifier on its own, so a bonus shows
 // where it comes in: "1d8 + 4 + 2" while raging. named labels each part, for
@@ -50,5 +54,24 @@ export function featureDc(sheet: Pick<Sheet, 'featureDcs'>, featureId: string): 
     total: d.dc.total,
     line: `Save DC ${d.dc.total}: 8 + ${d.ability.toUpperCase()} modifier + Proficiency Bonus`,
     ruled: d.ruling ? 'The book prints no DC for this; the app uses this one, a house ruling.' : undefined,
+  }
+}
+
+// An ability's card (Abilities and saves): the score, the check and the save
+// with their working. Its notes are what bears on each roll without being
+// added in, each said with the roll it is for: the check's (Powerful Build,
+// to end the Grappled condition) as well as the save's (dam_d#8).
+export function abilityWorking(sheet: Sheet, rules: Rules, id: Ability): Rule {
+  const name = rules.data.core.abilities.find((a) => a.id === id)?.name ?? id
+  const ability = sheet.abilities[id]
+  const save = sheet.saves[id]
+  return {
+    title: `${name} ${ability.score}`,
+    text: [
+      `Score: ${ability.parts.map((p, i) => (i === 0 ? `${p.label} ${p.value}` : `${p.label} ${signed(p.value)}`)).join(', ')}. Modifier ${signed(ability.modifier)}.`,
+      `${name} check ${signed(sheet.checks[id].total)}: ${working(sheet.checks[id].parts).join(', ')}.`,
+      `${name} saving throw ${signed(save.total)}: ${working(save.parts).join(', ')}.${save.proficient ? '' : ' Not proficient.'}`,
+    ],
+    notes: [...rollNotes(sheet.checks[id]).map((n) => `${name} check: ${n}`), ...rollNotes(save).map((n) => `${name} saving throw: ${n}`)],
   }
 }
