@@ -2,11 +2,12 @@ import { useState } from 'react'
 import type { Ability } from '../rules/expr.ts'
 import type { Sheet, Total } from '../rules/derive.ts'
 import type { Rules } from '../rules/load.ts'
-import { rollNotes, signed, working } from '../play/vitals.ts'
+import { signed } from '../play/vitals.ts'
 import type { CharacterEntity } from '../save/types.ts'
+import { abilityWorking } from './cards.ts'
 import { ProficiencyMark } from './ProficiencyMark.tsx'
 import { QuickRoll } from './QuickRoll.tsx'
-import { RuleCard, type Rule } from './RuleCard.tsx'
+import { RuleCard } from './RuleCard.tsx'
 import { SheetSection } from './SheetSection.tsx'
 
 // Abilities and saves (the spec §3.3, on the sheet): each ability's score
@@ -50,19 +51,4 @@ export function AbilitiesSection({ sheet, rules, entity }: { sheet: Sheet; rules
       {roll && <QuickRoll rules={rules} entity={entity} name={roll.name} total={roll.total} onClose={() => setRoll(null)} />}
     </SheetSection>
   )
-}
-
-function abilityWorking(sheet: Sheet, rules: Rules, id: Ability): Rule {
-  const name = rules.data.core.abilities.find((a) => a.id === id)?.name ?? id
-  const ability = sheet.abilities[id]
-  const save = sheet.saves[id]
-  return {
-    title: `${name} ${ability.score}`,
-    text: [
-      `Score: ${ability.parts.map((p, i) => (i === 0 ? `${p.label} ${p.value}` : `${p.label} ${signed(p.value)}`)).join(', ')}. Modifier ${signed(ability.modifier)}.`,
-      `${name} check ${signed(sheet.checks[id].total)}: ${working(sheet.checks[id].parts).join(', ')}.`,
-      `${name} saving throw ${signed(save.total)}: ${working(save.parts).join(', ')}.${save.proficient ? '' : ' Not proficient.'}`,
-    ],
-    notes: rollNotes(save),
-  }
 }
