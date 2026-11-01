@@ -22,13 +22,30 @@ const titled = (id: string) => id.charAt(0).toUpperCase() + id.slice(1)
 const listed = (names: string[]) => names.join(', ')
 const KIND: Record<string, string> = { resistance: 'Resistance', immunity: 'Immunity', vulnerability: 'Vulnerability' }
 
+// A sense from more than one grant names each with its feet, as a total's
+// working does ("Orc: Darkvision 120 ft, Barbarian 6: Owl +60 ft"), and
+// opens the card of what extended it last, whose text says how it adds
+// (dam_d#82).
+const senseFrom = (parts: Sheet['senses'][number]['parts']) =>
+  parts.length > 1 ? parts.map((p, i) => `${p.from} ${i ? '+' : ''}${p.feet} ft`).join(', ') : (parts[0]?.from ?? '')
+
 export function defenseRows(rules: Rules, sheet: Sheet): DefenseRow[] {
   const byLabel = new Map(sheet.features.map((g) => [featureLabel(g), g]))
-  const row = (key: string, kind: string, what: string, from: string, when?: string): DefenseRow => ({ key, kind, what, from, ...(when ? { when } : {}), ...(byLabel.has(from) ? { feature: byLabel.get(from) } : {}) })
+  const row = (key: string, kind: string, what: string, from: string, when?: string, card = from): DefenseRow => ({ key, kind, what, from, ...(when ? { when } : {}), ...(byLabel.has(card) ? { feature: byLabel.get(card) } : {}) })
   return [
-    ...sheet.senses.map((s) => row(`sense:${s.sense}`, 'Sense', `${titled(s.sense)} ${s.feet} ft`, s.from)),
+    ...sheet.senses.map((s) => row(`sense:${s.sense}`, 'Sense', `${titled(s.sense)} ${s.feet} ft`, senseFrom(s.parts), undefined, s.parts.at(-1)?.from)),
     ...sheet.speed.other.map((s, i) => row(`speed:${s.mode}:${i}`, 'Speed', `${titled(s.mode)} ${s.feet} ft`, s.from)),
     ...sheet.defenses.map((d, i) => row(`defense:${i}`, KIND[d.defense] ?? titled(d.defense), d.damageTypes.includes('all') ? 'All damage' : listed(d.damageTypes.map(titled)), d.from, d.when)),
     ...sheet.conditionImmunities.map((c, i) => row(`condition:${i}`, 'Condition immunity', listed(c.conditions.map((id) => rules.conditions.get(id)?.name ?? titled(id))), c.from, c.when)),
   ]
+}
+
+// What makes the character immune to a condition, said as the player picks
+// it to add (dam_d#83): each immunity with its source, and its printed
+// condition, which only the player can judge. Adding it is still theirs.
+export function immunityNotes(rules: Rules, sheet: Sheet, conditionId: string): string[] {
+  const name = rules.conditions.get(conditionId)?.name ?? titled(conditionId)
+  return sheet.conditionImmunities
+    .filter((c) => c.conditions.includes(conditionId))
+    .map((c) => `Immune to ${name} (${c.from})${c.when ? `, ${c.when.charAt(0).toLowerCase()}${c.when.slice(1)}` : ''}.`)
 }

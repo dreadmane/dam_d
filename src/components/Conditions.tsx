@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { paragraphs } from '../play/rule-text.ts'
-import { defenseRows } from '../play/defenses.ts'
+import { defenseRows, immunityNotes } from '../play/defenses.ts'
 import { activeToggles } from '../play/kit.ts'
 import type { Sheet } from '../rules/derive.ts'
 import type { GainedFeature } from '../rules/effects.ts'
@@ -165,6 +165,15 @@ export function ConditionsSection({ rules, entity, sheet, update }: { rules: Rul
             <option value="custom">Your own effect…</option>
           </select>
         </label>
+        {/* A condition the character is immune to says so, and from what,
+            before Add (dam_d#83); Add still adds it. */}
+        {adding &&
+          adding !== 'custom' &&
+          immunityNotes(rules, sheet, adding).map((n) => (
+            <p key={n} className="meta" role="status">
+              {n}
+            </p>
+          ))}
         {adding === 'custom' && (
           <>
             <label className="field">

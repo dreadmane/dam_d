@@ -2,8 +2,9 @@
 // effects lists, on the repo's own examples.
 
 import { describe, expect, it } from 'vitest'
-import { defenseRows } from './defenses.ts'
+import { defenseRows, immunityNotes } from './defenses.ts'
 import { deriveSheet } from '../rules/derive.ts'
+import { indexRules } from '../rules/load.ts'
 import { testRules } from '../rules/test-rules.ts'
 import type { CharacterEntity } from '../save/types.ts'
 import unga from '../save/examples/barbarian.json'
@@ -45,5 +46,65 @@ describe('defenseRows', () => {
 
   it('lists nothing for a character with none: no block', () => {
     expect(rowsOf(maren)).toEqual([])
+  })
+})
+
+describe('immunityNotes: picking a condition the character is immune to (dam_d#83)', () => {
+  const sheetOf = (change: (e: CharacterEntity) => void) => {
+    const e = structuredClone(unga.entities[0]) as unknown as CharacterEntity
+    change(e)
+    return deriveSheet(rules, e)
+  }
+  const berserker6 = sheetOf((e) => {
+    const c = e.classes[0]
+    c.hp = Array.from({ length: 6 }, (_, i) => c.hp[i] ?? { level: i + 1, method: 'fixed' })
+    c.level = 6
+  })
+
+  it('names Mindless Rage and its printed condition for Charmed (SRD p.30)', () => {
+    expect(immunityNotes(rules, berserker6, 'charmed')).toEqual(['Immune to Charmed (Path of the Berserker 6: Mindless Rage), while your Rage is active.'])
+  })
+
+  it('says nothing for a condition nothing makes the character immune to', () => {
+    expect(immunityNotes(rules, berserker6, 'prone')).toEqual([])
+  })
+
+  it('names each source, with no condition where none is printed', () => {
+    const sheet = sheetOf((e) => e.inventory.push({ id: 'periapt', name: 'Test Periapt', description: '', quantity: 1, tags: [], worn: true, effects: [{ type: 'conditionImmunity', conditions: ['poisoned'] }] }))
+    expect(immunityNotes(rules, sheet, 'poisoned')).toEqual(['Immune to Poisoned (Test Periapt).'])
+  })
+})
+
+describe('a sense two grants make (dam_d#82)', () => {
+  // An invented subclass whose option extends Darkvision, as the books' Owl
+  // (Aspect of the Wilds) does: the books never enter this repo.
+  const source = { ref: 'srd-5.2.1', section: 'Test', page: 1 }
+  const path = {
+    id: 'test-path',
+    classId: 'barbarian',
+    name: 'Test Path',
+    features: [{ id: 'test-aspect', name: 'Test Aspect', level: 3, text: 'Invented for a test.', effects: [{ type: 'choice', id: 'test-aspect', label: 'Aspect', count: 1, kind: 'option', options: ['test-owl'] }], source, confidence: 'printed' }],
+    optionLists: [{ id: 'test-aspect', name: 'Test Aspect', options: [{ id: 'test-owl', name: 'Owl', text: 'Invented.', effects: [{ type: 'sense', sense: 'darkvision', feet: 60, extends: true }], source, confidence: 'printed' }] }],
+    source,
+    confidence: 'printed',
+  }
+  const data = structuredClone(rules.data)
+  ;(data.classes as unknown as { subclasses?: unknown[] }).subclasses = [path]
+  const withPath = indexRules(data)
+  const owlRows = (change: (e: CharacterEntity) => void = () => {}) => {
+    const e = structuredClone(unga.entities[0]) as unknown as CharacterEntity
+    e.classes = [{ ...e.classes[0], subclassId: 'test-path' }]
+    e.choices.push({ source: 'class:barbarian:3', choice: 'test-aspect', values: ['test-owl'] })
+    change(e)
+    return defenseRows(withPath, deriveSheet(withPath, e)).map(({ feature, key: _key, ...r }) => ({ ...r, card: feature?.feature.name }))
+  }
+
+  it('names both an Orc’s Darkvision and the Owl’s 60 feet added to it, and opens the Owl’s card', () => {
+    expect(owlRows()).toEqual([{ kind: 'Sense', what: 'Darkvision 180 ft', from: 'Orc: Darkvision 120 ft, Barbarian 3: Owl +60 ft', card: 'Owl' }])
+  })
+
+  it('adds the Owl’s 60 feet to a longer Darkvision that comes after it, from an item', () => {
+    const rows = owlRows((e) => e.inventory.push({ id: 'goggles', name: 'Test Goggles', description: '', quantity: 1, tags: [], worn: true, effects: [{ type: 'sense', sense: 'darkvision', feet: 150 }] }))
+    expect(rows).toEqual([{ kind: 'Sense', what: 'Darkvision 210 ft', from: 'Test Goggles 150 ft, Barbarian 3: Owl +60 ft', card: 'Owl' }])
   })
 })
