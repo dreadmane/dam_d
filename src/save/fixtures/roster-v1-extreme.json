@@ -1,7 +1,7 @@
 {
   "id": "extreme",
   "schemaVersion": 1,
-  "gameDataVersion": "33f04094c6f8",
+  "gameDataVersion": "8aa9683ee7f4",
   "createdAt": "2026-10-19T21:30:00.000Z",
   "updatedAt": "2026-10-19T21:30:00.000Z",
   "name": "Oriel Ashcombe",
@@ -334,6 +334,24 @@
           "prepared": true
         },
         {
+          "spellId": "feather-fall",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "shield",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
+          "spellId": "counterspell",
+          "classId": "wizard",
+          "source": "class:wizard",
+          "prepared": true
+        },
+        {
           "spellId": "alarm",
           "classId": "wizard",
           "source": "class:wizard",
@@ -409,19 +427,19 @@
           "spellId": "blur",
           "classId": "wizard",
           "source": "class:wizard",
-          "prepared": true
+          "prepared": false
         },
         {
           "spellId": "darkvision",
           "classId": "wizard",
           "source": "class:wizard",
-          "prepared": true
+          "prepared": false
         },
         {
           "spellId": "enhance-ability",
           "classId": "wizard",
           "source": "class:wizard",
-          "prepared": true
+          "prepared": false
         },
         {
           "spellId": "gentle-repose",

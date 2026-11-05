@@ -76,7 +76,10 @@ describe('the extreme fixture', () => {
     const { slots, suggested } = barSlots(rules, e, sheet)
     expect(suggested).toBe(false)
     expect(slots.some((s) => s?.kind === 'missing')).toBe(false)
-    expect(reactions(rules, e, sheet).map((r) => r.name)).toContain('Opportunity Attack')
+    // An Opportunity Attack, and every spell a Wizard casts as a Reaction,
+    // ready, so the Reactions band is walked at its fullest (dam_d#29):
+    // Counterspell, Feather Fall and Shield (SRD pp.120, 130, 161).
+    expect(reactions(rules, e, sheet).map((r) => r.name).toSorted()).toEqual(['Counterspell', 'Feather Fall', 'Opportunity Attack', 'Shield'])
   })
 
   it('has two companions', () => {
